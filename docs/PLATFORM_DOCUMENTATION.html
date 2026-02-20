@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOK REPORTS — Documentation Plateforme</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0a0a0a;
+      --dark: #1a1a1a;
+      --mid: #555;
+      --light: #999;
+      --border: #e5e5e5;
+      --bg: #fafafa;
+      --white: #ffffff;
+      --accent: #f5f5f5;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--black);
+      background: var(--white);
+      line-height: 1.7;
+      font-size: 13px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* COVER PAGE */
+    .cover {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: var(--black);
+      color: var(--white);
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+    }
+    .cover-badge {
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .cover h1 {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .cover-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 60px;
+      position: relative;
+    }
+    .cover-meta {
+      position: relative;
+      display: flex;
+      gap: 40px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+    .cover-line {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.15);
+      margin: 0 auto 30px;
+      position: relative;
+    }
+
+    /* LAYOUT */
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+
+    /* TABLE OF CONTENTS */
+    .toc {
+      padding: 80px 0 40px;
+    }
+    .toc-label {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 30px;
+    }
+    .toc-list {
+      list-style: none;
+      counter-reset: toc;
+    }
+    .toc-list li {
+      counter-increment: toc;
+      display: flex;
+      align-items: baseline;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--dark);
+    }
+    .toc-list li::before {
+      content: counter(toc, decimal-leading-zero);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--light);
+      margin-right: 16px;
+      min-width: 20px;
+    }
+    .toc-list li span {
+      flex: 1;
+    }
+
+    /* HEADINGS */
+    .section-number {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--light);
+      display: block;
+      margin-bottom: 8px;
+    }
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--black);
+      margin-bottom: 8px;
+      padding-top: 40px;
+    }
+    h2.first {
+      padding-top: 0;
+    }
+    .section-desc {
+      font-size: 12px;
+      color: var(--light);
+      margin-bottom: 30px;
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      margin: 28px 0 12px;
+      letter-spacing: -0.2px;
+    }
+    h4 {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--mid);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 24px 0 10px;
+    }
+
+    /* TEXT */
+    p {
+      margin-bottom: 14px;
+      color: var(--dark);
+      font-size: 13px;
+    }
+    .highlight {
+      background: var(--accent);
+      border-left: 2px solid var(--black);
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 12px;
+      color: var(--mid);
+    }
+    .highlight strong {
+      color: var(--black);
+    }
+
+    /* LISTS */
+    ul {
+      list-style: none;
+      margin: 10px 0 18px;
+    }
+    ul li {
+      padding: 4px 0 4px 18px;
+      position: relative;
+      font-size: 12.5px;
+      color: var(--dark);
+    }
+    ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 12px;
+      width: 4px;
+      height: 4px;
+      background: var(--border);
+    }
+
+    /* TABLES */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 11.5px;
+    }
+    thead th {
+      text-align: left;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--light);
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--black);
+    }
+    tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--dark);
+      vertical-align: top;
+    }
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .col-method {
+      font-weight: 600;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+    .col-route {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 10.5px;
+      color: var(--mid);
+    }
+    .badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      background: var(--accent);
+      color: var(--mid);
+    }
+    .badge-new {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    /* CODE */
+    code {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 11px;
+      background: var(--accent);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+    pre {
+      background: var(--black);
+      color: rgba(255,255,255,0.8);
+      padding: 20px 24px;
+      margin: 16px 0 24px;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.8;
+      overflow-x: auto;
+      border-radius: 0;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    /* GRID */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0 24px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      padding: 20px;
+    }
+    .card-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 8px;
+    }
+    .card-value {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--black);
+    }
+    .card p {
+      font-size: 11.5px;
+      color: var(--mid);
+      margin: 0;
+    }
+
+    /* TREE */
+    .tree {
+      background: var(--accent);
+      padding: 24px 28px;
+      margin: 16px 0 24px;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.9;
+      color: var(--mid);
+    }
+    .tree .new {
+      color: var(--black);
+      font-weight: 600;
+    }
+
+    /* SEPARATOR */
+    .sep {
+      width: 30px;
+      height: 1px;
+      background: var(--border);
+      margin: 40px 0;
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      padding: 60px 40px 40px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--light);
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+    }
+
+    /* WORKFLOW */
+    .workflow {
+      margin: 20px 0 24px;
+      counter-reset: step;
+    }
+    .workflow-step {
+      counter-increment: step;
+      display: flex;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .workflow-step:last-child { border-bottom: none; }
+    .workflow-num {
+      width: 28px;
+      height: 28px;
+      background: var(--black);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .workflow-num::before {
+      content: counter(step);
+    }
+    .workflow-text {
+      padding-top: 4px;
+    }
+    .workflow-text strong {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+    .workflow-text span {
+      font-size: 11.5px;
+      color: var(--mid);
+    }
+
+    /* SECURITY ROW */
+    .sec-row {
+      display: flex;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .sec-row:last-child { border-bottom: none; }
+    .sec-icon {
+      width: 6px;
+      height: 6px;
+      background: var(--black);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .sec-content strong {
+      font-size: 12px;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .sec-content span {
+      font-size: 11.5px;
+      color: var(--mid);
+    }
+
+    @media print {
+      .cover { height: auto; min-height: 100vh; }
+      .page-break { page-break-before: always; }
+      body { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================== COVER ======================== -->
+  <div class="cover">
+    <div class="cover-badge">Document interne &mdash; Confidentiel</div>
+    <div class="cover-line"></div>
+    <h1>HOK REPORTS</h1>
+    <div class="cover-sub">Documentation Technique de la Plateforme</div>
+    <div class="cover-meta">
+      <span>Version 1.2.0</span>
+      <span>F&eacute;vrier 2026</span>
+      <span>Cabinet HOK</span>
+    </div>
+  </div>
+
+  <!-- ======================== TOC ======================== -->
+  <div class="page">
+    <div class="toc">
+      <div class="toc-label">Table des mati&egrave;res</div>
+      <ol class="toc-list">
+        <li><span>Pr&eacute;sentation g&eacute;n&eacute;rale</span></li>
+        <li><span>Objectifs de la plateforme</span></li>
+        <li><span>Architecture technique</span></li>
+        <li><span>Fonctionnalit&eacute;s</span></li>
+        <li><span>Mod&egrave;les de donn&eacute;es</span></li>
+        <li><span>Routes API</span></li>
+        <li><span>Pages et navigation</span></li>
+        <li><span>Protocoles de s&eacute;curit&eacute;</span></li>
+        <li><span>Internationalisation</span></li>
+        <li><span>D&eacute;ploiement et configuration</span></li>
+        <li><span>Int&eacute;gration WhatsApp &amp; Intelligence Artificielle</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ======================== 01 PRESENTATION ======================== -->
+  <div class="page page-break">
+    <span class="section-number">Section 01</span>
+    <h2 class="first">Pr&eacute;sentation g&eacute;n&eacute;rale</h2>
+    <p class="section-desc">Vue d'ensemble de la plateforme HOK Reports et de ses capacit&eacute;s.</p>
+
+    <p><strong>HOK Reports</strong> est une plateforme interne de gestion documentaire con&ccedil;ue sp&eacute;cifiquement pour le Cabinet HOK. Elle r&eacute;pond aux exigences de la profession d'avocat en mati&egrave;re de productivit&eacute;, de tra&ccedil;abilit&eacute; et de suivi des dossiers.</p>
+
+    <div class="highlight">
+      <strong>Mission</strong> &mdash; Automatiser la transcription, la synth&egrave;se et le suivi des audiences pour permettre aux avocats de se concentrer sur leur m&eacute;tier.
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-label">Transcription</div>
+        <p>Conversion automatique des enregistrements audio en texte via OpenAI Whisper</p>
+      </div>
+      <div class="card">
+        <div class="card-label">G&eacute;n&eacute;ration de rapports</div>
+        <p>Rapports juridiques structur&eacute;s g&eacute;n&eacute;r&eacute;s par GPT-4o ou Claude</p>
+      </div>
+      <div class="card">
+        <div class="card-label">R&ocirc;les d'audience</div>
+        <p>Suivi automatis&eacute; des audiences et g&eacute;n&eacute;ration des r&ocirc;les hebdomadaires</p>
+      </div>
+      <div class="card">
+        <div class="card-label">Administration</div>
+        <p>Gestion compl&egrave;te des utilisateurs, cl&eacute;s API et journal d'audit</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== 02 OBJECTIFS ======================== -->
+  <div class="page page-break">
+    <span class="section-number">Section 02</span>
+    <h2 class="first">Objectifs de la plateforme</h2>
+    <p class="section-desc">Les piliers strat&eacute;giques autour desquels HOK Reports est construit.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%">Objectif</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Productivit&eacute;</strong></td>
+          <td>Automatiser la transcription et la synth&egrave;se de contenus juridiques, r&eacute;duisant le temps de traitement de plusieurs heures &agrave; quelques minutes</td>
+        </tr>
+        <tr>
+          <td><strong>Tra&ccedil;abilit&eacute;</strong></td>
+          <td>Journal d'audit complet de toutes les actions utilisateur avec horodatage, IP et d&eacute;tails</td>
+        </tr>
+        <tr>
+          <td><strong>Collaboration</strong></td>
+          <td>Gestion multi-utilisateur avec r&ocirc;les diff&eacute;renci&eacute;s (admin/user) et workflow d'approbation</td>
+        </tr>
+        <tr>
+          <td><strong>Suivi judiciaire</strong></td>
+          <td>R&ocirc;les d'audience hebdomadaires automatis&eacute;s pour le suivi des dossiers en cours</td>
+        </tr>
+        <tr>
+          <td><strong>S&eacute;curit&eacute;</strong></td>
+          <td>Authentification robuste, sanitisation des entr&eacute;es, headers HTTP s&eacute;curis&eacute;s, rate limiting</td>
+        </tr>
+        <tr>
+          <td><strong>Accessibilit&eacute;</strong></td>
+          <td>Interface bilingue fran&ccedil;ais/anglais, design moderne et ergonomique</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ======================== 03 ARCHITECTURE ======================== -->
+  <div class="page page-break">
+    <span class="section-number">Section 03</span>
+    <h2 class="first">Architecture technique</h2>
+    <p class="section-desc">Stack technologique et structure du projet.</p>
+
+    <h3>Stack technologique</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%">Couche</th>
+          <th>Technologie</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Framework</strong></td><td>Next.js 16.1.6 (App Router, Turbopack)</td></tr>
+        <tr><td><strong>Langage</strong></td><td>TypeScript 5.x</td></tr>
+        <tr><td><strong>Styles</strong></td><td>Tailwind CSS 4.x</td></tr>
+        <tr><td><strong>Base de donn&eacute;es</strong></td><td>SQLite via Prisma v7 + BetterSqlite3</td></tr>
+        <tr><td><strong>Authentification</strong></td><td>NextAuth v5 (beta.30) &mdash; JWT + Credentials + Google OAuth</td></tr>
+        <tr><td><strong>&Eacute;tat client</strong></td><td>Zustand</td></tr>
+        <tr><td><strong>IA / LLM</strong></td><td>OpenAI Whisper (transcription) &middot; GPT-4o / Claude (rapports)</td></tr>
+        <tr><td><strong>Ic&ocirc;nes</strong></td><td>Lucide React</td></tr>
+        <tr><td><strong>i18n</strong></td><td>Syst&egrave;me personnalis&eacute; (fr/en)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Structure du projet</h3>
+    <div class="tree">
+hok-reports/<br>
+├── prisma/<br>
+│&nbsp;&nbsp;&nbsp;└── schema.prisma<br>
+├── src/<br>
+│&nbsp;&nbsp;&nbsp;├── app/<br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── (auth)/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Pages publiques</em><br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── (dashboard)/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Pages prot&eacute;g&eacute;es</em><br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── admin/<br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── dashboard/<br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── reports/<br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="new">roles/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>R&ocirc;les d'audience</em><br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── sessions/<br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── ...<br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── api/<br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="new">hearing-reports/</span><br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="new">weekly-roles/</span><br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── sessions/<br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── reports/<br>
+│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── ...<br>
+│&nbsp;&nbsp;&nbsp;├── components/layout/<br>
+│&nbsp;&nbsp;&nbsp;├── lib/<br>
+│&nbsp;&nbsp;&nbsp;└── middleware.ts<br>
+└── dev.db
+    </div>
+
+    <h3>Flux de donn&eacute;es</h3>
+    <div class="highlight">
+      <strong>Navigateur</strong> &rarr; Middleware (Auth + Headers) &rarr; API Route (Auth + Sanitize + Rate Limit) &rarr; <strong>Prisma ORM</strong> &rarr; SQLite
+    </div>
+  </div>
+
+  <!-- ======================== 04 FONCTIONNALITES ======================== -->
+  <div class="page page-break">
+    <span class="section-number">Section 04</span>
+    <h2 class="first">Fonctionnalit&eacute;s</h2>
+    <p class="section-desc">Ensemble des modules et capacit&eacute;s de la plateforme.</p>
+
+    <h3>4.1 &mdash; Authentification et gestion des utilisateurs</h3>
+    <ul>
+      <li>Connexion par email/mot de passe (Credentials) ou Google OAuth</li>
+      <li>Inscription avec validation par administrateur (pending &rarr; active)</li>
+      <li>R&ocirc;les : <code>admin</code> (acc&egrave;s complet) et <code>user</code> (donn&eacute;es personnelles)</li>
+      <li>Blocage/d&eacute;blocage et suppression d'utilisateurs par l'admin</li>
+      <li>Profil : modification du nom et changement de mot de passe s&eacute;curis&eacute;</li>
+    </ul>
+
+    <h3>4.2 &mdash; Sessions d'enregistrement</h3>
+    <ul>
+      <li>Cr&eacute;ation de session avec m&eacute;tadonn&eacute;es (titre, client, r&eacute;f&eacute;rence, description)</li>
+      <li>Enregistrement audio dans le navigateur (MediaRecorder API)</li>
+      <li>Upload de fichiers audio (WAV, MP3, WebM, M4A &mdash; max 100 Mo)</li>
+      <li><strong>Mode Flash</strong> : enregistrement en un clic avec identification automatique du client</li>
+    </ul>
+
+    <h3>4.3 &mdash; Transcription et rapports</h3>
+    <ul>
+      <li>Transcription automatique via OpenAI Whisper API</li>
+      <li>G&eacute;n&eacute;ration de rapports via GPT-4o ou Claude (configurable)</li>
+      <li>Formats : Standard, D&eacute;taill&eacute;, Bref</li>
+      <li>Cat&eacute;gories : G&eacute;n&eacute;ral, Consultation, Audience, D&eacute;position, R&eacute;union, N&eacute;gociation, M&eacute;diation, Contentieux</li>
+      <li>Export PDF des rapports g&eacute;n&eacute;r&eacute;s</li>
+    </ul>
+
+    <h3>4.4 &mdash; R&ocirc;les d'audience <span class="badge badge-new">Nouveau</span></h3>
+    <p>Le module <strong>R&ocirc;les d'Audience</strong> automatise le processus manuel de collecte et de suivi des audiences.</p>
+
+    <h4>Comptes rendus d'audience</h4>
+    <ul>
+      <li>Saisie compl&egrave;te : date, juridiction, chambre, r&eacute;f&eacute;rence, client, partie adverse, avocat</li>
+      <li>Compte rendu de l'audience et tâches &agrave; effectuer</li>
+      <li>Date de la prochaine audience pour int&eacute;gration au r&ocirc;le</li>
+      <li>Recherche par client, dossier ou juridiction</li>
+    </ul>
+
+    <h4>R&ocirc;le hebdomadaire</h4>
+    <ul>
+      <li>G&eacute;n&eacute;ration automatique du r&ocirc;le pour la semaine s&eacute;lectionn&eacute;e</li>
+      <li>Agr&egrave;ge les comptes rendus ayant une prochaine audience dans la semaine</li>
+      <li>Vue tabulaire : date, juridiction, r&eacute;f&eacute;rence, client, adversaire, tâches</li>
+      <li>Publication du r&ocirc;le (brouillon &rarr; publi&eacute;)</li>
+    </ul>
+
+    <h4>Workflow typique</h4>
+    <div class="workflow">
+      <div class="workflow-step">
+        <div class="workflow-num"></div>
+        <div class="workflow-text">
+          <strong>Saisie du compte rendu</strong>
+          <span>L'avocat rentre d'audience et saisit le compte rendu avec les d&eacute;tails du dossier</span>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num"></div>
+        <div class="workflow-text">
+          <strong>Planification</strong>
+          <span>Il renseigne la date de la prochaine audience et les tâches &agrave; pr&eacute;parer</span>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num"></div>
+        <div class="workflow-text">
+          <strong>G&eacute;n&eacute;ration du r&ocirc;le</strong>
+          <span>En fin de semaine, g&eacute;n&eacute;ration du r&ocirc;le de la semaine suivante</span>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num"></div>
+        <div class="workflow-text">
+          <strong>Consultation</strong>
+          <span>Le r&ocirc;le affiche tous les dossiers pr&eacute;vus avec les tâches associ&eacute;es</span>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num"></div>
+        <div class="workflow-text">
+          <strong>Publication</strong>
+          <span>Le r&ocirc;le est publi&eacute; et diffus&eacute; au cabinet</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>4.5 &mdash; Int&eacute;gration WhatsApp &amp; IA <span class="badge badge-new">Nouveau</span></h3>
+    <p>Le syst&egrave;me est connect&eacute; au groupe WhatsApp du cabinet via l'API WhatsApp Cloud (Meta). L'IA (GPT-4o ou Claude) analyse automatiquement chaque message entrant.</p>
+
+    <h4>D&eacute;tection intelligente</h4>
+    <ul>
+      <li>L'IA analyse chaque message WhatsApp pour d&eacute;tecter les comptes rendus d'audience</li>
+      <li>Fonctionne avec des messages informels et en langage courant &mdash; aucun format impos&eacute;</li>
+      <li>Score de confiance (0-1) pour &eacute;viter les faux positifs</li>
+      <li>Fallback automatique sur d&eacute;tection par mots-cl&eacute;s si l'IA est indisponible</li>
+    </ul>
+
+    <h4>Extraction automatique par IA</h4>
+    <ul>
+      <li>Extraction de toutes les donn&eacute;es : date, client, r&eacute;f&eacute;rence, juridiction, chambre, avocat, partie adverse</li>
+      <li>G&eacute;n&eacute;ration d'un r&eacute;sum&eacute; <strong>professionnel et d&eacute;taill&eacute;</strong> dans un style juridique formel</li>
+      <li>D&eacute;duction des t&acirc;ches actionnables &agrave; accomplir avant la prochaine audience</li>
+      <li>Ajout de notes et observations juridiques pertinentes</li>
+      <li>Deux moteurs AI support&eacute;s : <strong>GPT-4o</strong> (OpenAI) et <strong>Claude</strong> (Anthropic)</li>
+    </ul>
+
+    <h4>Workflow automatis&eacute;</h4>
+    <div class="workflow">
+      <div class="workflow-step">
+        <div class="workflow-num"></div>
+        <div class="workflow-text">
+          <strong>Message WhatsApp</strong>
+          <span>L'avocat poste son compte rendu dans le groupe WhatsApp, comme d'habitude</span>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num"></div>
+        <div class="workflow-text">
+          <strong>D&eacute;tection IA</strong>
+          <span>L'IA d&eacute;tecte que le message parle d'une audience (confiance &ge; 60%)</span>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num"></div>
+        <div class="workflow-text">
+          <strong>Extraction IA</strong>
+          <span>GPT-4o/Claude extrait les donn&eacute;es structur&eacute;es et r&eacute;dige un r&eacute;sum&eacute; professionnel</span>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num"></div>
+        <div class="workflow-text">
+          <strong>Compte rendu cr&eacute;&eacute;</strong>
+          <span>Le compte rendu est automatiquement enregistr&eacute; avec le badge WhatsApp</span>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num"></div>
+        <div class="workflow-text">
+          <strong>R&ocirc;le mis &agrave; jour</strong>
+          <span>Le r&ocirc;le hebdomadaire int&egrave;gre automatiquement la prochaine audience</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>4.6 &mdash; Administration</h3>
+    <ul>
+      <li>Vue d'ensemble : statistiques globales (utilisateurs, sessions, rapports, dur&eacute;e)</li>
+      <li>Gestion des utilisateurs : approbation, blocage, changement de r&ocirc;le, suppression</li>
+      <li>Configuration LLM : cl&eacute;s API (Whisper, OpenAI, Anthropic), choix du fournisseur</li>
+      <li>Journal d'audit : historique complet avec filtrage par type d'action</li>
+    </ul>
+  </div>
+
+  <!-- ======================== 05 MODELES ======================== -->
+  <div class="page page-break">
+    <span class="section-number">Section 05</span>
+    <h2 class="first">Mod&egrave;les de donn&eacute;es</h2>
+    <p class="section-desc">Sch&eacute;ma de la base de donn&eacute;es Prisma &mdash; mod&egrave;les principaux.</p>
+
+    <h3>User</h3>
+    <table>
+      <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>String (CUID)</td><td>Identifiant unique</td></tr>
+        <tr><td><code>email</code></td><td>String (unique)</td><td>Email de l'utilisateur</td></tr>
+        <tr><td><code>name</code></td><td>String</td><td>Nom complet</td></tr>
+        <tr><td><code>password</code></td><td>String?</td><td>Hash bcrypt</td></tr>
+        <tr><td><code>role</code></td><td>String</td><td><code>admin</code> | <code>user</code></td></tr>
+        <tr><td><code>status</code></td><td>String</td><td><code>pending</code> | <code>active</code> | <code>rejected</code></td></tr>
+        <tr><td><code>blocked</code></td><td>Boolean</td><td>Compte bloqu&eacute;</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Session</h3>
+    <table>
+      <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>String (CUID)</td><td>Identifiant unique</td></tr>
+        <tr><td><code>title</code></td><td>String</td><td>Titre de la session</td></tr>
+        <tr><td><code>clientName</code></td><td>String</td><td>Nom du client</td></tr>
+        <tr><td><code>caseReference</code></td><td>String?</td><td>R&eacute;f&eacute;rence du dossier</td></tr>
+        <tr><td><code>status</code></td><td>String</td><td>recording | transcribing | summarizing | completed | error</td></tr>
+        <tr><td><code>audioPath</code></td><td>String?</td><td>Chemin du fichier audio</td></tr>
+        <tr><td><code>audioDuration</code></td><td>Float?</td><td>Dur&eacute;e en secondes</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Report</h3>
+    <table>
+      <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>title</code></td><td>String</td><td>Titre du rapport</td></tr>
+        <tr><td><code>summary</code></td><td>String</td><td>R&eacute;sum&eacute;</td></tr>
+        <tr><td><code>keyPoints</code></td><td>String (JSON)</td><td>Points cl&eacute;s</td></tr>
+        <tr><td><code>actionItems</code></td><td>String (JSON)</td><td>Actions &agrave; entreprendre</td></tr>
+        <tr><td><code>category</code></td><td>String</td><td>Cat&eacute;gorie du rapport</td></tr>
+        <tr><td><code>format</code></td><td>String</td><td>standard | detailed | brief</td></tr>
+        <tr><td><code>status</code></td><td>String</td><td>draft | final | archived</td></tr>
+      </tbody>
+    </table>
+
+    <h3>HearingReport <span class="badge badge-new">Nouveau</span></h3>
+    <table>
+      <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>hearingDate</code></td><td>DateTime</td><td>Date de l'audience</td></tr>
+        <tr><td><code>jurisdiction</code></td><td>String</td><td>Tribunal / Juridiction</td></tr>
+        <tr><td><code>chamber</code></td><td>String?</td><td>Chambre</td></tr>
+        <tr><td><code>caseReference</code></td><td>String</td><td>R&eacute;f&eacute;rence du dossier</td></tr>
+        <tr><td><code>clientName</code></td><td>String</td><td>Nom du client</td></tr>
+        <tr><td><code>opponent</code></td><td>String?</td><td>Partie adverse</td></tr>
+        <tr><td><code>outcome</code></td><td>String</td><td>Compte rendu de l'audience</td></tr>
+        <tr><td><code>nextHearingDate</code></td><td>DateTime?</td><td>Prochaine audience</td></tr>
+        <tr><td><code>tasks</code></td><td>String? (JSON)</td><td>T&acirc;ches &agrave; effectuer</td></tr>
+      </tbody>
+    </table>
+
+    <h3>WeeklyRole <span class="badge badge-new">Nouveau</span></h3>
+    <table>
+      <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>weekStart</code></td><td>DateTime</td><td>Lundi de la semaine</td></tr>
+        <tr><td><code>weekEnd</code></td><td>DateTime</td><td>Dimanche de la semaine</td></tr>
+        <tr><td><code>title</code></td><td>String</td><td>Titre du r&ocirc;le</td></tr>
+        <tr><td><code>entries</code></td><td>String (JSON)</td><td>Entr&eacute;es du r&ocirc;le</td></tr>
+        <tr><td><code>status</code></td><td>String</td><td>draft | published | archived</td></tr>
+      </tbody>
+    </table>
+
+    <h3>AuditLog</h3>
+    <table>
+      <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>userId</code></td><td>String</td><td>Utilisateur</td></tr>
+        <tr><td><code>action</code></td><td>String</td><td>Type d'action</td></tr>
+        <tr><td><code>entity</code></td><td>String?</td><td>Entit&eacute; concern&eacute;e</td></tr>
+        <tr><td><code>details</code></td><td>String? (JSON)</td><td>D&eacute;tails</td></tr>
+        <tr><td><code>ipAddress</code></td><td>String?</td><td>Adresse IP</td></tr>
+        <tr><td><code>userAgent</code></td><td>String?</td><td>Navigateur</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ======================== 06 ROUTES API ======================== -->
+  <div class="page page-break">
+    <span class="section-number">Section 06</span>
+    <h2 class="first">Routes API</h2>
+    <p class="section-desc">Ensemble des endpoints REST disponibles.</p>
+
+    <h3>Authentification</h3>
+    <table>
+      <thead><tr><th style="width:12%">M&eacute;thode</th><th style="width:40%">Route</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="col-method">*</td><td class="col-route">/api/auth/[...nextauth]</td><td>Endpoints NextAuth</td></tr>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/register</td><td>Inscription utilisateur</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Sessions</h3>
+    <table>
+      <thead><tr><th style="width:12%">M&eacute;thode</th><th style="width:40%">Route</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/sessions</td><td>Liste (filtrage, pagination)</td></tr>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/sessions</td><td>Cr&eacute;er une session</td></tr>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/sessions/[id]</td><td>D&eacute;tail</td></tr>
+        <tr><td class="col-method">PATCH</td><td class="col-route">/api/sessions/[id]</td><td>Modifier</td></tr>
+        <tr><td class="col-method">DELETE</td><td class="col-route">/api/sessions/[id]</td><td>Supprimer</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Rapports</h3>
+    <table>
+      <thead><tr><th style="width:12%">M&eacute;thode</th><th style="width:40%">Route</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/reports</td><td>Liste des rapports</td></tr>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/reports</td><td>G&eacute;n&eacute;rer depuis transcription</td></tr>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/reports/[id]</td><td>D&eacute;tail</td></tr>
+        <tr><td class="col-method">PATCH</td><td class="col-route">/api/reports/[id]</td><td>Modifier</td></tr>
+        <tr><td class="col-method">DELETE</td><td class="col-route">/api/reports/[id]</td><td>Supprimer</td></tr>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/reports/[id]/pdf</td><td>Export PDF</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Comptes rendus d'audience <span class="badge badge-new">Nouveau</span></h3>
+    <table>
+      <thead><tr><th style="width:12%">M&eacute;thode</th><th style="width:40%">Route</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/hearing-reports</td><td>Liste (recherche, filtrage)</td></tr>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/hearing-reports</td><td>Cr&eacute;er un compte rendu</td></tr>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/hearing-reports/[id]</td><td>D&eacute;tail</td></tr>
+        <tr><td class="col-method">PATCH</td><td class="col-route">/api/hearing-reports/[id]</td><td>Modifier</td></tr>
+        <tr><td class="col-method">DELETE</td><td class="col-route">/api/hearing-reports/[id]</td><td>Supprimer</td></tr>
+      </tbody>
+    </table>
+
+    <h3>R&ocirc;les hebdomadaires <span class="badge badge-new">Nouveau</span></h3>
+    <table>
+      <thead><tr><th style="width:12%">M&eacute;thode</th><th style="width:40%">Route</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/weekly-roles</td><td>Liste des r&ocirc;les</td></tr>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/weekly-roles</td><td>G&eacute;n&eacute;rer/r&eacute;g&eacute;n&eacute;rer</td></tr>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/weekly-roles/[id]</td><td>D&eacute;tail</td></tr>
+        <tr><td class="col-method">PATCH</td><td class="col-route">/api/weekly-roles/[id]</td><td>Publier / Archiver</td></tr>
+        <tr><td class="col-method">DELETE</td><td class="col-route">/api/weekly-roles/[id]</td><td>Supprimer</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Audio et transcription</h3>
+    <table>
+      <thead><tr><th style="width:12%">M&eacute;thode</th><th style="width:40%">Route</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/upload</td><td>Upload audio</td></tr>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/transcribe</td><td>Transcrire l'audio</td></tr>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/flash</td><td>Traitement flash</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Int&eacute;gration WhatsApp <span class="badge badge-new">Nouveau</span></h3>
+    <table>
+      <thead><tr><th style="width:12%">M&eacute;thode</th><th style="width:40%">Route</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/whatsapp/webhook</td><td>V&eacute;rification webhook Meta</td></tr>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/whatsapp/webhook</td><td>R&eacute;ception messages (d&eacute;tection + parsing AI)</td></tr>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/whatsapp/status</td><td>Statut de la connexion WhatsApp</td></tr>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/whatsapp/test</td><td>Simuler un message WhatsApp (admin)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Administration</h3>
+    <table>
+      <thead><tr><th style="width:12%">M&eacute;thode</th><th style="width:40%">Route</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/admin/users</td><td>Liste des utilisateurs</td></tr>
+        <tr><td class="col-method">PATCH</td><td class="col-route">/api/admin/users</td><td>Changer le r&ocirc;le</td></tr>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/admin/users/approve</td><td>Approuver</td></tr>
+        <tr><td class="col-method">POST</td><td class="col-route">/api/admin/users/block</td><td>Bloquer/d&eacute;bloquer</td></tr>
+        <tr><td class="col-method">DELETE</td><td class="col-route">/api/admin/users/delete</td><td>Supprimer</td></tr>
+        <tr><td class="col-method">GET/POST</td><td class="col-route">/api/admin/llm</td><td>Config. cl&eacute;s API LLM</td></tr>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/admin/stats</td><td>Statistiques</td></tr>
+        <tr><td class="col-method">GET</td><td class="col-route">/api/admin/reports</td><td>Journal d'audit</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ======================== 07 PAGES ======================== -->
+  <div class="page page-break">
+    <span class="section-number">Section 07</span>
+    <h2 class="first">Pages et navigation</h2>
+    <p class="section-desc">Structure de navigation de l'interface utilisateur.</p>
+
+    <h3>Navigation principale</h3>
+    <table>
+      <thead><tr><th style="width:25%">Route</th><th style="width:20%">Label</th><th>Acc&egrave;s</th></tr></thead>
+      <tbody>
+        <tr><td class="col-route">/dashboard</td><td>Tableau de bord</td><td>Tous</td></tr>
+        <tr><td class="col-route">/sessions</td><td>Sessions</td><td>Tous</td></tr>
+        <tr><td class="col-route">/sessions/new</td><td>Nouvelle session</td><td>Tous</td></tr>
+        <tr><td class="col-route">/flash</td><td>Enregistrement flash</td><td>Tous</td></tr>
+        <tr><td class="col-route">/reports</td><td>Rapports</td><td>Tous</td></tr>
+        <tr><td class="col-route">/roles</td><td>R&ocirc;les d'audience <span class="badge badge-new">Nouveau</span></td><td>Tous</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Navigation secondaire</h3>
+    <table>
+      <thead><tr><th style="width:25%">Route</th><th style="width:20%">Label</th><th>Acc&egrave;s</th></tr></thead>
+      <tbody>
+        <tr><td class="col-route">/admin</td><td>Administration</td><td>Admin uniquement</td></tr>
+        <tr><td class="col-route">/profile</td><td>Mon profil</td><td>Tous</td></tr>
+        <tr><td class="col-route">/settings</td><td>Param&egrave;tres</td><td>Tous</td></tr>
+        <tr><td class="col-route">/documentation</td><td>Documentation</td><td>Tous</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ======================== 08 SECURITE ======================== -->
+  <div class="page page-break">
+    <span class="section-number">Section 08</span>
+    <h2 class="first">Protocoles de s&eacute;curit&eacute;</h2>
+    <p class="section-desc">Mesures de protection impl&eacute;ment&eacute;es sur la plateforme.</p>
+
+    <h3>Authentification</h3>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>JWT via NextAuth v5</strong><span>Strat&eacute;gie de session JWT avec tokens sign&eacute;s et expiration contr&ocirc;l&eacute;e</span></div></div>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Hachage bcrypt</strong><span>Mots de passe hach&eacute;s avec bcrypt avant stockage en base de donn&eacute;es</span></div></div>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Google OAuth</strong><span>Authentification via Google disponible en compl&eacute;ment</span></div></div>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Middleware NextAuth</strong><span>Protection automatique de toutes les routes via middleware c&ocirc;t&eacute; serveur</span></div></div>
+
+    <h3>Autorisation</h3>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>V&eacute;rification d'ownership (IDOR)</strong><span>Chaque route API v&eacute;rifie que l'utilisateur est propri&eacute;taire de la ressource demand&eacute;e</span></div></div>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>R&ocirc;les diff&eacute;renci&eacute;s</strong><span>Admin : acc&egrave;s complet &mdash; User : acc&egrave;s limit&eacute; &agrave; ses propres donn&eacute;es</span></div></div>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Approbation d'inscription</strong><span>Les nouveaux comptes sont valid&eacute;s manuellement par un administrateur</span></div></div>
+
+    <h3>Validation des entr&eacute;es</h3>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Sanitisation XSS</strong><span>Nettoyage de toutes les entr&eacute;es : HTML entities, scripts, iframes, event handlers</span></div></div>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Validation de format</strong><span>Email, mot de passe (8+ chars, majuscule, minuscule, chiffre, sp&eacute;cial), nom</span></div></div>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Filtrage de champs</strong><span>Seuls les champs autoris&eacute;s sont accept&eacute;s lors des mises &agrave; jour (whitelist)</span></div></div>
+
+    <h3>Headers HTTP de s&eacute;curit&eacute;</h3>
+    <table>
+      <thead><tr><th>Header</th><th>Valeur</th><th>Protection</th></tr></thead>
+      <tbody>
+        <tr><td><code>X-Content-Type-Options</code></td><td>nosniff</td><td>Emp&ecirc;che le MIME sniffing</td></tr>
+        <tr><td><code>X-Frame-Options</code></td><td>DENY</td><td>Emp&ecirc;che le clickjacking</td></tr>
+        <tr><td><code>X-XSS-Protection</code></td><td>1; mode=block</td><td>Protection XSS navigateur</td></tr>
+        <tr><td><code>Referrer-Policy</code></td><td>strict-origin-when-cross-origin</td><td>Contr&ocirc;le des referers</td></tr>
+        <tr><td><code>Permissions-Policy</code></td><td>camera=(), microphone=(self)</td><td>Restriction APIs navigateur</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Rate Limiting</h3>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Limiteur en m&eacute;moire</strong><span>Fen&ecirc;tre glissante configurable par cl&eacute; (IP, userId). Nettoyage automatique des entr&eacute;es expir&eacute;es toutes les 5 minutes.</span></div></div>
+
+    <h3>Journal d'audit</h3>
+    <p>Toutes les actions sont enregistr&eacute;es avec m&eacute;tadonn&eacute;es compl&egrave;tes : IP, User-Agent, timestamp, d&eacute;tails de l'action. Actions audit&eacute;es :</p>
+    <div class="highlight">
+      login &middot; register &middot; create_session &middot; delete_session &middot; transcribe &middot; generate_report &middot; export_pdf &middot; update_profile &middot; change_password &middot; upload_audio &middot; admin_block &middot; admin_unblock &middot; admin_delete &middot; admin_edit &middot; admin_change_role &middot; admin_update_llm &middot; flash_record &middot; <strong>create_hearing_report</strong> &middot; <strong>update_hearing_report</strong> &middot; <strong>delete_hearing_report</strong> &middot; <strong>create_weekly_role</strong> &middot; <strong>update_weekly_role</strong> &middot; <strong>publish_weekly_role</strong> &middot; <strong>delete_weekly_role</strong>
+    </div>
+
+    <h3>Protection des cl&eacute;s API</h3>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Masquage</strong><span>Seuls les 8 premiers et 4 derniers caract&egrave;res sont affich&eacute;s dans l'interface</span></div></div>
+    <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Validation de format</strong><span>V&eacute;rification du pr&eacute;fixe <code>sk-</code> (OpenAI) et <code>sk-ant-</code> (Anthropic)</span></div></div>
+  </div>
+
+  <!-- ======================== 09 i18n ======================== -->
+  <div class="page page-break">
+    <span class="section-number">Section 09</span>
+    <h2 class="first">Internationalisation</h2>
+    <p class="section-desc">Syst&egrave;me de traduction multilingue.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-label">Fran&ccedil;ais (fr)</div>
+        <div class="card-value">Langue par d&eacute;faut</div>
+      </div>
+      <div class="card">
+        <div class="card-label">English (en)</div>
+        <div class="card-value">Fully supported</div>
+      </div>
+    </div>
+
+    <h3>Impl&eacute;mentation</h3>
+    <ul>
+      <li>Syst&egrave;me de traduction l&eacute;ger bas&eacute; sur un dictionnaire cl&eacute;-valeur dans <code>src/lib/i18n.ts</code></li>
+      <li>Fonction <code>t(key, locale)</code> pour la r&eacute;cup&eacute;ration des traductions</li>
+      <li>Locale stock&eacute;e dans Zustand et persist&eacute;e dans <code>localStorage</code></li>
+      <li>Fallback automatique sur le fran&ccedil;ais si une cl&eacute; n'est pas trouv&eacute;e</li>
+    </ul>
+
+    <h3>Couverture</h3>
+    <p>Environ <strong>370 cl&eacute;s de traduction</strong> couvrant l'ensemble de l'interface :</p>
+    <ul>
+      <li>Navigation, formulaires, boutons et labels</li>
+      <li>Messages d'erreur, succ&egrave;s et validation</li>
+      <li>Tableaux, statistiques et filtres</li>
+      <li>Module R&ocirc;les d'audience complet (~65 cl&eacute;s d&eacute;di&eacute;es)</li>
+    </ul>
+  </div>
+
+  <!-- ======================== 10 DEPLOIEMENT ======================== -->
+  <div class="page page-break">
+    <span class="section-number">Section 10</span>
+    <h2 class="first">D&eacute;ploiement et configuration</h2>
+    <p class="section-desc">Variables d'environnement, commandes et comptes par d&eacute;faut.</p>
+
+    <h3>Variables d'environnement</h3>
+    <pre><code># Base de donn&eacute;es
+DATABASE_URL="file:./dev.db"
+
+# NextAuth
+AUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+
+# OpenAI (Whisper + Reports)
+OPENAI_API_KEY="sk-..."
+
+# Anthropic (Reports alternatif)
+ANTHROPIC_API_KEY="sk-ant-..."
+
+# Google OAuth (optionnel)
+GOOGLE_CLIENT_ID="..."
+GOOGLE_CLIENT_SECRET="..."
+
+# WhatsApp Cloud API
+WHATSAPP_ACCESS_TOKEN="Bearer ..."
+WHATSAPP_PHONE_NUMBER_ID="..."
+WHATSAPP_VERIFY_TOKEN="hok-whatsapp-verify-2026"
+WHATSAPP_BUSINESS_ACCOUNT_ID="..."</code></pre>
+
+    <h3>Commandes</h3>
+    <pre><code># Installation
+npm install
+
+# Initialiser la base de donn&eacute;es
+npx prisma db push
+npx prisma generate
+
+# Seed (donn&eacute;es initiales)
+npx prisma db seed
+
+# D&eacute;veloppement
+npm run dev
+
+# Build production
+npm run build &amp;&amp; npm start</code></pre>
+
+    <h3>Comptes par d&eacute;faut</h3>
+    <table>
+      <thead><tr><th>R&ocirc;le</th><th>Email</th><th>Mot de passe</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Administrateur</strong></td><td>admin@hokreports.com</td><td>Admin123#</td></tr>
+        <tr><td><strong>Utilisateur</strong></td><td>user1@hokreports.com</td><td>User123#</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sep"></div>
+
+    <div class="highlight">
+      <strong>Note</strong> &mdash; Les cl&eacute;s API peuvent &eacute;galement &ecirc;tre configur&eacute;es directement depuis le panneau d'administration de la plateforme, sans n&eacute;cessiter de red&eacute;marrage du serveur.
+    </div>
+  </div>
+
+  <!-- ======================== FOOTER ======================== -->
+  <div class="footer">
+    Cabinet HOK &mdash; HOK Reports Platform v1.2.0 &mdash; F&eacute;vrier 2026<br>
+    Document g&eacute;n&eacute;r&eacute; automatiquement &mdash; Usage interne exclusivement
+  </div>
+
+</body>
+</html>

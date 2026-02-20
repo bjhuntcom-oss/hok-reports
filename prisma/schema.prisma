@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  password      String?
+  role          String    @default("user") // "admin" | "user"
+  status        String    @default("pending") // "pending" | "active" | "rejected"
+  blocked       Boolean   @default(false)
+  avatar        String?
+  language      String    @default("fr") // "fr" | "en" | "fon"
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions       Session[]
+  reports        Report[]
+  loginHistory   LoginHistory[]
+  auditLogs      AuditLog[]
+  hearingReports HearingReport[]
+  weeklyRoles    WeeklyRole[]
+}
+
+model Session {
+  id            String    @id @default(cuid())
+  title         String
+  description   String?
+  clientName    String
+  clientEmail   String?
+  clientPhone   String?
+  caseReference String?
+  audioUrl      String?
+  audioDuration Int?      // duration in seconds
+  status        String    @default("recording") // "recording" | "transcribing" | "summarizing" | "completed" | "error"
+  language      String    @default("fr")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  transcription Transcription?
+  reports       Report[]
+  notes         Note[]
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Transcription {
+  id            String    @id @default(cuid())
+  content       String    // Full transcription text
+  segments      String?   // JSON: timestamped segments
+  language      String    @default("fr")
+  confidence    Float?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessionId     String    @unique
+  session       Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id            String    @id @default(cuid())
+  title         String
+  summary       String    // AI-generated summary
+  keyPoints     String    // JSON array of key points
+  actionItems   String?   // JSON array of action items
+  legalNotes    String?   // Important legal notes
+  category      String    @default("general") // "general" | "consultation" | "hearing" | "deposition" | "meeting"
+  status        String    @default("draft") // "draft" | "final" | "archived"
+  format        String    @default("standard") // "standard" | "detailed" | "brief"
+  exportedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessionId     String
+  session       Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([category])
+  @@index([createdAt])
+}
+
+model Note {
+  id            String    @id @default(cuid())
+  content       String
+  timestamp     Int?      // timestamp in audio (seconds)
+  isImportant   Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessionId     String
+  session       Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+}
+
+model LoginHistory {
+  id            String    @id @default(cuid())
+  ipAddress     String?
+  userAgent     String?
+  success       Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model SystemSetting {
+  id            String    @id @default(cuid())
+  key           String    @unique // "openai_api_key" | "anthropic_api_key" | "llm_provider"
+  value         String
+  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+}
+
+model HearingReport {
+  id              String    @id @default(cuid())
+  hearingDate     DateTime  // Date de l'audience
+  jurisdiction    String    // Tribunal / Juridiction
+  chamber         String?   // Chambre
+  caseReference   String    // Référence du dossier
+  clientName      String    // Nom du client
+  opponent        String?   // Partie adverse
+  lawyerName      String?   // Avocat en charge
+  outcome         String    // Compte rendu / résultat de l'audience
+  nextHearingDate DateTime? // Prochaine date d'audience
+  tasks           String?   // JSON array: tâches à effectuer avant la prochaine audience
+  notes           String?   // Notes additionnelles
+  status          String    @default("active") // "active" | "archived"
+  source          String    @default("manual") // "manual" | "whatsapp"
+  whatsappMessageId String? // ID du message WhatsApp d'origine
+  whatsappSender    String? // Numéro/nom de l'expéditeur WhatsApp
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([hearingDate])
+  @@index([nextHearingDate])
+  @@index([caseReference])
+  @@index([createdAt])
+  @@index([source])
+}
+
+model WeeklyRole {
+  id              String    @id @default(cuid())
+  weekStart       DateTime  // Lundi de la semaine
+  weekEnd         DateTime  // Dimanche de la semaine
+  title           String    // Ex: "Rôle d'audience — Semaine du 17 au 23 février 2026"
+  entries         String    // JSON array of role entries
+  notes           String?   // Notes de la semaine
+  status          String    @default("draft") // "draft" | "published" | "archived"
+  generatedAt     DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([weekStart, userId])
+  @@index([userId])
+  @@index([weekStart])
+  @@index([status])
+}
+
+model AuditLog {
+  id            String    @id @default(cuid())
+  action        String    // "login" | "logout" | "create_session" | "upload_audio" | "transcribe" | "generate_report" | "export_pdf" | "update_report" | "delete_report" | "delete_session" | "update_profile" | "change_password" | "admin_block_user" | "admin_unblock_user" | "admin_delete_user" | "admin_edit_user" | "admin_change_role" | "admin_update_key" | "register"
+  entity        String?   // "session" | "report" | "user" | "settings"
+  entityId      String?
+  details       String?   // JSON extra info
+  ipAddress     String?
+  userAgent     String?
+  createdAt     DateTime  @default(now())
+
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}

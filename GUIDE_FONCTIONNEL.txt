@@ -1,0 +1,320 @@
+================================================================================
+        HOK REPORTS — GUIDE FONCTIONNEL COMPLET
+        Cabinet HOK — Cotonou, République du Bénin
+        Version 1.0 — Février 2026
+================================================================================
+
+TABLE DES MATIÈRES
+──────────────────
+1. Présentation générale
+2. Accès et identifiants
+3. Tableau de bord
+4. Sessions d'enregistrement
+5. Enregistrement flash
+6. Rapports
+7. Rôles d'audience et intégration WhatsApp
+8. Administration
+9. Paramètres
+10. Documentation interne
+11. Profil utilisateur
+
+
+================================================================================
+1. PRÉSENTATION GÉNÉRALE
+================================================================================
+
+HOK Reports est la plateforme de gestion documentaire interne du Cabinet HOK.
+Elle permet aux avocats et collaborateurs de :
+
+  • Enregistrer des sessions de consultation (audio)
+  • Transcrire automatiquement les enregistrements (via Whisper AI)
+  • Générer des rapports juridiques professionnels (via GPT-4o ou Claude)
+  • Gérer les comptes rendus d'audience et les rôles hebdomadaires
+  • Recevoir automatiquement les comptes rendus depuis WhatsApp
+  • Suivre l'activité du cabinet via un tableau de bord
+
+La plateforme est disponible en français et en anglais.
+
+
+================================================================================
+2. ACCÈS ET IDENTIFIANTS
+================================================================================
+
+  URL de la plateforme :     http://localhost:3000 (développement)
+                             (en production : votre domaine)
+
+  ┌─────────────────────────────────────────────────────────────┐
+  │  COMPTE ADMINISTRATEUR                                      │
+  │  Email    : admin@hokreports.com                            │
+  │  Mot de passe : Admin123#                                   │
+  │  Rôle     : Administrateur (accès complet)                  │
+  ├─────────────────────────────────────────────────────────────┤
+  │  COMPTE UTILISATEUR                                         │
+  │  Email    : user1@hokreports.com                            │
+  │  Mot de passe : User123#                                    │
+  │  Rôle     : Utilisateur (accès standard)                    │
+  ├─────────────────────────────────────────────────────────────┤
+  │  PAGE DOCUMENTATION INTERNE                                 │
+  │  URL      : /platform-docs                                  │
+  │  Mot de passe : HokDocs2026#                                │
+  └─────────────────────────────────────────────────────────────┘
+
+  Connexion Google OAuth : disponible si configurée par l'administrateur.
+
+
+================================================================================
+3. TABLEAU DE BORD
+================================================================================
+
+Le tableau de bord est la page d'accueil après connexion. Il affiche :
+
+  • Nombre total de sessions enregistrées
+  • Nombre total de rapports générés
+  • Activité récente (dernières sessions et rapports)
+  • Statistiques d'utilisation
+
+C'est un résumé rapide de l'état du cabinet pour le jour.
+
+
+================================================================================
+4. SESSIONS D'ENREGISTREMENT
+================================================================================
+
+Une session représente un enregistrement audio d'une consultation ou réunion.
+
+  CRÉER UNE SESSION :
+  1. Cliquer sur "Nouvelle session" dans le menu
+  2. Renseigner : titre, nom du client, email/téléphone (optionnel),
+     référence dossier, description
+  3. Enregistrer l'audio directement dans le navigateur (bouton micro)
+  4. L'audio est automatiquement sauvegardé
+
+  TRANSCRIRE UNE SESSION :
+  1. Ouvrir une session existante
+  2. Cliquer sur "Transcrire"
+  3. L'IA (Whisper) convertit l'audio en texte
+  4. La transcription apparaît avec segments horodatés
+
+  GÉNÉRER UN RAPPORT :
+  1. Après transcription, cliquer sur "Générer le rapport"
+  2. Choisir le format : Synthèse / Standard / Détaillé
+  3. L'IA (GPT-4o ou Claude) analyse et produit un rapport structuré
+  4. Le rapport contient : résumé, points clés, actions, notes juridiques
+
+  Les rapports sont rédigés dans un style juridique professionnel adapté
+  au droit béninois et OHADA.
+
+
+================================================================================
+5. ENREGISTREMENT FLASH
+================================================================================
+
+L'enregistrement flash permet de capturer rapidement une note vocale
+sans créer une session complète.
+
+  1. Cliquer sur "Enregistrement flash" dans le menu
+  2. Enregistrer le message vocal
+  3. L'IA transcrit et extrait automatiquement :
+     - Le nom du client mentionné
+     - La référence du dossier
+     - La catégorie (consultation, audience, réunion...)
+     - Un titre et une description
+
+  Idéal pour les notes rapides entre deux rendez-vous.
+
+
+================================================================================
+6. RAPPORTS
+================================================================================
+
+La section Rapports liste tous les rapports générés à partir des sessions.
+
+  FONCTIONNALITÉS :
+  • Consulter un rapport complet (résumé, points clés, actions, notes)
+  • Filtrer par catégorie (consultation, audience, réunion, etc.)
+  • Rechercher par nom de client ou référence
+  • Exporter en PDF
+  • Modifier le statut (brouillon → final → archivé)
+
+  Chaque rapport est lié à une session d'origine et à un utilisateur.
+
+
+================================================================================
+7. RÔLES D'AUDIENCE ET INTÉGRATION WHATSAPP
+================================================================================
+
+  QU'EST-CE QU'UN RÔLE D'AUDIENCE ?
+  ──────────────────────────────────
+  Un rôle d'audience est un tableau récapitulatif hebdomadaire qui fait
+  le point des dossiers prévus pour être évoqués et des tâches attendues
+  pour la semaine à venir.
+
+  COMMENT ÇA FONCTIONNE ?
+  ────────────────────────
+  Le processus est entièrement automatisé :
+
+  1. RÉCEPTION DES COMPTES RENDUS
+     Au retour de chaque audience, l'avocat poste son compte rendu dans
+     le groupe WhatsApp du cabinet — exactement comme il le fait déjà
+     aujourd'hui. Il peut écrire librement, sans format imposé.
+
+     L'application est connectée au groupe WhatsApp via l'API WhatsApp
+     Cloud (Meta). Chaque message est automatiquement reçu et analysé.
+
+  2. DÉTECTION INTELLIGENTE PAR IA
+     L'IA (GPT-4o ou Claude) analyse chaque message WhatsApp entrant.
+     Elle détecte automatiquement si le message parle d'une audience,
+     d'un dossier, d'un renvoi, etc. — même si le message est écrit
+     de manière informelle ou en langage courant.
+
+     Pas besoin de format particulier. L'avocat écrit comme d'habitude.
+
+  3. EXTRACTION AUTOMATIQUE DES DONNÉES
+     Quand un compte rendu d'audience est détecté, l'IA extrait :
+     • La date de l'audience
+     • Le nom du client et de la partie adverse
+     • La référence du dossier (RG, numéro...)
+     • La juridiction et la chambre
+     • Le nom de l'avocat
+     • Un résumé professionnel et détaillé de l'audience
+     • La date de la prochaine audience (si renvoi)
+     • Les tâches à effectuer avant la prochaine audience
+     • Des notes et observations juridiques
+
+  4. GÉNÉRATION AUTOMATIQUE DU RÔLE HEBDOMADAIRE
+     Le rôle de chaque semaine est calculé automatiquement en regroupant
+     tous les comptes rendus dont la prochaine audience tombe dans cette
+     semaine. Le tableau affiche :
+
+     ┌──────────┬──────────────┬──────────────┬─────────┬───────────┬──────────┐
+     │ Date     │ Dossier      │ Juridiction  │ Avocat  │ Résumé    │ Tâches   │
+     ├──────────┼──────────────┼──────────────┼─────────┼───────────┼──────────┤
+     │ lun. 24  │ Dupont c/    │ TPI Cotonou  │ Me      │ Le tribu- │ Préparer │
+     │ févr.    │ SCI Immo     │ 1ère Ch.     │ Kossou  │ nal a...  │ concl... │
+     └──────────┴──────────────┴──────────────┴─────────┴───────────┴──────────┘
+
+     On peut naviguer de semaine en semaine avec les flèches ◀ ▶.
+
+  5. SAISIE MANUELLE AUSSI POSSIBLE
+     En complément de WhatsApp, un formulaire de saisie rapide est
+     disponible directement sur la page Rôles pour entrer manuellement
+     un compte rendu.
+
+  IDENTIFICATION DES SOURCES
+  ──────────────────────────
+  Les comptes rendus reçus via WhatsApp sont identifiés par un badge
+  vert "WhatsApp" dans la liste. Les saisies manuelles n'ont pas de badge.
+  Le nom de l'expéditeur WhatsApp est aussi affiché.
+
+  CONFIGURATION WHATSAPP (Administrateur)
+  ───────────────────────────────────────
+  Voir la section Paramètres ci-dessous.
+
+
+================================================================================
+8. ADMINISTRATION (Administrateur uniquement)
+================================================================================
+
+Accessible depuis le menu "Administration" (réservé aux administrateurs).
+
+  GESTION DES UTILISATEURS :
+  • Voir la liste de tous les utilisateurs inscrits
+  • Approuver ou rejeter les demandes d'inscription (statut "en attente")
+  • Bloquer / débloquer un utilisateur
+  • Changer le rôle d'un utilisateur (utilisateur → administrateur)
+  • Supprimer un compte utilisateur
+
+  MOTEUR LLM :
+  • Configurer la clé API OpenAI (pour transcription et rapports)
+  • Vérifier le statut de configuration du moteur
+  • Le moteur utilise Whisper pour la transcription et GPT-4o pour
+    la génération de rapports et l'analyse des messages WhatsApp
+
+  JOURNAL D'AUDIT :
+  • Toutes les actions importantes sont tracées (connexions, créations,
+    modifications, suppressions)
+  • Consultable par l'administrateur
+
+  STATISTIQUES :
+  • Nombre de sessions, rapports, utilisateurs
+  • Activité récente du cabinet
+
+
+================================================================================
+9. PARAMÈTRES
+================================================================================
+
+  LANGUE :
+  • Français (par défaut) ou Anglais
+  • Le changement est immédiat et sauvegardé localement
+
+  INTÉGRATION WHATSAPP :
+  La section WhatsApp dans les paramètres affiche :
+
+  • Statut de connexion (Connecté / Non configuré)
+  • URL du Webhook (à copier dans la console Meta)
+  • Token de vérification (à copier dans la console Meta)
+  • Statut de l'Access Token et du Phone Number ID
+  • Format de message exemple pour les avocats
+  • Simulateur de test (pour envoyer un faux message WhatsApp)
+
+  POUR CONFIGURER WHATSAPP :
+  1. Créer une application sur developers.facebook.com
+  2. Activer l'API WhatsApp Business
+  3. Dans la configuration du webhook de l'app Meta :
+     - URL du webhook : [votre-domaine]/api/whatsapp/webhook
+     - Token de vérification : hok-whatsapp-verify-2026
+  4. Copier l'Access Token permanent et le Phone Number ID
+  5. Les ajouter dans le fichier .env du serveur :
+     WHATSAPP_ACCESS_TOKEN=votre_token
+     WHATSAPP_PHONE_NUMBER_ID=votre_id
+  6. S'abonner au champ webhook "messages"
+
+  INFORMATIONS SYSTÈME :
+  • Version de la plateforme
+  • Éditeur (Cabinet HOK)
+  • Moteur de traitement
+
+
+================================================================================
+10. DOCUMENTATION INTERNE
+================================================================================
+
+  URL : /platform-docs (ou via le menu "Documentation")
+  Mot de passe : HokDocs2026#
+
+  Cette page donne accès à la documentation technique et fonctionnelle
+  complète de la plateforme, protégée par mot de passe.
+  
+  Un lien direct vers la documentation est aussi disponible depuis
+  la page /documentation dans le menu latéral.
+
+
+================================================================================
+11. PROFIL UTILISATEUR
+================================================================================
+
+  Chaque utilisateur peut :
+  • Modifier son nom et son avatar
+  • Changer son mot de passe
+  • Voir son historique de connexion
+  • Consulter ses informations de compte
+
+
+================================================================================
+  RÉSUMÉ DES ACCÈS
+================================================================================
+
+  ┌───────────────────────┬────────────────────────────┬──────────────┐
+  │ Ressource             │ Identifiant                │ Mot de passe │
+  ├───────────────────────┼────────────────────────────┼──────────────┤
+  │ Admin                 │ admin@hokreports.com       │ Admin123#    │
+  │ Utilisateur           │ user1@hokreports.com       │ User123#     │
+  │ Documentation         │ (page /platform-docs)      │ HokDocs2026# │
+  │ WhatsApp Verify Token │ (webhook Meta)             │ hok-whatsapp-│
+  │                       │                            │ verify-2026  │
+  └───────────────────────┴────────────────────────────┴──────────────┘
+
+================================================================================
+  FIN DU GUIDE
+================================================================================

@@ -22,6 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any) {
+        try {
         if (!credentials?.email || !credentials?.password) return null;
 
         const email = (credentials.email as string).toLowerCase().trim();
@@ -32,15 +33,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { email },
         });
 
-        if (!user || !user.password) return null;
-        if (user.blocked || user.status !== "active") return null;
+        if (!user || !user.password) {
+          console.error("[AUTH] User not found or no password for:", email);
+          return null;
+        }
+        if (user.blocked || user.status !== "active") {
+          console.error("[AUTH] User blocked or not active:", email, user.status, user.blocked);
+          return null;
+        }
 
         const isValid = await bcrypt.compare(
           credentials.password as string,
           user.password
         );
 
-        if (!isValid) return null;
+        if (!isValid) {
+          console.error("[AUTH] Invalid password for:", email);
+          return null;
+        }
 
         await prisma.user.update({
           where: { id: user.id },
@@ -56,6 +66,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           role: user.role,
           image: user.avatar,
         };
+        } catch (error) {
+          console.error("[AUTH] authorize error:", error);
+          return null;
+        }
       },
     }),
   ],

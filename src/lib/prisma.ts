@@ -9,7 +9,7 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined,
 });
 
-const adapter = new PrismaPg({ pool });
+const adapter = new PrismaPg(pool);
 
 const prisma = globalForPrisma.prisma || new PrismaClient({ adapter });
 

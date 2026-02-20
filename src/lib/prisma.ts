@@ -11,7 +11,7 @@ const pool = new Pool({
   host: dbUrl.hostname,
   port: parseInt(dbUrl.port || "5432"),
   database: dbUrl.pathname.slice(1),
-  ssl: { rejectUnauthorized: false },
+  ssl: { rejectUnauthorized: false, servername: dbUrl.hostname },
 });
 
 const adapter = new PrismaPg(pool);

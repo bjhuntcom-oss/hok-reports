@@ -1,77 +1,83 @@
 import { NextResponse } from "next/server";
 import { Pool } from "pg";
+import dns from "dns";
 
-export async function GET() {
-  const diagnostics: Record<string, unknown> = {
-    timestamp: new Date().toISOString(),
-    nodeEnv: process.env.NODE_ENV,
-  };
-
-  // 1. Check DATABASE_URL format (masked)
-  const rawUrl = process.env.DATABASE_URL;
-  if (!rawUrl) {
-    return NextResponse.json({ ok: false, error: "DATABASE_URL is not set", diagnostics });
-  }
-
+async function testPoolConnection(label: string, config: Record<string, unknown>) {
   try {
-    const url = new URL(rawUrl);
-    diagnostics.dbUrlParsed = {
-      protocol: url.protocol,
-      username: url.username.substring(0, 10) + "...",
-      host: url.hostname,
-      port: url.port,
-      database: url.pathname,
-      searchParams: url.search,
-    };
-  } catch (e: any) {
-    diagnostics.dbUrlParseError = e.message;
-  }
-
-  // 2. Test raw pg Pool connection (bypass Prisma entirely)
-  try {
-    const url = new URL(rawUrl);
-    const pool = new Pool({
-      user: decodeURIComponent(url.username),
-      password: decodeURIComponent(url.password),
-      host: url.hostname,
-      port: parseInt(url.port || "5432"),
-      database: url.pathname.slice(1),
-      ssl: { rejectUnauthorized: false },
-      connectionTimeoutMillis: 10000,
-    });
-
+    const pool = new Pool({ ...config, connectionTimeoutMillis: 10000 } as any);
     const client = await pool.connect();
-    const result = await client.query("SELECT current_user, current_database(), version()");
+    const result = await client.query("SELECT current_user, current_database(), inet_server_addr()");
     client.release();
     await pool.end();
-
-    diagnostics.rawPgConnection = {
+    return {
+      label,
       ok: true,
       currentUser: result.rows[0].current_user,
       currentDatabase: result.rows[0].current_database,
-      version: result.rows[0].version?.substring(0, 80),
+      serverAddr: result.rows[0].inet_server_addr,
     };
   } catch (e: any) {
-    diagnostics.rawPgConnection = {
-      ok: false,
-      error: e.message,
-      code: e.code,
-    };
+    return { label, ok: false, error: e.message, code: e.code };
+  }
+}
+
+export async function GET() {
+  const rawUrl = process.env.DATABASE_URL;
+  if (!rawUrl) {
+    return NextResponse.json({ ok: false, error: "DATABASE_URL is not set" });
   }
 
-  // 3. Test Prisma connection
+  const url = new URL(rawUrl);
+  const diagnostics: Record<string, unknown> = {
+    timestamp: new Date().toISOString(),
+    nodeEnv: process.env.NODE_ENV,
+    dbHost: url.hostname,
+    dbPort: url.port,
+    dbUser: url.username.substring(0, 15) + "...",
+  };
+
+  // 1. DNS resolution check
   try {
-    const prisma = (await import("@/lib/prisma")).default;
-    const count = await prisma.user.count();
-    diagnostics.prismaConnection = { ok: true, userCount: count };
+    const addresses = await dns.promises.resolve(url.hostname);
+    const addresses6 = await dns.promises.resolve6(url.hostname).catch(() => []);
+    diagnostics.dns = { ipv4: addresses, ipv6: addresses6 };
   } catch (e: any) {
-    diagnostics.prismaConnection = {
-      ok: false,
-      error: e.message,
-      stack: e.stack?.substring(0, 300),
-    };
+    diagnostics.dns = { error: e.message };
   }
 
-  const allOk = (diagnostics.rawPgConnection as any)?.ok && (diagnostics.prismaConnection as any)?.ok;
-  return NextResponse.json({ ok: allOk, diagnostics }, { status: allOk ? 200 : 500 });
+  const user = decodeURIComponent(url.username);
+  const password = decodeURIComponent(url.password);
+  const host = url.hostname;
+  const port = parseInt(url.port || "5432");
+  const database = url.pathname.slice(1);
+
+  // 2. Test A: connectionString direct to Pool
+  const testA = await testPoolConnection("connectionString_direct", {
+    connectionString: rawUrl,
+    ssl: { rejectUnauthorized: false },
+  });
+
+  // 3. Test B: explicit params + SSL with servername
+  const testB = await testPoolConnection("explicit_with_servername", {
+    user, password, host, port, database,
+    ssl: { rejectUnauthorized: false, servername: host },
+  });
+
+  // 4. Test C: explicit params + ssl=true
+  const testC = await testPoolConnection("explicit_ssl_true", {
+    user, password, host, port, database,
+    ssl: true,
+  });
+
+  // 5. Test D: connectionString with sslmode param
+  const urlWithSsl = rawUrl.includes("?") ? rawUrl + "&sslmode=require" : rawUrl + "?sslmode=require";
+  const testD = await testPoolConnection("connectionString_sslmode", {
+    connectionString: urlWithSsl,
+    ssl: { rejectUnauthorized: false },
+  });
+
+  diagnostics.tests = [testA, testB, testC, testD];
+
+  const anyOk = [testA, testB, testC, testD].some(t => t.ok);
+  return NextResponse.json({ ok: anyOk, diagnostics }, { status: anyOk ? 200 : 500 });
 }

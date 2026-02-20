@@ -716,6 +716,7 @@ export type HearingReportCreateOrConnectWithoutUserInput = {
 
 export type HearingReportCreateManyUserInputEnvelope = {
   data: Prisma.HearingReportCreateManyUserInput | Prisma.HearingReportCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type HearingReportUpsertWithWhereUniqueWithoutUserInput = {
@@ -1644,6 +1645,7 @@ export type HearingReportCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many HearingReports.
    */
   data: Prisma.HearingReportCreateManyInput | Prisma.HearingReportCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1662,6 +1664,7 @@ export type HearingReportCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many HearingReports.
    */
   data: Prisma.HearingReportCreateManyInput | Prisma.HearingReportCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

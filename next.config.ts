@@ -29,6 +29,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  outputFileTracingIncludes: {
+    "/api/docs": ["./docs/**/*"],
+  },
   async headers() {
     return [
       {

@@ -1253,6 +1253,7 @@ export type TranscriptionCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many Transcriptions.
    */
   data: Prisma.TranscriptionCreateManyInput | Prisma.TranscriptionCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1271,6 +1272,7 @@ export type TranscriptionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many Transcriptions.
    */
   data: Prisma.TranscriptionCreateManyInput | Prisma.TranscriptionCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

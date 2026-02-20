@@ -404,6 +404,7 @@ export type LoginHistoryCreateOrConnectWithoutUserInput = {
 
 export type LoginHistoryCreateManyUserInputEnvelope = {
   data: Prisma.LoginHistoryCreateManyUserInput | Prisma.LoginHistoryCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type LoginHistoryUpsertWithWhereUniqueWithoutUserInput = {
@@ -1189,6 +1190,7 @@ export type LoginHistoryCreateManyArgs<ExtArgs extends runtime.Types.Extensions.
    * The data used to create many LoginHistories.
    */
   data: Prisma.LoginHistoryCreateManyInput | Prisma.LoginHistoryCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1207,6 +1209,7 @@ export type LoginHistoryCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    * The data used to create many LoginHistories.
    */
   data: Prisma.LoginHistoryCreateManyInput | Prisma.LoginHistoryCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

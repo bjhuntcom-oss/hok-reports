@@ -640,6 +640,7 @@ export type ReportCreateOrConnectWithoutUserInput = {
 
 export type ReportCreateManyUserInputEnvelope = {
   data: Prisma.ReportCreateManyUserInput | Prisma.ReportCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type ReportUpsertWithWhereUniqueWithoutUserInput = {
@@ -717,6 +718,7 @@ export type ReportCreateOrConnectWithoutSessionInput = {
 
 export type ReportCreateManySessionInputEnvelope = {
   data: Prisma.ReportCreateManySessionInput | Prisma.ReportCreateManySessionInput[]
+  skipDuplicates?: boolean
 }
 
 export type ReportUpsertWithWhereUniqueWithoutSessionInput = {
@@ -1642,6 +1644,7 @@ export type ReportCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * The data used to create many Reports.
    */
   data: Prisma.ReportCreateManyInput | Prisma.ReportCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1660,6 +1663,7 @@ export type ReportCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    * The data used to create many Reports.
    */
   data: Prisma.ReportCreateManyInput | Prisma.ReportCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

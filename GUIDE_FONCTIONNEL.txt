@@ -1,7 +1,7 @@
 ================================================================================
         HOK REPORTS — GUIDE FONCTIONNEL COMPLET
         Cabinet HOK — Cotonou, République du Bénin
-        Version 1.0 — Février 2026
+        Version 1.2 — Février 2026
 ================================================================================
 
 TABLE DES MATIÈRES
@@ -12,11 +12,12 @@ TABLE DES MATIÈRES
 4. Sessions d'enregistrement
 5. Enregistrement flash
 6. Rapports
-7. Rôles d'audience et intégration WhatsApp
+7. Rôles d'audience et intégration WhatsApp + IA
 8. Administration
 9. Paramètres
 10. Documentation interne
 11. Profil utilisateur
+12. Hébergement et déploiement
 
 
 ================================================================================
@@ -31,9 +32,13 @@ Elle permet aux avocats et collaborateurs de :
   • Générer des rapports juridiques professionnels (via GPT-4o ou Claude)
   • Gérer les comptes rendus d'audience et les rôles hebdomadaires
   • Recevoir automatiquement les comptes rendus depuis WhatsApp
+  • Analyser les messages WhatsApp avec l'IA (GPT-4o / Claude)
   • Suivre l'activité du cabinet via un tableau de bord
 
 La plateforme est disponible en français et en anglais.
+
+  Code source : https://github.com/bjhuntcom-oss/hok-reports
+  Hébergement : Vercel (application) + Supabase (base de données PostgreSQL)
 
 
 ================================================================================
@@ -41,7 +46,8 @@ La plateforme est disponible en français et en anglais.
 ================================================================================
 
   URL de la plateforme :     http://localhost:3000 (développement)
-                             (en production : votre domaine)
+                             https://hok-reports.vercel.app (production)
+                             (ou votre domaine personnalisé)
 
   ┌─────────────────────────────────────────────────────────────┐
   │  COMPTE ADMINISTRATEUR                                      │
@@ -140,7 +146,7 @@ La section Rapports liste tous les rapports générés à partir des sessions.
 
 
 ================================================================================
-7. RÔLES D'AUDIENCE ET INTÉGRATION WHATSAPP
+7. RÔLES D'AUDIENCE ET INTÉGRATION WHATSAPP + IA
 ================================================================================
 
   QU'EST-CE QU'UN RÔLE D'AUDIENCE ?
@@ -169,6 +175,12 @@ La section Rapports liste tous les rapports générés à partir des sessions.
 
      Pas besoin de format particulier. L'avocat écrit comme d'habitude.
 
+     Le système utilise un score de confiance (0 à 1). Un message est
+     considéré comme un compte rendu d'audience si le score dépasse 0.6.
+
+     Si l'IA n'est pas disponible (pas de clé API), un système de
+     détection par mots-clés prend le relais automatiquement.
+
   3. EXTRACTION AUTOMATIQUE DES DONNÉES
      Quand un compte rendu d'audience est détecté, l'IA extrait :
      • La date de l'audience
@@ -180,6 +192,15 @@ La section Rapports liste tous les rapports générés à partir des sessions.
      • La date de la prochaine audience (si renvoi)
      • Les tâches à effectuer avant la prochaine audience
      • Des notes et observations juridiques
+
+     Le résumé généré est professionnel et détaillé, rédigé dans un
+     style juridique formel adapté au droit béninois et OHADA.
+     L'IA déduit aussi les tâches actionnables à accomplir avant la
+     prochaine audience (conclusions à rédiger, pièces à rassembler...).
+
+     Deux moteurs IA sont supportés :
+     • GPT-4o (OpenAI) — recommandé pour sa précision
+     • Claude (Anthropic) — alternative performante
 
   4. GÉNÉRATION AUTOMATIQUE DU RÔLE HEBDOMADAIRE
      Le rôle de chaque semaine est calculé automatiquement en regroupant
@@ -316,5 +337,37 @@ Accessible depuis le menu "Administration" (réservé aux administrateurs).
   └───────────────────────┴────────────────────────────┴──────────────┘
 
 ================================================================================
-  FIN DU GUIDE
+12. HÉBERGEMENT ET DÉPLOIEMENT
+================================================================================
+
+  ARCHITECTURE :
+  • Application Next.js → hébergée sur Vercel (serverless)
+  • Base de données PostgreSQL → hébergée sur Supabase (cloud)
+  • Code source → GitHub : https://github.com/bjhuntcom-oss/hok-reports
+
+  SUPABASE (Base de données) :
+  • Projet : hok-reports
+  • Région : eu-west-3 (Paris)
+  • ID projet : alrirvvzdnykclobajkd
+  • URL API : https://alrirvvzdnykclobajkd.supabase.co
+  • Dashboard : https://supabase.com/dashboard/project/alrirvvzdnykclobajkd
+
+  VERCEL (Application) :
+  • Déploiement automatique depuis GitHub (branche main)
+  • Variables d'environnement configurées dans Vercel Dashboard
+  • Domaine : hok-reports.vercel.app (ou domaine personnalisé)
+
+  VARIABLES D'ENVIRONNEMENT REQUISES (Vercel) :
+  • DATABASE_URL — URL de connexion Supabase (pooler, port 6543)
+  • AUTH_SECRET — Secret pour NextAuth
+  • NEXTAUTH_URL — URL publique de l'application
+  • OPENAI_API_KEY — Clé API OpenAI (transcription + IA)
+  • ANTHROPIC_API_KEY — Clé API Anthropic (optionnel)
+  • WHATSAPP_ACCESS_TOKEN — Token WhatsApp Cloud API
+  • WHATSAPP_PHONE_NUMBER_ID — ID du numéro WhatsApp
+  • WHATSAPP_VERIFY_TOKEN — Token de vérification webhook
+
+
+================================================================================
+  FIN DU GUIDE — v1.2
 ================================================================================

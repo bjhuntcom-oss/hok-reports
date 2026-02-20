@@ -983,6 +983,7 @@ export type SystemSettingCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many SystemSettings.
    */
   data: Prisma.SystemSettingCreateManyInput | Prisma.SystemSettingCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1001,6 +1002,7 @@ export type SystemSettingCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many SystemSettings.
    */
   data: Prisma.SystemSettingCreateManyInput | Prisma.SystemSettingCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

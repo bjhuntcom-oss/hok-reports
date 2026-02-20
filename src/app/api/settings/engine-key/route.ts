@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { writeFileSync, readFileSync } from "fs";
-import { join } from "path";
+import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
@@ -15,21 +14,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Format de clé invalide" }, { status: 400 });
     }
 
-    const envPath = join(process.cwd(), ".env");
-    let envContent = "";
-    try {
-      envContent = readFileSync(envPath, "utf-8");
-    } catch {
-      envContent = "";
-    }
+    // Store in database instead of .env file (Vercel compatible)
+    await prisma.systemSetting.upsert({
+      where: { key: "openai_api_key" },
+      update: { value: key },
+      create: { key: "openai_api_key", value: key },
+    });
 
-    if (envContent.includes("OPENAI_API_KEY=")) {
-      envContent = envContent.replace(/OPENAI_API_KEY=.*/, `OPENAI_API_KEY=${key}`);
-    } else {
-      envContent += `\nOPENAI_API_KEY=${key}`;
-    }
-
-    writeFileSync(envPath, envContent, "utf-8");
+    // Also update process.env for current runtime
     process.env.OPENAI_API_KEY = key;
 
     return NextResponse.json({ success: true });

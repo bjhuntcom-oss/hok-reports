@@ -530,6 +530,7 @@ export type WeeklyRoleCreateOrConnectWithoutUserInput = {
 
 export type WeeklyRoleCreateManyUserInputEnvelope = {
   data: Prisma.WeeklyRoleCreateManyUserInput | Prisma.WeeklyRoleCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type WeeklyRoleUpsertWithWhereUniqueWithoutUserInput = {
@@ -1370,6 +1371,7 @@ export type WeeklyRoleCreateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * The data used to create many WeeklyRoles.
    */
   data: Prisma.WeeklyRoleCreateManyInput | Prisma.WeeklyRoleCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1388,6 +1390,7 @@ export type WeeklyRoleCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    * The data used to create many WeeklyRoles.
    */
   data: Prisma.WeeklyRoleCreateManyInput | Prisma.WeeklyRoleCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

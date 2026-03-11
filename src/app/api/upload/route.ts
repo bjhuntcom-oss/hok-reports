@@ -52,15 +52,15 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "audio");
+    const uploadDir = path.join(process.cwd(), "data", "audio");
     await mkdir(uploadDir, { recursive: true });
 
-    const safeExt = path.extname(file.name).replace(/[^a-zA-Z0-9.]/g, "").slice(0, 10);
+    const safeExt = path.extname(file.name).replace(/[^a-zA-Z0-9.]/g, "").slice(0, 10) || ".webm";
     const fileName = `${sessionId}-${Date.now()}${safeExt}`;
     const filePath = path.join(uploadDir, fileName);
     await writeFile(filePath, buffer);
 
-    const audioUrl = `/uploads/audio/${fileName}`;
+    const audioUrl = `/api/audio/${fileName}`;
 
     await prisma.session.update({
       where: { id: sessionId },

@@ -43,11 +43,30 @@ export async function POST(req: NextRequest) {
     // Step 1: Transcribe audio if not already done
     let transcriptionText = sessionData.transcription?.content;
     if (!transcriptionText && sessionData.audioUrl) {
-      if (!sessionData.audioUrl.startsWith("/uploads/audio/") || sessionData.audioUrl.includes("..")) {
+      // Extract filename from audioUrl (supports both /api/audio/ and legacy /uploads/audio/)
+      let audioFileName: string | null = null;
+      if (sessionData.audioUrl.startsWith("/api/audio/")) {
+        audioFileName = sessionData.audioUrl.replace("/api/audio/", "");
+      } else if (sessionData.audioUrl.startsWith("/uploads/audio/")) {
+        audioFileName = sessionData.audioUrl.replace("/uploads/audio/", "");
+      }
+      if (!audioFileName || audioFileName.includes("..") || audioFileName.includes("/")) {
         return NextResponse.json({ error: "Chemin audio invalide" }, { status: 400 });
       }
-      const audioPath = path.join(process.cwd(), "public", sessionData.audioUrl);
-      const audioBuffer = Buffer.from(await readFile(audioPath));
+
+      // Try new location first (data/audio/), then legacy (public/uploads/audio/)
+      let audioBuffer: Buffer;
+      const newPath = path.join(process.cwd(), "data", "audio", audioFileName);
+      const legacyPath = path.join(process.cwd(), "public", "uploads", "audio", audioFileName);
+      try {
+        audioBuffer = Buffer.from(await readFile(newPath));
+      } catch {
+        try {
+          audioBuffer = Buffer.from(await readFile(legacyPath));
+        } catch {
+          return NextResponse.json({ error: "Fichier audio introuvable sur le serveur" }, { status: 404 });
+        }
+      }
       const result = await transcribeAudio(audioBuffer, sessionData.language || "fr");
       transcriptionText = result.text;
 

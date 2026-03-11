@@ -39,11 +39,30 @@ export async function POST(req: NextRequest) {
 
     await prisma.session.update({ where: { id: sessionId }, data: { status: "transcribing" } });
 
-    if (!sessionData.audioUrl.startsWith("/uploads/audio/") || sessionData.audioUrl.includes("..")) {
+    // Extract filename from audioUrl (supports both old /uploads/audio/ and new /api/audio/ paths)
+    let audioFileName: string | null = null;
+    if (sessionData.audioUrl.startsWith("/api/audio/")) {
+      audioFileName = sessionData.audioUrl.replace("/api/audio/", "");
+    } else if (sessionData.audioUrl.startsWith("/uploads/audio/")) {
+      audioFileName = sessionData.audioUrl.replace("/uploads/audio/", "");
+    }
+    if (!audioFileName || audioFileName.includes("..") || audioFileName.includes("/")) {
       return NextResponse.json({ error: "Chemin audio invalide" }, { status: 400 });
     }
-    const audioPath = path.join(process.cwd(), "public", sessionData.audioUrl);
-    const audioBuffer = await readFile(audioPath);
+
+    // Try new location first (data/audio/), then legacy (public/uploads/audio/)
+    let audioBuffer: Buffer;
+    const newPath = path.join(process.cwd(), "data", "audio", audioFileName);
+    const legacyPath = path.join(process.cwd(), "public", "uploads", "audio", audioFileName);
+    try {
+      audioBuffer = await readFile(newPath);
+    } catch {
+      try {
+        audioBuffer = await readFile(legacyPath);
+      } catch {
+        return NextResponse.json({ error: "Fichier audio introuvable sur le serveur" }, { status: 404 });
+      }
+    }
 
     const result = await transcribeAudio(audioBuffer, sessionData.language || "fr");
 

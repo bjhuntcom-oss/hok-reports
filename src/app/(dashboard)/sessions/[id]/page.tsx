@@ -263,27 +263,34 @@ export default function SessionDetailPage() {
       )}
 
       {/* ── AUDIO ── */}
-      {session.audioUrl && (
-        <div className="border border-neutral-200 bg-white p-5">
-          <h3 className="mb-3 flex items-center gap-2 text-[11px] font-bold tracking-[0.15em] text-black uppercase">
-            <Mic size={13} /> {locale === "en" ? "Audio recording" : "Enregistrement audio"}
-          </h3>
-          <audio controls className="w-full" src={session.audioUrl}>
-            {locale === "en" ? "Your browser does not support audio playback." : "Votre navigateur ne prend pas en charge la lecture audio."}
-          </audio>
-          <div className="mt-3 flex gap-2">
-            {!session.transcription && (
-              <button onClick={handleTranscribe} disabled={transcribing} className="flex items-center gap-2 bg-black px-4 py-2 text-[11px] font-semibold tracking-wide text-white uppercase transition-colors hover:bg-neutral-800 disabled:opacity-40">
-                {transcribing ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />}
-                {transcribing ? (locale === "en" ? "Transcribing..." : "Transcription...") : (locale === "en" ? "Transcribe audio" : "Transcrire l'audio")}
-              </button>
-            )}
-            <a href={session.audioUrl} download className="flex items-center gap-2 border border-neutral-200 px-4 py-2 text-[11px] font-medium text-neutral-600 transition-colors hover:bg-neutral-50">
-              <Download size={13} /> {locale === "en" ? "Download" : "Télécharger"}
-            </a>
+      {session.audioUrl && (() => {
+        // Normalize audioUrl: legacy /uploads/audio/X → /api/audio/X
+        const rawUrl = session.audioUrl as string;
+        const audioSrc = rawUrl.startsWith("/uploads/audio/")
+          ? `/api/audio/${rawUrl.replace("/uploads/audio/", "")}`
+          : rawUrl;
+        return (
+          <div className="border border-neutral-200 bg-white p-5">
+            <h3 className="mb-3 flex items-center gap-2 text-[11px] font-bold tracking-[0.15em] text-black uppercase">
+              <Mic size={13} /> {locale === "en" ? "Audio recording" : "Enregistrement audio"}
+            </h3>
+            <audio controls className="w-full" src={audioSrc}>
+              {locale === "en" ? "Your browser does not support audio playback." : "Votre navigateur ne prend pas en charge la lecture audio."}
+            </audio>
+            <div className="mt-3 flex gap-2">
+              {!session.transcription && (
+                <button onClick={handleTranscribe} disabled={transcribing} className="flex items-center gap-2 bg-black px-4 py-2 text-[11px] font-semibold tracking-wide text-white uppercase transition-colors hover:bg-neutral-800 disabled:opacity-40">
+                  {transcribing ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />}
+                  {transcribing ? (locale === "en" ? "Transcribing..." : "Transcription...") : (locale === "en" ? "Transcribe audio" : "Transcrire l'audio")}
+                </button>
+              )}
+              <a href={`${audioSrc}?download=1`} download className="flex items-center gap-2 border border-neutral-200 px-4 py-2 text-[11px] font-medium text-neutral-600 transition-colors hover:bg-neutral-50">
+                <Download size={13} /> {locale === "en" ? "Download" : "Télécharger"}
+              </a>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ── TRANSCRIPTION (with edit) ── */}
       {session.transcription && (

@@ -105,9 +105,27 @@ const PRINT_FIX_CSS = `
       grid-template-columns: 1fr 1fr !important;
       gap: 8px !important;
     }
-    .footer, .highlight, .qa {
+    .footer, .highlight {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
+    }
+    .qa-pair {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .section-header {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .section-number {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+    .section-desc {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
     }
     h2, h3, h4 {
       page-break-after: avoid !important;

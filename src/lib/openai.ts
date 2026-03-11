@@ -1,9 +1,5 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 const groq = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
   baseURL: "https://api.groq.com/openai/v1",
@@ -94,8 +90,8 @@ Produisez une réponse JSON structurée avec :
 
 Retournez UNIQUEMENT du JSON valide, sans markdown.`;
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
     messages: [{ role: "user", content: prompt }],
     temperature: 0.3,
     response_format: { type: "json_object" },
@@ -112,4 +108,4 @@ Retournez UNIQUEMENT du JSON valide, sans markdown.`;
   };
 }
 
-export default openai;
+export default groq;

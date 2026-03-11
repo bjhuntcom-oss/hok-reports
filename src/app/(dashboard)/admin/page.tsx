@@ -31,13 +31,9 @@ export default function AdminPage() {
   const [llmConfig, setLlmConfig] = useState<any>({});
   const [llmSaving, setLlmSaving] = useState(false);
   const [groqKey, setGroqKey] = useState("");
-  const [openaiKey, setOpenaiKey] = useState("");
-  const [anthropicKey, setAnthropicKey] = useState("");
   const [showGroqKey, setShowGroqKey] = useState(false);
-  const [showOpenaiKey, setShowOpenaiKey] = useState(false);
-  const [showAnthropicKey, setShowAnthropicKey] = useState(false);
-  const [testingProvider, setTestingProvider] = useState<string | null>(null);
-  const [testResult, setTestResult] = useState<{ provider: string; success: boolean; warning?: boolean; message: string } | null>(null);
+  const [testingGroq, setTestingGroq] = useState(false);
+  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const [confirmDeleteLlmKey, setConfirmDeleteLlmKey] = useState<string | null>(null);
 
   const loadData = () => {
@@ -126,9 +122,7 @@ export default function AdminPage() {
       if (res.ok) {
         const updated = await fetch("/api/admin/llm").then((r) => r.json());
         setLlmConfig(updated);
-        if (key === "groq_api_key") setGroqKey("");
-        if (key === "openai_api_key") setOpenaiKey("");
-        if (key === "anthropic_api_key") setAnthropicKey("");
+        setGroqKey("");
       }
     } catch {}
     setLlmSaving(false);
@@ -152,38 +146,32 @@ export default function AdminPage() {
     setLlmSaving(false);
   };
 
-  const handleTestKey = async (provider: "openai" | "anthropic" | "groq") => {
-    setTestingProvider(provider);
+  const handleTestKey = async () => {
+    setTestingGroq(true);
     setTestResult(null);
     try {
       const res = await fetch("/api/admin/llm/test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ provider }),
       });
       const data = await res.json();
       let message = t("admin.testFailed", locale);
-      if (data.success && data.warning) {
-        message = t("admin.testWarning", locale);
-      } else if (data.success) {
+      if (data.success) {
         message = t("admin.testSuccess", locale);
       } else if (data.error) {
         message = data.error;
       }
       setTestResult({
-        provider,
         success: data.success,
-        warning: data.warning || false,
         message,
       });
     } catch (err: any) {
       setTestResult({
-        provider,
         success: false,
         message: err?.message || t("admin.testFailed", locale),
       });
     }
-    setTestingProvider(null);
+    setTestingGroq(false);
   };
 
   const startEdit = (user: any) => {
@@ -869,103 +857,75 @@ export default function AdminPage() {
       )}
       {tab === "llm" && (
         <div className="space-y-6">
-          <div className="border border-neutral-200 bg-white p-6">
+          {/* ── GROQ — MOTEUR IA UNIFIÉ ── */}
+          <div className="border-l-4 border-l-blue-500 border border-neutral-200 bg-white p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Key size={14} className="text-neutral-400" />
+                <Key size={14} className="text-blue-500" />
                 <h3 className="text-[11px] font-bold tracking-[0.15em] text-black uppercase">
-                  {t("admin.activeProvider", locale)}
+                  {t("admin.groqKey", locale)}
                 </h3>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className={`h-1.5 w-1.5 ${(llmConfig.openai_configured || llmConfig.anthropic_configured) ? "bg-emerald-500" : "bg-amber-500"}`} />
+                <div className={`h-1.5 w-1.5 rounded-full ${llmConfig.groq_configured ? "bg-emerald-500" : "bg-amber-500"}`} />
                 <span className="text-[10px] font-medium text-neutral-400">
-                  {(llmConfig.openai_configured || llmConfig.anthropic_configured) ? (locale === "en" ? "Operational" : "Opérationnel") : t("admin.configRequired", locale)}
+                  {llmConfig.groq_configured ? (locale === "en" ? "Operational" : "Opérationnel") : t("admin.configRequired", locale)}
                 </span>
               </div>
             </div>
-            <p className="mt-2 text-[12px] text-neutral-400">
-              {t("admin.llmProviderDesc", locale)}
-            </p>
-            <div className="mt-4 flex gap-3">
-              <button
-                onClick={() => handleSaveLlmKey("llm_provider", "openai")}
-                disabled={llmSaving}
-                className={`flex-1 border px-4 py-3 text-center transition-colors ${
-                  (llmConfig.llm_provider || "openai") === "openai"
-                    ? "border-black bg-black text-white"
-                    : "border-neutral-200 text-neutral-500 hover:border-black hover:text-black"
-                }`}
-              >
-                <p className="text-[11px] font-bold uppercase">OpenAI</p>
-                <p className="mt-1 text-[9px] opacity-60">GPT-4o</p>
-              </button>
-              <button
-                onClick={() => handleSaveLlmKey("llm_provider", "anthropic")}
-                disabled={llmSaving}
-                className={`flex-1 border px-4 py-3 text-center transition-colors ${
-                  llmConfig.llm_provider === "anthropic"
-                    ? "border-black bg-black text-white"
-                    : "border-neutral-200 text-neutral-500 hover:border-black hover:text-black"
-                }`}
-              >
-                <p className="text-[11px] font-bold uppercase">Anthropic</p>
-                <p className="mt-1 text-[9px] opacity-60">Claude Sonnet</p>
-              </button>
-            </div>
-          </div>
-
-          {/* ── GROQ TRANSCRIPTION KEY ── */}
-          <div className="border-l-4 border-l-blue-500 border border-neutral-200 bg-white p-6">
-            <p className="mb-3 text-[9px] font-bold tracking-[0.2em] text-blue-600 uppercase">{t("admin.groqSection", locale)}</p>
-            <div className="flex items-center justify-between">
-              <h3 className="text-[11px] font-bold tracking-[0.15em] text-black uppercase">
-                {t("admin.groqKey", locale)}
-              </h3>
-              <div className="flex items-center gap-2">
-                {llmConfig.groq_configured && (
-                  <>
-                    <button
-                      onClick={() => handleTestKey("groq")}
-                      disabled={testingProvider === "groq" || llmSaving}
-                      className="flex items-center gap-1.5 border border-neutral-200 px-3 py-1.5 text-[10px] font-semibold text-neutral-600 transition-colors hover:border-black hover:text-black disabled:opacity-40"
-                    >
-                      {testingProvider === "groq" ? <Loader2 size={11} className="animate-spin" /> : <Zap size={11} />}
-                      {testingProvider === "groq" ? t("admin.testing", locale) : t("admin.testKey", locale)}
-                    </button>
-                    {confirmDeleteLlmKey === "groq_api_key" ? (
-                      <div className="flex items-center gap-1">
-                        <button onClick={() => handleDeleteLlmKey("groq_api_key")} className="border border-red-500 bg-red-500 px-2.5 py-1.5 text-[10px] font-semibold text-white">
-                          {t("common.confirm", locale)}
-                        </button>
-                        <button onClick={() => setConfirmDeleteLlmKey(null)} className="border border-neutral-200 px-2.5 py-1.5 text-[10px] font-semibold text-neutral-500">
-                          {t("common.cancel", locale)}
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setConfirmDeleteLlmKey("groq_api_key")}
-                        disabled={llmSaving}
-                        className="flex items-center gap-1.5 border border-red-200 px-3 py-1.5 text-[10px] font-semibold text-red-500 transition-colors hover:border-red-500 hover:bg-red-50 disabled:opacity-40"
-                      >
-                        <Trash2 size={11} />
-                        {t("admin.deleteKey", locale)}
-                      </button>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-            <p className="mt-1 text-[10px] text-neutral-400">
+            <p className="mt-2 text-[10px] text-neutral-400">
               {t("admin.groqKeyDesc", locale)}
             </p>
-            <div className="mt-3 flex items-center gap-2">
-              <div className={`h-1.5 w-1.5 ${llmConfig.groq_configured ? "bg-emerald-500" : "bg-red-500"}`} />
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <div className="border border-neutral-100 bg-neutral-50 p-3">
+                <p className="text-[9px] font-bold tracking-[0.15em] text-blue-600 uppercase">{locale === "en" ? "Transcription" : "Transcription"}</p>
+                <p className="mt-1 font-mono text-[10px] text-neutral-500">whisper-large-v3-turbo</p>
+              </div>
+              <div className="border border-neutral-100 bg-neutral-50 p-3">
+                <p className="text-[9px] font-bold tracking-[0.15em] text-amber-600 uppercase">{locale === "en" ? "Reports" : "Rapports"}</p>
+                <p className="mt-1 font-mono text-[10px] text-neutral-500">llama-3.3-70b-versatile</p>
+              </div>
+            </div>
+            <div className="mt-4 flex items-center gap-2">
+              <div className={`h-1.5 w-1.5 rounded-full ${llmConfig.groq_configured ? "bg-emerald-500" : "bg-red-500"}`} />
               <span className="text-[10px] text-neutral-500">
                 {llmConfig.groq_configured ? `${t("admin.configured", locale)} : ${llmConfig.groq_api_key}` : t("admin.notConfigured", locale)}
               </span>
             </div>
-            {testResult?.provider === "groq" && (
+            <div className="mt-3 flex items-center gap-2">
+              {llmConfig.groq_configured && (
+                <>
+                  <button
+                    onClick={() => handleTestKey()}
+                    disabled={testingGroq || llmSaving}
+                    className="flex items-center gap-1.5 border border-neutral-200 px-3 py-1.5 text-[10px] font-semibold text-neutral-600 transition-colors hover:border-black hover:text-black disabled:opacity-40"
+                  >
+                    {testingGroq ? <Loader2 size={11} className="animate-spin" /> : <Zap size={11} />}
+                    {testingGroq ? t("admin.testing", locale) : t("admin.testKey", locale)}
+                  </button>
+                  {confirmDeleteLlmKey === "groq_api_key" ? (
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => handleDeleteLlmKey("groq_api_key")} className="border border-red-500 bg-red-500 px-2.5 py-1.5 text-[10px] font-semibold text-white">
+                        {t("common.confirm", locale)}
+                      </button>
+                      <button onClick={() => setConfirmDeleteLlmKey(null)} className="border border-neutral-200 px-2.5 py-1.5 text-[10px] font-semibold text-neutral-500">
+                        {t("common.cancel", locale)}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setConfirmDeleteLlmKey("groq_api_key")}
+                      disabled={llmSaving}
+                      className="flex items-center gap-1.5 border border-red-200 px-3 py-1.5 text-[10px] font-semibold text-red-500 transition-colors hover:border-red-500 hover:bg-red-50 disabled:opacity-40"
+                    >
+                      <Trash2 size={11} />
+                      {t("admin.deleteKey", locale)}
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+            {testResult && (
               <div className={`mt-3 flex items-center gap-2 border px-3 py-2 text-[11px] font-medium ${testResult.success ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-red-200 bg-red-50 text-red-700"}`}>
                 {testResult.success ? <CircleCheck size={13} /> : <CircleX size={13} />}
                 {testResult.message}
@@ -990,168 +950,6 @@ export default function AdminPage() {
               <button
                 onClick={() => handleSaveLlmKey("groq_api_key", groqKey)}
                 disabled={!groqKey.trim() || llmSaving}
-                className="border border-black bg-black px-5 py-2.5 text-[11px] font-semibold tracking-wide text-white uppercase transition-colors hover:bg-neutral-800 disabled:opacity-40"
-              >
-                {llmSaving ? "..." : t("admin.save", locale)}
-              </button>
-            </div>
-          </div>
-
-          {/* ── REPORT GENERATION KEYS ── */}
-          <div className="border-l-4 border-l-amber-500 border border-neutral-200 bg-white p-6">
-            <p className="mb-3 text-[9px] font-bold tracking-[0.2em] text-amber-600 uppercase">{t("admin.reportSection", locale)}</p>
-            <div className="flex items-center justify-between">
-              <h3 className="text-[11px] font-bold tracking-[0.15em] text-black uppercase">
-                {t("admin.openaiKey", locale)}
-              </h3>
-              <div className="flex items-center gap-2">
-                {llmConfig.openai_configured && (
-                  <>
-                    <button
-                      onClick={() => handleTestKey("openai")}
-                      disabled={testingProvider === "openai" || llmSaving}
-                      className="flex items-center gap-1.5 border border-neutral-200 px-3 py-1.5 text-[10px] font-semibold text-neutral-600 transition-colors hover:border-black hover:text-black disabled:opacity-40"
-                    >
-                      {testingProvider === "openai" ? <Loader2 size={11} className="animate-spin" /> : <Zap size={11} />}
-                      {testingProvider === "openai" ? t("admin.testing", locale) : t("admin.testKey", locale)}
-                    </button>
-                    {confirmDeleteLlmKey === "openai_api_key" ? (
-                      <div className="flex items-center gap-1">
-                        <button onClick={() => handleDeleteLlmKey("openai_api_key")} className="border border-red-500 bg-red-500 px-2.5 py-1.5 text-[10px] font-semibold text-white">
-                          {t("common.confirm", locale)}
-                        </button>
-                        <button onClick={() => setConfirmDeleteLlmKey(null)} className="border border-neutral-200 px-2.5 py-1.5 text-[10px] font-semibold text-neutral-500">
-                          {t("common.cancel", locale)}
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setConfirmDeleteLlmKey("openai_api_key")}
-                        disabled={llmSaving}
-                        className="flex items-center gap-1.5 border border-red-200 px-3 py-1.5 text-[10px] font-semibold text-red-500 transition-colors hover:border-red-500 hover:bg-red-50 disabled:opacity-40"
-                      >
-                        <Trash2 size={11} />
-                        {t("admin.deleteKey", locale)}
-                      </button>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-            <p className="mt-1 text-[10px] text-neutral-400">
-              {t("admin.openaiKeyDesc", locale)}
-            </p>
-            <div className="mt-3 flex items-center gap-2">
-              <div className={`h-1.5 w-1.5 ${llmConfig.openai_configured ? "bg-emerald-500" : "bg-red-500"}`} />
-              <span className="text-[10px] text-neutral-500">
-                {llmConfig.openai_configured ? `${t("admin.configured", locale)} : ${llmConfig.openai_api_key}` : t("admin.notConfigured", locale)}
-              </span>
-            </div>
-            {testResult?.provider === "openai" && (
-              <div className={`mt-3 flex items-center gap-2 border px-3 py-2 text-[11px] font-medium ${testResult.success ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-red-200 bg-red-50 text-red-700"}`}>
-                {testResult.success ? <CircleCheck size={13} /> : <CircleX size={13} />}
-                {testResult.message}
-              </div>
-            )}
-            <div className="mt-3 flex gap-2">
-              <div className="relative flex-1">
-                <input
-                  type={showOpenaiKey ? "text" : "password"}
-                  value={openaiKey}
-                  onChange={(e) => setOpenaiKey(e.target.value)}
-                  placeholder="sk-..."
-                  className="w-full border border-neutral-200 bg-neutral-50 px-4 py-2.5 pr-10 font-mono text-[12px] outline-none transition-colors focus:border-black focus:bg-white"
-                />
-                <button
-                  onClick={() => setShowOpenaiKey(!showOpenaiKey)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black"
-                >
-                  {showOpenaiKey ? <EyeOff size={14} /> : <Eye size={14} />}
-                </button>
-              </div>
-              <button
-                onClick={() => handleSaveLlmKey("openai_api_key", openaiKey)}
-                disabled={!openaiKey.trim() || llmSaving}
-                className="border border-black bg-black px-5 py-2.5 text-[11px] font-semibold tracking-wide text-white uppercase transition-colors hover:bg-neutral-800 disabled:opacity-40"
-              >
-                {llmSaving ? "..." : t("admin.save", locale)}
-              </button>
-            </div>
-          </div>
-
-          <div className="border-l-4 border-l-amber-500 border border-neutral-200 bg-white p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[11px] font-bold tracking-[0.15em] text-black uppercase">
-                {t("admin.anthropicKey", locale)}
-              </h3>
-              <div className="flex items-center gap-2">
-                {llmConfig.anthropic_configured && (
-                  <>
-                    <button
-                      onClick={() => handleTestKey("anthropic")}
-                      disabled={testingProvider === "anthropic" || llmSaving}
-                      className="flex items-center gap-1.5 border border-neutral-200 px-3 py-1.5 text-[10px] font-semibold text-neutral-600 transition-colors hover:border-black hover:text-black disabled:opacity-40"
-                    >
-                      {testingProvider === "anthropic" ? <Loader2 size={11} className="animate-spin" /> : <Zap size={11} />}
-                      {testingProvider === "anthropic" ? t("admin.testing", locale) : t("admin.testKey", locale)}
-                    </button>
-                    {confirmDeleteLlmKey === "anthropic_api_key" ? (
-                      <div className="flex items-center gap-1">
-                        <button onClick={() => handleDeleteLlmKey("anthropic_api_key")} className="border border-red-500 bg-red-500 px-2.5 py-1.5 text-[10px] font-semibold text-white">
-                          {t("common.confirm", locale)}
-                        </button>
-                        <button onClick={() => setConfirmDeleteLlmKey(null)} className="border border-neutral-200 px-2.5 py-1.5 text-[10px] font-semibold text-neutral-500">
-                          {t("common.cancel", locale)}
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setConfirmDeleteLlmKey("anthropic_api_key")}
-                        disabled={llmSaving}
-                        className="flex items-center gap-1.5 border border-red-200 px-3 py-1.5 text-[10px] font-semibold text-red-500 transition-colors hover:border-red-500 hover:bg-red-50 disabled:opacity-40"
-                      >
-                        <Trash2 size={11} />
-                        {t("admin.deleteKey", locale)}
-                      </button>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-            <p className="mt-1 text-[10px] text-neutral-400">
-              {t("admin.anthropicKeyDesc", locale)}
-            </p>
-            <div className="mt-3 flex items-center gap-2">
-              <div className={`h-1.5 w-1.5 ${llmConfig.anthropic_configured ? "bg-emerald-500" : "bg-neutral-300"}`} />
-              <span className="text-[10px] text-neutral-500">
-                {llmConfig.anthropic_configured ? `${t("admin.configured", locale)} : ${llmConfig.anthropic_api_key}` : t("admin.notConfigured", locale)}
-              </span>
-            </div>
-            {testResult?.provider === "anthropic" && (
-              <div className={`mt-3 flex items-center gap-2 border px-3 py-2 text-[11px] font-medium ${testResult.warning ? "border-amber-200 bg-amber-50 text-amber-700" : testResult.success ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-red-200 bg-red-50 text-red-700"}`}>
-                {testResult.warning ? <AlertTriangle size={13} /> : testResult.success ? <CircleCheck size={13} /> : <CircleX size={13} />}
-                {testResult.message}
-              </div>
-            )}
-            <div className="mt-3 flex gap-2">
-              <div className="relative flex-1">
-                <input
-                  type={showAnthropicKey ? "text" : "password"}
-                  value={anthropicKey}
-                  onChange={(e) => setAnthropicKey(e.target.value)}
-                  placeholder="sk-ant-..."
-                  className="w-full border border-neutral-200 bg-neutral-50 px-4 py-2.5 pr-10 font-mono text-[12px] outline-none transition-colors focus:border-black focus:bg-white"
-                />
-                <button
-                  onClick={() => setShowAnthropicKey(!showAnthropicKey)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black"
-                >
-                  {showAnthropicKey ? <EyeOff size={14} /> : <Eye size={14} />}
-                </button>
-              </div>
-              <button
-                onClick={() => handleSaveLlmKey("anthropic_api_key", anthropicKey)}
-                disabled={!anthropicKey.trim() || llmSaving}
                 className="border border-black bg-black px-5 py-2.5 text-[11px] font-semibold tracking-wide text-white uppercase transition-colors hover:bg-neutral-800 disabled:opacity-40"
               >
                 {llmSaving ? "..." : t("admin.save", locale)}

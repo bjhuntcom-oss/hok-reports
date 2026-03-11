@@ -1,5 +1,4 @@
 import OpenAI from "openai";
-import Anthropic from "@anthropic-ai/sdk";
 import prisma from "./prisma";
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -54,9 +53,10 @@ const CONFIG = {
   retry: { maxAttempts: 3, baseDelayMs: 1000, maxDelayMs: 30_000, backoffMultiplier: 2 },
   timeout: { transcription: 120_000, generation: 90_000 },
   models: {
-    groq: { transcription: "whisper-large-v3-turbo" },
-    openai: { generation: "gpt-4o" },
-    anthropic: { generation: "claude-sonnet-4-20250514" },
+    groq: {
+      transcription: "whisper-large-v3-turbo",
+      generation: "llama-3.3-70b-versatile",
+    },
   },
   tokens: { maxReport: 8192, maxBrief: 4096, maxMetadata: 2048 },
   audio: { minBytes: 1024, maxBytes: 25_000_000 },
@@ -78,64 +78,31 @@ function log(level: LogLevel, msg: string, data?: Record<string, unknown>) {
 // API KEY MANAGEMENT & VALIDATION
 // ═══════════════════════════════════════════════════════════════════════════════
 
-async function getApiKey(key: string): Promise<string> {
+async function getGroqApiKey(): Promise<string> {
   try {
-    const setting = await prisma.systemSetting.findUnique({ where: { key } });
+    const setting = await prisma.systemSetting.findUnique({ where: { key: "groq_api_key" } });
     if (setting?.value && setting.value.trim().length > 0) return setting.value.trim();
   } catch (err) {
-    log("warn", "DB key read failed, env fallback", { key, error: String(err) });
+    log("warn", "DB key read failed, env fallback", { error: String(err) });
   }
-  const envMap: Record<string, string | undefined> = {
-    groq_api_key: process.env.GROQ_API_KEY,
-    openai_api_key: process.env.OPENAI_API_KEY,
-    anthropic_api_key: process.env.ANTHROPIC_API_KEY,
-  };
-  const val = envMap[key];
-  if (val && val.trim().length > 0 && val !== "your-openai-api-key-here") return val.trim();
+  const val = process.env.GROQ_API_KEY;
+  if (val && val.trim().length > 0) return val.trim();
   return "";
 }
 
-async function getLlmProvider(): Promise<"openai" | "anthropic"> {
-  try {
-    const setting = await prisma.systemSetting.findUnique({ where: { key: "llm_provider" } });
-    if (setting?.value === "anthropic") {
-      const key = await getApiKey("anthropic_api_key");
-      if (key) return "anthropic";
-      log("warn", "Anthropic selected but no key — falling back to OpenAI");
-    }
-  } catch (err) {
-    log("warn", "Provider read failed", { error: String(err) });
-  }
-  return "openai";
-}
-
-function validateApiKey(apiKey: string, provider: string): void {
+function validateGroqKey(apiKey: string): void {
   if (!apiKey) {
     throw new LlmError({
       code: LlmErrorCode.API_KEY_MISSING,
-      message: `Clé API ${provider === "groq" ? "Groq" : provider === "openai" ? "OpenAI" : "Anthropic"} non configurée. Contactez l'administrateur (Administration → Moteur LLM).`,
-      provider,
+      message: "Clé API Groq non configurée. Contactez l'administrateur (Administration → Moteur IA).",
+      provider: "groq",
     });
   }
-  if (provider === "groq" && !apiKey.startsWith("gsk_")) {
+  if (!apiKey.startsWith("gsk_")) {
     throw new LlmError({
       code: LlmErrorCode.API_KEY_INVALID,
       message: "Clé API Groq invalide (format attendu : gsk_...). Vérifiez la configuration.",
-      provider,
-    });
-  }
-  if (provider === "openai" && !apiKey.startsWith("sk-")) {
-    throw new LlmError({
-      code: LlmErrorCode.API_KEY_INVALID,
-      message: "Clé API OpenAI invalide (format attendu : sk-...). Vérifiez la configuration.",
-      provider,
-    });
-  }
-  if (provider === "anthropic" && !apiKey.startsWith("sk-ant-")) {
-    throw new LlmError({
-      code: LlmErrorCode.API_KEY_INVALID,
-      message: "Clé API Anthropic invalide (format attendu : sk-ant-...). Vérifiez la configuration.",
-      provider,
+      provider: "groq",
     });
   }
 }
@@ -144,28 +111,20 @@ function validateApiKey(apiKey: string, provider: string): void {
 // CLIENT FACTORY (cached singletons per key)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-let _oai: { c: OpenAI; k: string } | null = null;
-let _ant: { c: Anthropic; k: string } | null = null;
-let _groq: { c: OpenAI; k: string } | null = null;
+let _groqTranscribe: { c: OpenAI; k: string } | null = null;
+let _groqGenerate: { c: OpenAI; k: string } | null = null;
 
-function getGroqClient(apiKey: string): OpenAI {
-  if (_groq?.k === apiKey) return _groq.c;
+function getGroqTranscribeClient(apiKey: string): OpenAI {
+  if (_groqTranscribe?.k === apiKey) return _groqTranscribe.c;
   const c = new OpenAI({ apiKey, baseURL: "https://api.groq.com/openai/v1", timeout: CONFIG.timeout.transcription });
-  _groq = { c, k: apiKey };
+  _groqTranscribe = { c, k: apiKey };
   return c;
 }
 
-function getOpenAIClient(apiKey: string): OpenAI {
-  if (_oai?.k === apiKey) return _oai.c;
-  const c = new OpenAI({ apiKey, timeout: CONFIG.timeout.generation });
-  _oai = { c, k: apiKey };
-  return c;
-}
-
-function getAnthropicClient(apiKey: string): Anthropic {
-  if (_ant?.k === apiKey) return _ant.c;
-  const c = new Anthropic({ apiKey, timeout: CONFIG.timeout.generation });
-  _ant = { c, k: apiKey };
+function getGroqGenerateClient(apiKey: string): OpenAI {
+  if (_groqGenerate?.k === apiKey) return _groqGenerate.c;
+  const c = new OpenAI({ apiKey, baseURL: "https://api.groq.com/openai/v1", timeout: CONFIG.timeout.generation });
+  _groqGenerate = { c, k: apiKey };
   return c;
 }
 
@@ -175,8 +134,7 @@ function getAnthropicClient(apiKey: string): Anthropic {
 
 function isRetryable(err: unknown): boolean {
   if (err instanceof LlmError) return err.retryable;
-  if (err instanceof OpenAI.APIError) return [408, 413, 429, 500, 502, 503, 504].includes(err.status);
-  if (err instanceof Anthropic.APIError) return [429, 500, 502, 503, 529].includes(err.status);
+  if (err instanceof OpenAI.APIError) return [408, 413, 429, 500, 502, 503, 504, 529].includes(err.status);
   if (err instanceof Error) {
     const m = err.message.toLowerCase();
     return m.includes("timeout") || m.includes("econnreset") || m.includes("socket hang up") || m.includes("fetch failed");
@@ -522,10 +480,10 @@ export async function transcribeAudio(
   log("info", "Transcription start", { audioBytes: audioBuffer.length, language });
 
   validateAudioInput(audioBuffer);
-  const apiKey = await getApiKey("groq_api_key");
-  validateApiKey(apiKey, "groq");
+  const apiKey = await getGroqApiKey();
+  validateGroqKey(apiKey);
 
-  const groq = getGroqClient(apiKey);
+  const groq = getGroqTranscribeClient(apiKey);
   const file = new File([new Uint8Array(audioBuffer)], "audio.webm", { type: "audio/webm" });
 
   const result = await withRetry("transcription", async () => {
@@ -583,16 +541,16 @@ export async function transcribeAudio(
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// GENERATION ENGINE — OpenAI & Anthropic with system/user prompt split
+// GENERATION ENGINE — Groq (Llama 3.3 70B) unified
 // ═══════════════════════════════════════════════════════════════════════════════
 
-async function genOpenAI(system: string, user: string, maxTokens: number): Promise<string> {
-  const apiKey = await getApiKey("openai_api_key");
-  validateApiKey(apiKey, "openai");
-  const openai = getOpenAIClient(apiKey);
+async function genGroq(system: string, user: string, maxTokens: number): Promise<string> {
+  const apiKey = await getGroqApiKey();
+  validateGroqKey(apiKey);
+  const groq = getGroqGenerateClient(apiKey);
 
-  const completion = await openai.chat.completions.create({
-    model: CONFIG.models.openai.generation,
+  const completion = await groq.chat.completions.create({
+    model: CONFIG.models.groq.generation,
     messages: [
       { role: "system", content: system },
       { role: "user", content: user },
@@ -609,23 +567,24 @@ async function genOpenAI(system: string, user: string, maxTokens: number): Promi
   if (finish === "content_filter") {
     throw new LlmError({
       code: LlmErrorCode.CONTENT_FILTERED,
-      message: "Contenu filtré par les politiques de sécurité d'OpenAI.",
-      provider: "openai",
+      message: "Contenu filtré par les politiques de sécurité.",
+      provider: "groq",
     });
   }
   if (!content || content.trim().length === 0) {
     throw new LlmError({
       code: LlmErrorCode.INVALID_RESPONSE,
-      message: "OpenAI a retourné une réponse vide.",
-      provider: "openai", retryable: true,
+      message: "Groq a retourné une réponse vide.",
+      provider: "groq", retryable: true,
       context: { finishReason: finish },
     });
   }
   if (finish === "length") {
-    log("warn", "OpenAI response truncated (max_tokens)", { maxTokens });
+    log("warn", "Groq response truncated (max_tokens)", { maxTokens });
   }
 
-  log("debug", "OpenAI gen done", {
+  log("debug", "Groq gen done", {
+    model: CONFIG.models.groq.generation,
     promptTok: completion.usage?.prompt_tokens,
     completionTok: completion.usage?.completion_tokens,
     finish,
@@ -634,65 +593,25 @@ async function genOpenAI(system: string, user: string, maxTokens: number): Promi
   return content;
 }
 
-async function genAnthropic(system: string, user: string, maxTokens: number): Promise<string> {
-  const apiKey = await getApiKey("anthropic_api_key");
-  validateApiKey(apiKey, "anthropic");
-  const anthropic = getAnthropicClient(apiKey);
-
-  const msg = await anthropic.messages.create({
-    model: CONFIG.models.anthropic.generation,
-    max_tokens: maxTokens,
-    system,
-    messages: [{ role: "user", content: user }],
-    temperature: 0.2,
-  });
-
-  if (msg.stop_reason === "max_tokens") {
-    log("warn", "Anthropic response truncated (max_tokens)", { maxTokens });
-  }
-
-  const tb = msg.content.find((b) => b.type === "text");
-  if (!tb || tb.type !== "text" || !tb.text?.trim()) {
-    throw new LlmError({
-      code: LlmErrorCode.INVALID_RESPONSE,
-      message: "Anthropic a retourné une réponse vide.",
-      provider: "anthropic", retryable: true,
-      context: { stopReason: msg.stop_reason },
-    });
-  }
-
-  log("debug", "Anthropic gen done", {
-    inputTok: msg.usage?.input_tokens,
-    outputTok: msg.usage?.output_tokens,
-    stop: msg.stop_reason,
-  });
-
-  return tb.text;
-}
-
 async function generateJSON(
   system: string, user: string, maxTokens: number
 ): Promise<Record<string, unknown>> {
   const t0 = Date.now();
-  const provider = await getLlmProvider();
-  log("info", "LLM gen start", { provider, maxTokens });
+  log("info", "LLM gen start", { provider: "groq", model: CONFIG.models.groq.generation, maxTokens });
 
-  const genFn = provider === "anthropic" ? genAnthropic : genOpenAI;
-
-  const raw = await withRetry(`gen:${provider}`, () => genFn(system, user, maxTokens));
+  const raw = await withRetry("gen:groq", () => genGroq(system, user, maxTokens));
 
   let parsed: Record<string, unknown>;
   try {
-    parsed = safeParseJSON(raw, provider);
+    parsed = safeParseJSON(raw, "groq");
   } catch (parseErr) {
-    // JSON parse failed — retry generation with reinforced instruction
     log("warn", "JSON parse failed, retrying with reinforced instruction");
     const reinforced = user + "\n\n⚠️ RAPPEL : Répondez UNIQUEMENT en JSON valide. Commencez par { et terminez par }. Aucun texte autour.";
-    const raw2 = await withRetry(`gen-retry:${provider}`, () => genFn(system, reinforced, maxTokens), 2);
-    parsed = safeParseJSON(raw2, provider);
+    const raw2 = await withRetry("gen-retry:groq", () => genGroq(system, reinforced, maxTokens), 2);
+    parsed = safeParseJSON(raw2, "groq");
   }
 
-  log("info", "LLM gen done", { provider, elapsed: Date.now() - t0, keys: Object.keys(parsed) });
+  log("info", "LLM gen done", { provider: "groq", elapsed: Date.now() - t0, keys: Object.keys(parsed) });
   return parsed;
 }
 
@@ -740,7 +659,6 @@ export async function generateReport(
     : CONFIG.tokens.maxReport;
 
   const result = await generateJSON(system, user, maxTok);
-  const provider = await getLlmProvider();
 
   const report: ReportResult = {
     title: str(result.title, `Rapport de consultation — ${safeName}`),
@@ -749,7 +667,7 @@ export async function generateReport(
     actionItems: strArr(result.actionItems),
     legalNotes: str(result.legalNotes, ""),
     metadata: {
-      provider,
+      provider: "groq",
       format: safeFormat,
       generatedAt: new Date().toISOString(),
       transcriptionLength: transcription.length,

@@ -10,36 +10,16 @@ export async function GET() {
       return NextResponse.json({ error: "Accès réservé aux administrateurs" }, { status: 403 });
     }
 
-    const settings = await prisma.systemSetting.findMany({
-      where: { key: { in: ["groq_api_key", "openai_api_key", "anthropic_api_key", "llm_provider"] } },
-    });
-
-    const result: Record<string, string> = {};
-    for (const s of settings) {
-      if (s.key === "llm_provider") {
-        result[s.key] = s.value;
-      } else {
-        result[s.key] = s.value ? `${s.value.slice(0, 8)}...${s.value.slice(-4)}` : "";
-      }
-    }
-
-    if (!result.llm_provider) result.llm_provider = "openai";
-    if (!result.groq_api_key) {
-      const envGroq = process.env.GROQ_API_KEY;
-      result.groq_api_key = envGroq ? `${envGroq.slice(0, 8)}...${envGroq.slice(-4)}` : "";
-    }
-    if (!result.openai_api_key) result.openai_api_key = process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== "your-openai-api-key-here" ? `${process.env.OPENAI_API_KEY.slice(0, 8)}...${process.env.OPENAI_API_KEY.slice(-4)}` : "";
-    if (!result.anthropic_api_key) result.anthropic_api_key = process.env.ANTHROPIC_API_KEY ? `${process.env.ANTHROPIC_API_KEY.slice(0, 8)}...${process.env.ANTHROPIC_API_KEY.slice(-4)}` : "";
-
-    const groqConfigured = !!(await prisma.systemSetting.findUnique({ where: { key: "groq_api_key" } }))?.value || !!process.env.GROQ_API_KEY;
-    const openaiConfigured = !!(await prisma.systemSetting.findUnique({ where: { key: "openai_api_key" } }))?.value || (!!process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== "your-openai-api-key-here");
-    const anthropicConfigured = !!(await prisma.systemSetting.findUnique({ where: { key: "anthropic_api_key" } }))?.value || !!process.env.ANTHROPIC_API_KEY;
+    const setting = await prisma.systemSetting.findUnique({ where: { key: "groq_api_key" } });
+    const dbKey = setting?.value || "";
+    const envKey = process.env.GROQ_API_KEY || "";
+    const activeKey = dbKey || envKey;
+    const maskedKey = activeKey ? `${activeKey.slice(0, 8)}...${activeKey.slice(-4)}` : "";
+    const configured = !!activeKey;
 
     return NextResponse.json({
-      ...result,
-      groq_configured: groqConfigured,
-      openai_configured: openaiConfigured,
-      anthropic_configured: anthropicConfigured,
+      groq_api_key: maskedKey,
+      groq_configured: configured,
     });
   } catch (error) {
     console.error("LLM settings error:", error);
@@ -59,46 +39,28 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { key, value } = body;
 
-    if (!key || !["groq_api_key", "openai_api_key", "anthropic_api_key", "llm_provider"].includes(key)) {
+    if (key !== "groq_api_key") {
       return NextResponse.json({ error: "Clé de paramètre invalide" }, { status: 400 });
     }
 
-    if (key === "llm_provider" && !["openai", "anthropic"].includes(value)) {
-      return NextResponse.json({ error: "Fournisseur LLM invalide" }, { status: 400 });
-    }
-
-    if (key === "groq_api_key" && value && !value.startsWith("gsk_")) {
+    if (value && !value.startsWith("gsk_")) {
       return NextResponse.json({ error: "Format de clé Groq invalide (doit commencer par gsk_)" }, { status: 400 });
     }
 
-    if (key === "openai_api_key" && value && !value.startsWith("sk-")) {
-      return NextResponse.json({ error: "Format de clé OpenAI invalide (doit commencer par sk-)" }, { status: 400 });
-    }
-
-    if (key === "anthropic_api_key" && value && !value.startsWith("sk-ant-")) {
-      return NextResponse.json({ error: "Format de clé Anthropic invalide (doit commencer par sk-ant-)" }, { status: 400 });
-    }
-
     await prisma.systemSetting.upsert({
-      where: { key },
+      where: { key: "groq_api_key" },
       update: { value },
-      create: { key, value },
+      create: { key: "groq_api_key", value },
     });
 
-    if (key === "groq_api_key") {
-      process.env.GROQ_API_KEY = value;
-    } else if (key === "openai_api_key") {
-      process.env.OPENAI_API_KEY = value;
-    } else if (key === "anthropic_api_key") {
-      process.env.ANTHROPIC_API_KEY = value;
-    }
+    process.env.GROQ_API_KEY = value;
 
     await logAudit({
       userId: adminId,
       action: "admin_update_llm",
       entity: "settings",
-      entityId: key,
-      details: { key, masked: value ? `${value.slice(0, 8)}...` : "cleared" },
+      entityId: "groq_api_key",
+      details: { masked: value ? `${value.slice(0, 8)}...` : "cleared" },
       ipAddress,
       userAgent,
     });

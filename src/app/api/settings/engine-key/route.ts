@@ -10,19 +10,17 @@ export async function POST(req: Request) {
     }
 
     const { key } = await req.json();
-    if (!key || typeof key !== "string" || !key.startsWith("sk-")) {
-      return NextResponse.json({ error: "Format de clé invalide" }, { status: 400 });
+    if (!key || typeof key !== "string" || !key.startsWith("gsk_")) {
+      return NextResponse.json({ error: "Format de clé Groq invalide (doit commencer par gsk_)" }, { status: 400 });
     }
 
-    // Store in database instead of .env file (Vercel compatible)
     await prisma.systemSetting.upsert({
-      where: { key: "openai_api_key" },
+      where: { key: "groq_api_key" },
       update: { value: key },
-      create: { key: "openai_api_key", value: key },
+      create: { key: "groq_api_key", value: key },
     });
 
-    // Also update process.env for current runtime
-    process.env.OPENAI_API_KEY = key;
+    process.env.GROQ_API_KEY = key;
 
     return NextResponse.json({ success: true });
   } catch (error) {

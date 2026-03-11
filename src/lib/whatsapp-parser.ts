@@ -12,7 +12,6 @@
  */
 
 import OpenAI from "openai";
-import Anthropic from "@anthropic-ai/sdk";
 import prisma from "./prisma";
 
 export interface ParsedHearingReport {
@@ -75,8 +74,8 @@ export async function detectHearingReportAI(text: string): Promise<{ isReport: b
   }
 
   try {
-    const apiKey = await getAIKey();
-    if (!apiKey.key) {
+    const apiKey = await getGroqKey();
+    if (!apiKey) {
       // No AI available, fall back to keyword detection
       return { isReport: isHearingReportKeywords(text), confidence: 0.6 };
     }
@@ -154,9 +153,9 @@ export async function parseWhatsAppMessageAI(text: string, senderName?: string):
   if (!text || text.trim().length < 20) return null;
 
   try {
-    const apiKey = await getAIKey();
-    if (!apiKey.key) {
-      console.log("[WhatsApp AI Parser] No API key, falling back to regex parser");
+    const apiKey = await getGroqKey();
+    if (!apiKey) {
+      console.log("[WhatsApp AI Parser] No Groq API key, falling back to regex parser");
       return parseWhatsAppMessageRegex(text);
     }
 
@@ -202,61 +201,27 @@ Analysez ce message et extrayez le compte rendu d'audience en JSON structuré.`;
 // AI INFRASTRUCTURE — key retrieval, client calls, JSON extraction
 // ═══════════════════════════════════════════════════════════════════════════════
 
-interface AIKey {
-  key: string;
-  provider: "openai" | "anthropic";
-}
-
-async function getAIKey(): Promise<AIKey> {
-  // Try DB first, then env
+async function getGroqKey(): Promise<string> {
   try {
-    const providerSetting = await prisma.systemSetting.findUnique({ where: { key: "llm_provider" } });
-    if (providerSetting?.value === "anthropic") {
-      const setting = await prisma.systemSetting.findUnique({ where: { key: "anthropic_api_key" } });
-      if (setting?.value) return { key: setting.value, provider: "anthropic" };
-    }
-    const oaiSetting = await prisma.systemSetting.findUnique({ where: { key: "openai_api_key" } });
-    if (oaiSetting?.value) return { key: oaiSetting.value, provider: "openai" };
+    const setting = await prisma.systemSetting.findUnique({ where: { key: "groq_api_key" } });
+    if (setting?.value?.trim()) return setting.value.trim();
   } catch {}
-
-  // Env fallback
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
-  if (anthropicKey && anthropicKey.startsWith("sk-ant-")) {
-    return { key: anthropicKey, provider: "anthropic" };
-  }
-  const openaiKey = process.env.OPENAI_API_KEY;
-  if (openaiKey && openaiKey !== "your-openai-api-key-here" && openaiKey.startsWith("sk-")) {
-    return { key: openaiKey, provider: "openai" };
-  }
-  return { key: "", provider: "openai" };
+  return process.env.GROQ_API_KEY?.trim() || "";
 }
 
-async function callAI(apiKey: AIKey, system: string, user: string, maxTokens: number): Promise<string> {
-  if (apiKey.provider === "anthropic") {
-    const client = new Anthropic({ apiKey: apiKey.key });
-    const msg = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: maxTokens,
-      system,
-      messages: [{ role: "user", content: user }],
-      temperature: 0.1,
-    });
-    const tb = msg.content.find((b) => b.type === "text");
-    return tb && tb.type === "text" ? tb.text : "";
-  } else {
-    const client = new OpenAI({ apiKey: apiKey.key });
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: user },
-      ],
-      temperature: 0.1,
-      max_tokens: maxTokens,
-      response_format: { type: "json_object" },
-    });
-    return completion.choices?.[0]?.message?.content || "";
-  }
+async function callAI(apiKey: string, system: string, user: string, maxTokens: number): Promise<string> {
+  const client = new OpenAI({ apiKey, baseURL: "https://api.groq.com/openai/v1" });
+  const completion = await client.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: user },
+    ],
+    temperature: 0.1,
+    max_tokens: maxTokens,
+    response_format: { type: "json_object" },
+  });
+  return completion.choices?.[0]?.message?.content || "";
 }
 
 function extractJSON(raw: string): string {

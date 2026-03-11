@@ -4,7 +4,6 @@ import {
   Page,
   Text,
   View,
-  Link,
 } from "@react-pdf/renderer";
 import { styles, colors } from "./styles";
 
@@ -41,34 +40,18 @@ function formatDate(dateStr: string): string {
   }).format(new Date(dateStr));
 }
 
-function classifyPoint(text: string): "critical" | "warning" | "info" {
-  const criticalTerms =
-    /urgence|urgent|immédiat|impératif|critique|obligatoire|délai|forclusion|prescription|risque|danger|irrecevab/i;
-  const warningTerms =
-    /attention|important|essentiel|vigilance|surveiller|vérifier|confirmer|relancer|rappel/i;
-  if (criticalTerms.test(text)) return "critical";
-  if (warningTerms.test(text)) return "warning";
-  return "info";
-}
-
 const categoryLabels: Record<string, string> = {
-  general: "Général",
+  general: "General",
   consultation: "Consultation",
   hearing: "Audience",
-  deposition: "Déposition",
-  meeting: "Réunion",
+  deposition: "Deposition",
+  meeting: "Reunion",
 };
 
 const statusLabels: Record<string, string> = {
   draft: "Brouillon",
-  final: "Finalisé",
-  archived: "Archivé",
-};
-
-const classIcons: Record<string, string> = {
-  critical: "!",
-  warning: "~",
-  info: "-",
+  final: "Finalise",
+  archived: "Archive",
 };
 
 function Header({ report }: { report: ReportData }) {
@@ -76,13 +59,11 @@ function Header({ report }: { report: ReportData }) {
     <View style={styles.headerRow}>
       <View>
         <Text style={styles.brandName}>Cabinet HOK</Text>
-        <Text style={styles.brandTagline}>
-          Avocats — Cotonou, Bénin
-        </Text>
+        <Text style={styles.brandTagline}>Avocats - Cotonou, Benin</Text>
       </View>
       <View style={styles.refBlock}>
         <Text style={styles.refId}>
-          Réf. {report.id.slice(0, 8).toUpperCase()}
+          Ref. {report.id.slice(0, 8).toUpperCase()}
         </Text>
         <Text style={styles.refDate}>{formatDate(report.createdAt)}</Text>
       </View>
@@ -93,7 +74,7 @@ function Header({ report }: { report: ReportData }) {
 function ConfidentialBanner() {
   return (
     <View style={styles.confBanner}>
-      <Text>Confidentiel — Document interne — Ne pas diffuser</Text>
+      <Text>Confidentiel - Document interne - Ne pas diffuser</Text>
     </View>
   );
 }
@@ -107,7 +88,7 @@ function TitleBlock({ report }: { report: ReportData }) {
       <Text style={styles.title}>{report.title}</Text>
       <View style={styles.metaRow}>
         <View style={styles.metaItem}>
-          <Text style={styles.metaLabel}>Catégorie : </Text>
+          <Text style={styles.metaLabel}>Categorie : </Text>
           <Text style={styles.metaValue}>
             {categoryLabels[report.category] || report.category}
           </Text>
@@ -131,12 +112,12 @@ function TitleBlock({ report }: { report: ReportData }) {
 
 function InfoGrid({ report }: { report: ReportData }) {
   const cells = [
-    { label: "Client", value: report.session?.clientName || "—" },
-    { label: "Réf. Dossier", value: report.session?.caseReference || "—" },
-    { label: "Auteur", value: report.user?.name || "—" },
+    { label: "Client", value: report.session?.clientName || "-" },
+    { label: "Ref. Dossier", value: report.session?.caseReference || "-" },
+    { label: "Auteur", value: report.user?.name || "-" },
     {
       label: "Date Session",
-      value: report.session ? formatDate(report.session.createdAt) : "—",
+      value: report.session ? formatDate(report.session.createdAt) : "-",
     },
   ];
   return (
@@ -154,13 +135,7 @@ function InfoGrid({ report }: { report: ReportData }) {
   );
 }
 
-function SectionHeader({
-  num,
-  title,
-}: {
-  num: string;
-  title: string;
-}) {
+function SectionHeader({ num, title }: { num: string; title: string }) {
   return (
     <View style={styles.sectionHeader}>
       <Text style={styles.sectionNum}>{num}</Text>
@@ -169,10 +144,10 @@ function SectionHeader({
   );
 }
 
-function SummarySection({ content }: { content: string }) {
+function SummarySection({ content, num }: { content: string; num: string }) {
   return (
     <View style={styles.section}>
-      <SectionHeader num="1" title="Synthèse" />
+      <SectionHeader num={num} title="Synthese" />
       <View style={styles.sectionBody}>
         <Text style={styles.sectionText}>{content}</Text>
       </View>
@@ -180,59 +155,31 @@ function SummarySection({ content }: { content: string }) {
   );
 }
 
-function KeyPointsSection({ points }: { points: string[] }) {
+function KeyPointsSection({ points, num }: { points: string[]; num: string }) {
   if (points.length === 0) return null;
   return (
-    <View style={styles.section} wrap={false}>
-      <SectionHeader num="2" title="Points clés" />
+    <View style={styles.section}>
+      <SectionHeader num={num} title="Points cles" />
       <View style={styles.sectionBody}>
-        {points.map((p, i) => {
-          const cls = classifyPoint(p);
-          const pointColors = colors[cls];
-          return (
-            <View
-              key={i}
-              style={[
-                styles.pointItem,
-                {
-                  backgroundColor: pointColors.bg,
-                  borderLeftColor: pointColors.border,
-                },
-              ]}
-            >
-              <Text
-                style={[styles.pointIcon, { color: pointColors.border }]}
-              >
-                {classIcons[cls]}
-              </Text>
-              <Text
-                style={[
-                  styles.pointText,
-                  {
-                    color: pointColors.text,
-                    fontFamily:
-                      cls === "critical" ? "Helvetica-Bold" : "Helvetica",
-                  },
-                ]}
-              >
-                {p}
-              </Text>
-            </View>
-          );
-        })}
+        {points.map((p, i) => (
+          <View key={i} style={styles.pointItem}>
+            <Text style={styles.pointIcon}>{i + 1}.</Text>
+            <Text style={styles.pointText}>{p}</Text>
+          </View>
+        ))}
       </View>
     </View>
   );
 }
 
-function ActionItemsSection({ items }: { items: string[] }) {
+function ActionItemsSection({ items, num }: { items: string[]; num: string }) {
   if (items.length === 0) return null;
   return (
-    <View style={styles.section} wrap={false}>
-      <SectionHeader num="3" title="Actions à entreprendre" />
+    <View style={styles.section}>
+      <SectionHeader num={num} title="Actions a entreprendre" />
       <View style={styles.sectionBody}>
         {items.map((a, i) => {
-          const isUrgent = /urgent|immédiat|impératif|délai|deadline/i.test(a);
+          const isUrgent = /urgent|immediat|imperatif|délai|deadline/i.test(a);
           return (
             <View
               key={i}
@@ -254,16 +201,10 @@ function ActionItemsSection({ items }: { items: string[] }) {
   );
 }
 
-function LegalNotesSection({
-  notes,
-  sectionNum,
-}: {
-  notes: string;
-  sectionNum: string;
-}) {
+function LegalNotesSection({ notes, num }: { notes: string; num: string }) {
   return (
-    <View style={styles.section} wrap={false}>
-      <SectionHeader num={sectionNum} title="Observations juridiques" />
+    <View style={styles.section}>
+      <SectionHeader num={num} title="Observations juridiques" />
       <View style={styles.sectionBody}>
         <View style={styles.legalBox}>
           <Text style={styles.legalText}>{notes}</Text>
@@ -273,50 +214,41 @@ function LegalNotesSection({
   );
 }
 
-function SuggestionsSection({ suggestions, sectionNum }: { suggestions: string[]; sectionNum: string }) {
+function SuggestionsSection({ suggestions, num }: { suggestions: string[]; num: string }) {
   if (suggestions.length === 0) return null;
-
-  const typeColors: Record<string, { bg: string; border: string }> = {
-    LOI: { bg: "#EFF6FF", border: "#3B82F6" },
-    ARGUMENT: { bg: "#F0FDF4", border: "#22C55E" },
-    "DÉFENSE": { bg: "#FEF3C7", border: "#F59E0B" },
-    OUVERTURE: { bg: "#F5F3FF", border: "#8B5CF6" },
-    JURISPRUDENCE: { bg: "#FFF7ED", border: "#EA580C" },
-    PREUVE: { bg: "#F0F9FF", border: "#0EA5E9" },
-  };
 
   return (
     <View style={styles.section}>
-      <SectionHeader num={sectionNum} title="Suggestions juridiques" />
+      <SectionHeader num={num} title="Suggestions juridiques" />
       <View style={styles.sectionBody}>
-        <View style={{ marginBottom: 6 }}>
-          <Text style={{ fontSize: 7, color: "#9CA3AF", fontStyle: "italic" }}>
-            ⚠ Ces suggestions sont indicatives et générées par IA. Les références légales et jurisprudentielles doivent impérativement être vérifiées par l'avocat avant toute utilisation.
+        <View style={{ marginBottom: 5 }}>
+          <Text style={{ fontSize: 6.5, color: colors.lightGray, fontStyle: "italic" }}>
+            Ces suggestions sont indicatives et generees par IA. Les references legales doivent etre verifiees avant utilisation.
           </Text>
         </View>
         {suggestions.map((s, i) => {
           const match = s.match(/^\[([A-ZÉ]+)\]\s*/);
           const type = match ? match[1] : "";
           const text = match ? s.slice(match[0].length) : s;
-          const tc = typeColors[type] || { bg: "#F9FAFB", border: "#6B7280" };
           return (
             <View
               key={i}
               style={{
                 flexDirection: "row" as const,
-                marginBottom: 4,
-                padding: 6,
-                backgroundColor: tc.bg,
-                borderLeftWidth: 2,
-                borderLeftColor: tc.border,
+                marginBottom: 3,
+                paddingVertical: 3,
+                paddingHorizontal: 8,
+                borderLeftWidth: 1.5,
+                borderLeftColor: colors.borderGray,
+                backgroundColor: colors.bgLighter,
               }}
             >
               {type ? (
-                <Text style={{ fontSize: 6.5, fontFamily: "Helvetica-Bold", color: tc.border, marginRight: 6, minWidth: 55 }}>
+                <Text style={{ fontSize: 6.5, fontFamily: "Helvetica-Bold", color: colors.mediumGray, marginRight: 6, minWidth: 52 }}>
                   [{type}]
                 </Text>
               ) : null}
-              <Text style={{ fontSize: 8, color: "#1F2937", flex: 1 }}>{text}</Text>
+              <Text style={{ fontSize: 8.5, color: colors.darkGray, flex: 1, lineHeight: 1.4 }}>{text}</Text>
             </View>
           );
         })}
@@ -327,12 +259,12 @@ function SuggestionsSection({ suggestions, sectionNum }: { suggestions: string[]
 
 function DisclaimerSection() {
   return (
-    <View style={{ marginTop: 12, padding: 10, backgroundColor: "#FEF2F2", borderWidth: 1, borderColor: "#FECACA" }}>
-      <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: "#991B1B", marginBottom: 4 }}>
-        ⚠ AVERTISSEMENT — VÉRIFICATION OBLIGATOIRE
+    <View style={{ marginTop: 10, padding: 8, backgroundColor: colors.bgLight, borderWidth: 0.5, borderColor: colors.borderGray }}>
+      <Text style={{ fontSize: 6.5, fontFamily: "Helvetica-Bold", color: colors.gray, marginBottom: 3 }}>
+        AVERTISSEMENT - VERIFICATION OBLIGATOIRE
       </Text>
-      <Text style={{ fontSize: 6.5, color: "#7F1D1D", lineHeight: 1.4 }}>
-        Ce rapport est généré automatiquement par intelligence artificielle à partir d'une transcription audio. Les références légales, jurisprudentielles et les suggestions citées doivent impérativement être vérifiées dans les textes officiels avant toute utilisation. La transcription peut contenir des erreurs ou omissions (homophones, passages inaudibles). Ce document ne constitue pas un avis juridique formel et ne remplace pas l'analyse personnelle de l'avocat. Tous les noms, dates, montants et références de dossier doivent être contrôlés.
+      <Text style={{ fontSize: 6, color: colors.mediumGray, lineHeight: 1.4 }}>
+        Ce rapport est genere automatiquement par intelligence artificielle a partir d'une transcription audio. Les references legales, jurisprudentielles et les suggestions citees doivent imperativement etre verifiees dans les textes officiels avant toute utilisation. La transcription peut contenir des erreurs ou omissions. Ce document ne constitue pas un avis juridique formel et ne remplace pas l'analyse personnelle de l'avocat.
       </Text>
     </View>
   );
@@ -341,7 +273,7 @@ function DisclaimerSection() {
 function TranscriptionSection({ content }: { content: string }) {
   return (
     <View style={styles.section} break>
-      <SectionHeader num="T" title="Transcription intégrale" />
+      <SectionHeader num="T" title="Transcription integrale" />
       <View style={styles.sectionBody}>
         <View style={styles.transcriptionBox}>
           <Text>{content}</Text>
@@ -354,9 +286,9 @@ function TranscriptionSection({ content }: { content: string }) {
 function Footer() {
   return (
     <View style={styles.footer} fixed>
-      <Text style={styles.footerBrand}>Cabinet HOK — HOK Reports</Text>
+      <Text style={styles.footerBrand}>Cabinet HOK - HOK Reports</Text>
       <Text style={styles.footerText}>
-        Document généré automatiquement — {formatDate(new Date().toISOString())} — Confidentiel
+        Document genere automatiquement - Confidentiel
       </Text>
       <Text
         style={styles.pageNumber}
@@ -376,15 +308,14 @@ function WatermarkDraft({ status }: { status: string }) {
 export function ReportPDF({ report }: { report: ReportData }) {
   const keyPoints = report.keyPoints;
   const actionItems = report.actionItems;
-
   const suggestions = report.suggestions || [];
 
-  let sectionCounter = 1;
-  const summaryNum = String(sectionCounter++);
-  const keyPointsNum = keyPoints.length > 0 ? String(sectionCounter++) : "";
-  const actionsNum = actionItems.length > 0 ? String(sectionCounter++) : "";
-  const legalNum = report.legalNotes ? String(sectionCounter++) : "";
-  const suggestionsNum = suggestions.length > 0 ? String(sectionCounter++) : "";
+  let n = 1;
+  const summaryNum = String(n++);
+  const keyPointsNum = keyPoints.length > 0 ? String(n++) : "";
+  const actionsNum = actionItems.length > 0 ? String(n++) : "";
+  const legalNum = report.legalNotes ? String(n++) : "";
+  const suggestionsNum = suggestions.length > 0 ? String(n++) : "";
 
   return (
     <Document
@@ -392,7 +323,7 @@ export function ReportPDF({ report }: { report: ReportData }) {
       author="Cabinet HOK"
       subject="Rapport juridique"
       creator="HOK Reports"
-      producer="HOK Reports — @react-pdf/renderer"
+      producer="HOK Reports"
     >
       <Page size="A4" style={styles.page}>
         <WatermarkDraft status={report.status} />
@@ -400,16 +331,13 @@ export function ReportPDF({ report }: { report: ReportData }) {
         <ConfidentialBanner />
         <TitleBlock report={report} />
         <InfoGrid report={report} />
-        <SummarySection content={report.summary} />
-        <KeyPointsSection points={keyPoints} />
-        <ActionItemsSection items={actionItems} />
+        <SummarySection content={report.summary} num={summaryNum} />
+        <KeyPointsSection points={keyPoints} num={keyPointsNum} />
+        <ActionItemsSection items={actionItems} num={actionsNum} />
         {report.legalNotes && (
-          <LegalNotesSection
-            notes={report.legalNotes}
-            sectionNum={legalNum}
-          />
+          <LegalNotesSection notes={report.legalNotes} num={legalNum} />
         )}
-        <SuggestionsSection suggestions={suggestions} sectionNum={suggestionsNum} />
+        <SuggestionsSection suggestions={suggestions} num={suggestionsNum} />
         <DisclaimerSection />
         <Footer />
       </Page>

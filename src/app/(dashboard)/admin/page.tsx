@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Shield, Users, FileText, Mic, Clock, ChevronDown,
   Ban, Trash2, Edit3, Check, X, BarChart3, Activity, AlertTriangle, ScrollText,
-  UserCheck, UserX, Key, Eye, EyeOff, Zap, Loader2, CircleCheck, CircleX
+  UserCheck, UserX, Key, Eye, EyeOff, Zap, Loader2, CircleCheck, CircleX, Lock
 } from "lucide-react";
 import Link from "next/link";
 import { useAppStore } from "@/lib/store";
@@ -31,6 +31,10 @@ export default function AdminPage() {
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [resetPwUser, setResetPwUser] = useState<string | null>(null);
+  const [resetPwValue, setResetPwValue] = useState("");
+  const [resetPwLoading, setResetPwLoading] = useState(false);
+  const [resetPwResult, setResetPwResult] = useState<{ success: boolean; message: string } | null>(null);
   const [llmConfig, setLlmConfig] = useState<any>({});
   const [llmSaving, setLlmSaving] = useState(false);
   const [groqKey, setGroqKey] = useState("");
@@ -114,6 +118,30 @@ export default function AdminPage() {
       body: JSON.stringify({ userId, status }),
     });
     if (res.ok) setUsers((p) => p.map((u) => (u.id === userId ? { ...u, status } : u)));
+  };
+
+  const handleResetPassword = async (userId: string) => {
+    if (!resetPwValue.trim()) return;
+    setResetPwLoading(true);
+    setResetPwResult(null);
+    try {
+      const res = await fetch("/api/admin/users/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, newPassword: resetPwValue }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setResetPwResult({ success: true, message: locale === "en" ? "Password reset successfully." : "Mot de passe réinitialisé avec succès." });
+        setResetPwValue("");
+        setTimeout(() => { setResetPwUser(null); setResetPwResult(null); }, 2000);
+      } else {
+        setResetPwResult({ success: false, message: data.error || "Erreur" });
+      }
+    } catch {
+      setResetPwResult({ success: false, message: "Erreur serveur" });
+    }
+    setResetPwLoading(false);
   };
 
   const handleSaveLlmKey = async (key: string, value: string) => {
@@ -455,7 +483,8 @@ export default function AdminPage() {
               </thead>
               <tbody className="divide-y divide-neutral-50">
                 {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-neutral-50 transition-colors">
+                  <React.Fragment key={user.id}>
+                  <tr className="hover:bg-neutral-50 transition-colors">
                     <td className="px-4 py-3">
                       {editingUser === user.id ? (
                         <input
@@ -552,6 +581,13 @@ export default function AdminPage() {
                             >
                               <Ban size={12} />
                             </button>
+                            <button
+                              onClick={() => { setResetPwUser(resetPwUser === user.id ? null : user.id); setResetPwValue(""); setResetPwResult(null); }}
+                              className={`flex h-6 w-6 items-center justify-center transition-colors hover:bg-neutral-100 ${resetPwUser === user.id ? "text-black bg-neutral-100" : "text-neutral-400 hover:text-black"}`}
+                              title={locale === "en" ? "Reset password" : "Réinitialiser le mot de passe"}
+                            >
+                              <Lock size={12} />
+                            </button>
                             {confirmDelete === user.id ? (
                               <div className="flex items-center gap-1">
                                 <button
@@ -581,6 +617,46 @@ export default function AdminPage() {
                       </div>
                     </td>
                   </tr>
+                  {resetPwUser === user.id && (
+                    <tr className="bg-neutral-50">
+                      <td colSpan={8} className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <Lock size={13} className="text-neutral-400 flex-shrink-0" />
+                          <span className="text-[10px] font-bold tracking-wide text-neutral-500 uppercase flex-shrink-0">
+                            {locale === "en" ? "New password for" : "Nouveau mot de passe pour"} {user.name}
+                          </span>
+                          <input
+                            type="password"
+                            value={resetPwValue}
+                            onChange={(e) => setResetPwValue(e.target.value)}
+                            placeholder={locale === "en" ? "Min. 8 chars, upper, lower, digit, special" : "Min. 8 car., maj., min., chiffre, spécial"}
+                            className="w-64 border border-neutral-200 bg-white px-3 py-1.5 text-[11px] outline-none focus:border-black"
+                            onKeyDown={(e) => { if (e.key === "Enter") handleResetPassword(user.id); }}
+                          />
+                          <button
+                            onClick={() => handleResetPassword(user.id)}
+                            disabled={resetPwLoading || !resetPwValue.trim()}
+                            className="flex items-center gap-1.5 bg-black px-3 py-1.5 text-[10px] font-semibold tracking-wide text-white uppercase transition-colors hover:bg-neutral-800 disabled:opacity-40"
+                          >
+                            {resetPwLoading ? <Loader2 size={11} className="animate-spin" /> : <Check size={11} />}
+                            {locale === "en" ? "Reset" : "Réinitialiser"}
+                          </button>
+                          <button
+                            onClick={() => { setResetPwUser(null); setResetPwResult(null); }}
+                            className="flex h-6 w-6 items-center justify-center text-neutral-400 hover:text-black"
+                          >
+                            <X size={12} />
+                          </button>
+                          {resetPwResult && (
+                            <span className={`text-[10px] font-medium ${resetPwResult.success ? "text-emerald-600" : "text-red-500"}`}>
+                              {resetPwResult.message}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>

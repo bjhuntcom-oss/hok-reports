@@ -11,11 +11,11 @@ export async function POST(req: Request) {
 
     const { provider } = await req.json();
 
-    if (!provider || !["openai", "anthropic", "whisper"].includes(provider)) {
+    if (!provider || !["openai", "anthropic", "groq"].includes(provider)) {
       return NextResponse.json({ error: "Invalid provider" }, { status: 400 });
     }
 
-    const keyName = provider === "whisper" ? "whisper_api_key" : provider === "openai" ? "openai_api_key" : "anthropic_api_key";
+    const keyName = provider === "groq" ? "groq_api_key" : provider === "openai" ? "openai_api_key" : "anthropic_api_key";
 
     // Get key from DB first, then env
     let apiKey = "";
@@ -25,8 +25,8 @@ export async function POST(req: Request) {
     } catch {}
 
     if (!apiKey) {
-      const envKey = provider === "whisper"
-        ? (process.env.WHISPER_API_KEY || process.env.OPENAI_API_KEY)
+      const envKey = provider === "groq"
+        ? process.env.GROQ_API_KEY
         : provider === "openai" ? process.env.OPENAI_API_KEY : process.env.ANTHROPIC_API_KEY;
       if (envKey && envKey.trim() && envKey !== "your-openai-api-key-here") {
         apiKey = envKey.trim();
@@ -34,15 +34,30 @@ export async function POST(req: Request) {
     }
 
     if (!apiKey) {
-      const label = provider === "whisper" ? "Whisper" : provider === "openai" ? "OpenAI" : "Anthropic";
+      const label = provider === "groq" ? "Groq" : provider === "openai" ? "OpenAI" : "Anthropic";
       return NextResponse.json({
         success: false,
         error: `No ${label} API key configured`,
       });
     }
 
-    // Test the key with a minimal API call — whisper uses OpenAI API
-    if (provider === "openai" || provider === "whisper") {
+    // Test Groq API key
+    if (provider === "groq") {
+      const res = await fetch("https://api.groq.com/openai/v1/models", {
+        headers: { Authorization: `Bearer ${apiKey}` },
+      });
+      if (res.ok) {
+        return NextResponse.json({ success: true, message: "Groq API key is valid" });
+      }
+      const err = await res.json().catch(() => ({}));
+      return NextResponse.json({
+        success: false,
+        error: err?.error?.message || `Groq returned status ${res.status}`,
+      });
+    }
+
+    // Test OpenAI API key
+    if (provider === "openai") {
       const res = await fetch("https://api.openai.com/v1/models", {
         headers: { Authorization: `Bearer ${apiKey}` },
       });

@@ -30,10 +30,10 @@ export default function AdminPage() {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [llmConfig, setLlmConfig] = useState<any>({});
   const [llmSaving, setLlmSaving] = useState(false);
-  const [whisperKey, setWhisperKey] = useState("");
+  const [groqKey, setGroqKey] = useState("");
   const [openaiKey, setOpenaiKey] = useState("");
   const [anthropicKey, setAnthropicKey] = useState("");
-  const [showWhisperKey, setShowWhisperKey] = useState(false);
+  const [showGroqKey, setShowGroqKey] = useState(false);
   const [showOpenaiKey, setShowOpenaiKey] = useState(false);
   const [showAnthropicKey, setShowAnthropicKey] = useState(false);
   const [testingProvider, setTestingProvider] = useState<string | null>(null);
@@ -126,7 +126,7 @@ export default function AdminPage() {
       if (res.ok) {
         const updated = await fetch("/api/admin/llm").then((r) => r.json());
         setLlmConfig(updated);
-        if (key === "whisper_api_key") setWhisperKey("");
+        if (key === "groq_api_key") setGroqKey("");
         if (key === "openai_api_key") setOpenaiKey("");
         if (key === "anthropic_api_key") setAnthropicKey("");
       }
@@ -152,7 +152,7 @@ export default function AdminPage() {
     setLlmSaving(false);
   };
 
-  const handleTestKey = async (provider: "openai" | "anthropic" | "whisper") => {
+  const handleTestKey = async (provider: "openai" | "anthropic" | "groq") => {
     setTestingProvider(provider);
     setTestResult(null);
     try {
@@ -915,27 +915,27 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* ── WHISPER TRANSCRIPTION KEY ── */}
+          {/* ── GROQ TRANSCRIPTION KEY ── */}
           <div className="border-l-4 border-l-blue-500 border border-neutral-200 bg-white p-6">
-            <p className="mb-3 text-[9px] font-bold tracking-[0.2em] text-blue-600 uppercase">{t("admin.whisperSection", locale)}</p>
+            <p className="mb-3 text-[9px] font-bold tracking-[0.2em] text-blue-600 uppercase">{t("admin.groqSection", locale)}</p>
             <div className="flex items-center justify-between">
               <h3 className="text-[11px] font-bold tracking-[0.15em] text-black uppercase">
-                {t("admin.whisperKey", locale)}
+                {t("admin.groqKey", locale)}
               </h3>
               <div className="flex items-center gap-2">
-                {llmConfig.whisper_configured && (
+                {llmConfig.groq_configured && (
                   <>
                     <button
-                      onClick={() => handleTestKey("whisper")}
-                      disabled={testingProvider === "whisper" || llmSaving}
+                      onClick={() => handleTestKey("groq")}
+                      disabled={testingProvider === "groq" || llmSaving}
                       className="flex items-center gap-1.5 border border-neutral-200 px-3 py-1.5 text-[10px] font-semibold text-neutral-600 transition-colors hover:border-black hover:text-black disabled:opacity-40"
                     >
-                      {testingProvider === "whisper" ? <Loader2 size={11} className="animate-spin" /> : <Zap size={11} />}
-                      {testingProvider === "whisper" ? t("admin.testing", locale) : t("admin.testKey", locale)}
+                      {testingProvider === "groq" ? <Loader2 size={11} className="animate-spin" /> : <Zap size={11} />}
+                      {testingProvider === "groq" ? t("admin.testing", locale) : t("admin.testKey", locale)}
                     </button>
-                    {confirmDeleteLlmKey === "whisper_api_key" ? (
+                    {confirmDeleteLlmKey === "groq_api_key" ? (
                       <div className="flex items-center gap-1">
-                        <button onClick={() => handleDeleteLlmKey("whisper_api_key")} className="border border-red-500 bg-red-500 px-2.5 py-1.5 text-[10px] font-semibold text-white">
+                        <button onClick={() => handleDeleteLlmKey("groq_api_key")} className="border border-red-500 bg-red-500 px-2.5 py-1.5 text-[10px] font-semibold text-white">
                           {t("common.confirm", locale)}
                         </button>
                         <button onClick={() => setConfirmDeleteLlmKey(null)} className="border border-neutral-200 px-2.5 py-1.5 text-[10px] font-semibold text-neutral-500">
@@ -944,7 +944,7 @@ export default function AdminPage() {
                       </div>
                     ) : (
                       <button
-                        onClick={() => setConfirmDeleteLlmKey("whisper_api_key")}
+                        onClick={() => setConfirmDeleteLlmKey("groq_api_key")}
                         disabled={llmSaving}
                         className="flex items-center gap-1.5 border border-red-200 px-3 py-1.5 text-[10px] font-semibold text-red-500 transition-colors hover:border-red-500 hover:bg-red-50 disabled:opacity-40"
                       >
@@ -957,15 +957,15 @@ export default function AdminPage() {
               </div>
             </div>
             <p className="mt-1 text-[10px] text-neutral-400">
-              {t("admin.whisperKeyDesc", locale)}
+              {t("admin.groqKeyDesc", locale)}
             </p>
             <div className="mt-3 flex items-center gap-2">
-              <div className={`h-1.5 w-1.5 ${llmConfig.whisper_configured ? "bg-emerald-500" : "bg-red-500"}`} />
+              <div className={`h-1.5 w-1.5 ${llmConfig.groq_configured ? "bg-emerald-500" : "bg-red-500"}`} />
               <span className="text-[10px] text-neutral-500">
-                {llmConfig.whisper_configured ? `${t("admin.configured", locale)} : ${llmConfig.whisper_api_key}` : t("admin.notConfigured", locale)}
+                {llmConfig.groq_configured ? `${t("admin.configured", locale)} : ${llmConfig.groq_api_key}` : t("admin.notConfigured", locale)}
               </span>
             </div>
-            {testResult?.provider === "whisper" && (
+            {testResult?.provider === "groq" && (
               <div className={`mt-3 flex items-center gap-2 border px-3 py-2 text-[11px] font-medium ${testResult.success ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-red-200 bg-red-50 text-red-700"}`}>
                 {testResult.success ? <CircleCheck size={13} /> : <CircleX size={13} />}
                 {testResult.message}
@@ -974,22 +974,22 @@ export default function AdminPage() {
             <div className="mt-3 flex gap-2">
               <div className="relative flex-1">
                 <input
-                  type={showWhisperKey ? "text" : "password"}
-                  value={whisperKey}
-                  onChange={(e) => setWhisperKey(e.target.value)}
-                  placeholder="sk-..."
+                  type={showGroqKey ? "text" : "password"}
+                  value={groqKey}
+                  onChange={(e) => setGroqKey(e.target.value)}
+                  placeholder="gsk_..."
                   className="w-full border border-neutral-200 bg-neutral-50 px-4 py-2.5 pr-10 font-mono text-[12px] outline-none transition-colors focus:border-black focus:bg-white"
                 />
                 <button
-                  onClick={() => setShowWhisperKey(!showWhisperKey)}
+                  onClick={() => setShowGroqKey(!showGroqKey)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black"
                 >
-                  {showWhisperKey ? <EyeOff size={14} /> : <Eye size={14} />}
+                  {showGroqKey ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
               </div>
               <button
-                onClick={() => handleSaveLlmKey("whisper_api_key", whisperKey)}
-                disabled={!whisperKey.trim() || llmSaving}
+                onClick={() => handleSaveLlmKey("groq_api_key", groqKey)}
+                disabled={!groqKey.trim() || llmSaving}
                 className="border border-black bg-black px-5 py-2.5 text-[11px] font-semibold tracking-wide text-white uppercase transition-colors hover:bg-neutral-800 disabled:opacity-40"
               >
                 {llmSaving ? "..." : t("admin.save", locale)}

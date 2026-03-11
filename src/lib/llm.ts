@@ -54,7 +54,8 @@ const CONFIG = {
   retry: { maxAttempts: 3, baseDelayMs: 1000, maxDelayMs: 30_000, backoffMultiplier: 2 },
   timeout: { transcription: 120_000, generation: 90_000 },
   models: {
-    openai: { transcription: "whisper-1", generation: "gpt-4o" },
+    groq: { transcription: "whisper-large-v3-turbo" },
+    openai: { generation: "gpt-4o" },
     anthropic: { generation: "claude-sonnet-4-20250514" },
   },
   tokens: { maxReport: 8192, maxBrief: 4096, maxMetadata: 2048 },
@@ -85,7 +86,7 @@ async function getApiKey(key: string): Promise<string> {
     log("warn", "DB key read failed, env fallback", { key, error: String(err) });
   }
   const envMap: Record<string, string | undefined> = {
-    whisper_api_key: process.env.WHISPER_API_KEY || process.env.OPENAI_API_KEY,
+    groq_api_key: process.env.GROQ_API_KEY,
     openai_api_key: process.env.OPENAI_API_KEY,
     anthropic_api_key: process.env.ANTHROPIC_API_KEY,
   };
@@ -112,7 +113,14 @@ function validateApiKey(apiKey: string, provider: string): void {
   if (!apiKey) {
     throw new LlmError({
       code: LlmErrorCode.API_KEY_MISSING,
-      message: `Clé API ${provider === "openai" ? "OpenAI" : "Anthropic"} non configurée. Contactez l'administrateur (Administration → Moteur LLM).`,
+      message: `Clé API ${provider === "groq" ? "Groq" : provider === "openai" ? "OpenAI" : "Anthropic"} non configurée. Contactez l'administrateur (Administration → Moteur LLM).`,
+      provider,
+    });
+  }
+  if (provider === "groq" && !apiKey.startsWith("gsk_")) {
+    throw new LlmError({
+      code: LlmErrorCode.API_KEY_INVALID,
+      message: "Clé API Groq invalide (format attendu : gsk_...). Vérifiez la configuration.",
       provider,
     });
   }
@@ -138,6 +146,14 @@ function validateApiKey(apiKey: string, provider: string): void {
 
 let _oai: { c: OpenAI; k: string } | null = null;
 let _ant: { c: Anthropic; k: string } | null = null;
+let _groq: { c: OpenAI; k: string } | null = null;
+
+function getGroqClient(apiKey: string): OpenAI {
+  if (_groq?.k === apiKey) return _groq.c;
+  const c = new OpenAI({ apiKey, baseURL: "https://api.groq.com/openai/v1", timeout: CONFIG.timeout.transcription });
+  _groq = { c, k: apiKey };
+  return c;
+}
 
 function getOpenAIClient(apiKey: string): OpenAI {
   if (_oai?.k === apiKey) return _oai.c;
@@ -159,7 +175,7 @@ function getAnthropicClient(apiKey: string): Anthropic {
 
 function isRetryable(err: unknown): boolean {
   if (err instanceof LlmError) return err.retryable;
-  if (err instanceof OpenAI.APIError) return [408, 429, 500, 502, 503, 504].includes(err.status);
+  if (err instanceof OpenAI.APIError) return [408, 413, 429, 500, 502, 503, 504].includes(err.status);
   if (err instanceof Anthropic.APIError) return [429, 500, 502, 503, 529].includes(err.status);
   if (err instanceof Error) {
     const m = err.message.toLowerCase();
@@ -458,21 +474,21 @@ function validateAudioInput(buf: Buffer): void {
     throw new LlmError({
       code: LlmErrorCode.AUDIO_TOO_SHORT,
       message: "Le fichier audio est vide. Veuillez réenregistrer.",
-      provider: "openai",
+      provider: "groq",
     });
   }
   if (buf.length < CONFIG.audio.minBytes) {
     throw new LlmError({
       code: LlmErrorCode.AUDIO_TOO_SHORT,
       message: "Enregistrement trop court. Minimum quelques secondes d'audio requis.",
-      provider: "openai",
+      provider: "groq",
     });
   }
   if (buf.length > CONFIG.audio.maxBytes) {
     throw new LlmError({
       code: LlmErrorCode.TOKEN_LIMIT_EXCEEDED,
       message: `Fichier audio trop volumineux (${Math.round(buf.length / 1e6)}MB). Maximum : 25MB.`,
-      provider: "openai",
+      provider: "groq",
     });
   }
 }
@@ -506,16 +522,16 @@ export async function transcribeAudio(
   log("info", "Transcription start", { audioBytes: audioBuffer.length, language });
 
   validateAudioInput(audioBuffer);
-  const apiKey = await getApiKey("whisper_api_key");
-  validateApiKey(apiKey, "openai");
+  const apiKey = await getApiKey("groq_api_key");
+  validateApiKey(apiKey, "groq");
 
-  const openai = getOpenAIClient(apiKey);
+  const groq = getGroqClient(apiKey);
   const file = new File([new Uint8Array(audioBuffer)], "audio.webm", { type: "audio/webm" });
 
   const result = await withRetry("transcription", async () => {
-    return openai.audio.transcriptions.create({
+    return groq.audio.transcriptions.create({
       file,
-      model: CONFIG.models.openai.transcription,
+      model: CONFIG.models.groq.transcription,
       language,
       response_format: "verbose_json",
       timestamp_granularities: ["segment"],
@@ -528,7 +544,7 @@ export async function transcribeAudio(
     throw new LlmError({
       code: LlmErrorCode.TRANSCRIPTION_FAILED,
       message: "Transcription vide. L'audio ne contient peut-être pas de parole audible. Vérifiez la qualité de l'enregistrement.",
-      provider: "openai",
+      provider: "groq",
     });
   }
 

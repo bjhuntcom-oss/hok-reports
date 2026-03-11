@@ -5,13 +5,14 @@ import { Pool } from "pg";
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 const dbUrl = new URL(process.env.DATABASE_URL!);
+const isLocalhost = ["localhost", "127.0.0.1"].includes(dbUrl.hostname);
 const pool = new Pool({
   user: decodeURIComponent(dbUrl.username),
   password: decodeURIComponent(dbUrl.password),
   host: dbUrl.hostname,
   port: parseInt(dbUrl.port || "5432"),
   database: dbUrl.pathname.slice(1),
-  ssl: { rejectUnauthorized: false, servername: dbUrl.hostname },
+  ...(isLocalhost ? {} : { ssl: { rejectUnauthorized: false, servername: dbUrl.hostname } }),
 });
 
 const adapter = new PrismaPg(pool);

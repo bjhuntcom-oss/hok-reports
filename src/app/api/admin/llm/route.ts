@@ -11,7 +11,7 @@ export async function GET() {
     }
 
     const settings = await prisma.systemSetting.findMany({
-      where: { key: { in: ["whisper_api_key", "openai_api_key", "anthropic_api_key", "llm_provider"] } },
+      where: { key: { in: ["groq_api_key", "openai_api_key", "anthropic_api_key", "llm_provider"] } },
     });
 
     const result: Record<string, string> = {};
@@ -24,20 +24,20 @@ export async function GET() {
     }
 
     if (!result.llm_provider) result.llm_provider = "openai";
-    if (!result.whisper_api_key) {
-      const envWhisper = process.env.WHISPER_API_KEY || process.env.OPENAI_API_KEY;
-      result.whisper_api_key = envWhisper && envWhisper !== "your-openai-api-key-here" ? `${envWhisper.slice(0, 8)}...${envWhisper.slice(-4)}` : "";
+    if (!result.groq_api_key) {
+      const envGroq = process.env.GROQ_API_KEY;
+      result.groq_api_key = envGroq ? `${envGroq.slice(0, 8)}...${envGroq.slice(-4)}` : "";
     }
     if (!result.openai_api_key) result.openai_api_key = process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== "your-openai-api-key-here" ? `${process.env.OPENAI_API_KEY.slice(0, 8)}...${process.env.OPENAI_API_KEY.slice(-4)}` : "";
     if (!result.anthropic_api_key) result.anthropic_api_key = process.env.ANTHROPIC_API_KEY ? `${process.env.ANTHROPIC_API_KEY.slice(0, 8)}...${process.env.ANTHROPIC_API_KEY.slice(-4)}` : "";
 
-    const whisperConfigured = !!(await prisma.systemSetting.findUnique({ where: { key: "whisper_api_key" } }))?.value || (!!process.env.WHISPER_API_KEY || (!!process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== "your-openai-api-key-here"));
+    const groqConfigured = !!(await prisma.systemSetting.findUnique({ where: { key: "groq_api_key" } }))?.value || !!process.env.GROQ_API_KEY;
     const openaiConfigured = !!(await prisma.systemSetting.findUnique({ where: { key: "openai_api_key" } }))?.value || (!!process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== "your-openai-api-key-here");
     const anthropicConfigured = !!(await prisma.systemSetting.findUnique({ where: { key: "anthropic_api_key" } }))?.value || !!process.env.ANTHROPIC_API_KEY;
 
     return NextResponse.json({
       ...result,
-      whisper_configured: whisperConfigured,
+      groq_configured: groqConfigured,
       openai_configured: openaiConfigured,
       anthropic_configured: anthropicConfigured,
     });
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { key, value } = body;
 
-    if (!key || !["whisper_api_key", "openai_api_key", "anthropic_api_key", "llm_provider"].includes(key)) {
+    if (!key || !["groq_api_key", "openai_api_key", "anthropic_api_key", "llm_provider"].includes(key)) {
       return NextResponse.json({ error: "Clé de paramètre invalide" }, { status: 400 });
     }
 
@@ -67,8 +67,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Fournisseur LLM invalide" }, { status: 400 });
     }
 
-    if (key === "whisper_api_key" && value && !value.startsWith("sk-")) {
-      return NextResponse.json({ error: "Format de clé Whisper/OpenAI invalide (doit commencer par sk-)" }, { status: 400 });
+    if (key === "groq_api_key" && value && !value.startsWith("gsk_")) {
+      return NextResponse.json({ error: "Format de clé Groq invalide (doit commencer par gsk_)" }, { status: 400 });
     }
 
     if (key === "openai_api_key" && value && !value.startsWith("sk-")) {
@@ -85,8 +85,8 @@ export async function POST(req: Request) {
       create: { key, value },
     });
 
-    if (key === "whisper_api_key") {
-      process.env.WHISPER_API_KEY = value;
+    if (key === "groq_api_key") {
+      process.env.GROQ_API_KEY = value;
     } else if (key === "openai_api_key") {
       process.env.OPENAI_API_KEY = value;
     } else if (key === "anthropic_api_key") {

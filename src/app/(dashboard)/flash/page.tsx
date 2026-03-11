@@ -2,22 +2,29 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Mic, Square, Pause, Play, Loader2, Zap } from "lucide-react";
+import { Mic, Square, Pause, Play, Loader2, Zap, Radio } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { t } from "@/lib/i18n";
 
 export default function FlashRecordPage() {
   const router = useRouter();
   const { locale } = useAppStore();
-  const [phase, setPhase] = useState<"ready" | "recording" | "processing">("ready");
+  const [phase, setPhase] = useState<"ready" | "listening" | "recording" | "processing">("ready");
   const [duration, setDuration] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [error, setError] = useState("");
   const [processingStep, setProcessingStep] = useState("");
+  const [audioLevel, setAudioLevel] = useState(0);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const vadFrameRef = useRef<number | null>(null);
+  const vadSilenceCountRef = useRef(0);
+  const vadVoiceCountRef = useRef(0);
 
   const formatTime = (s: number) => {
     const h = Math.floor(s / 3600);
@@ -26,33 +33,114 @@ export default function FlashRecordPage() {
     return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
   };
 
+  const cleanupAudioContext = useCallback(() => {
+    if (vadFrameRef.current) cancelAnimationFrame(vadFrameRef.current);
+    vadFrameRef.current = null;
+    if (audioContextRef.current?.state !== "closed") {
+      audioContextRef.current?.close().catch(() => {});
+    }
+    audioContextRef.current = null;
+    analyserRef.current = null;
+    setAudioLevel(0);
+  }, []);
+
+  const startRecordingFromStream = useCallback((stream: MediaStream) => {
+    const mediaRecorder = new MediaRecorder(stream, {
+      mimeType: "audio/webm;codecs=opus",
+    });
+
+    chunksRef.current = [];
+    mediaRecorderRef.current = mediaRecorder;
+
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) chunksRef.current.push(e.data);
+    };
+
+    mediaRecorder.start(1000);
+    setPhase("recording");
+    setIsPaused(false);
+    setDuration(0);
+
+    timerRef.current = setInterval(() => {
+      setDuration((d) => d + 1);
+    }, 1000);
+  }, []);
+
   const startRecording = useCallback(async () => {
     try {
       setError("");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "audio/webm;codecs=opus",
-      });
-
-      chunksRef.current = [];
-      mediaRecorderRef.current = mediaRecorder;
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
-
-      mediaRecorder.start(1000);
-      setPhase("recording");
-      setIsPaused(false);
-      setDuration(0);
-
-      timerRef.current = setInterval(() => {
-        setDuration((d) => d + 1);
-      }, 1000);
+      streamRef.current = stream;
+      startRecordingFromStream(stream);
     } catch {
       setError(t("flash.micDenied", locale));
     }
-  }, []);
+  }, [startRecordingFromStream, locale]);
+
+  const startListening = useCallback(async () => {
+    try {
+      setError("");
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+
+      const audioContext = new AudioContext();
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 512;
+      analyser.smoothingTimeConstant = 0.3;
+      const source = audioContext.createMediaStreamSource(stream);
+      source.connect(analyser);
+
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      vadSilenceCountRef.current = 0;
+      vadVoiceCountRef.current = 0;
+
+      setPhase("listening");
+
+      const VOICE_THRESHOLD = 25;
+      const VOICE_FRAMES_REQUIRED = 8;
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+      const detectVoice = () => {
+        if (!analyserRef.current) return;
+        analyserRef.current.getByteFrequencyData(dataArray);
+
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+        const avg = sum / dataArray.length;
+        setAudioLevel(Math.min(100, avg * 2));
+
+        if (avg > VOICE_THRESHOLD) {
+          vadVoiceCountRef.current++;
+          vadSilenceCountRef.current = 0;
+        } else {
+          vadSilenceCountRef.current++;
+          if (vadSilenceCountRef.current > 30) vadVoiceCountRef.current = 0;
+        }
+
+        if (vadVoiceCountRef.current >= VOICE_FRAMES_REQUIRED) {
+          cleanupAudioContext();
+          startRecordingFromStream(stream);
+          return;
+        }
+
+        vadFrameRef.current = requestAnimationFrame(detectVoice);
+      };
+
+      vadFrameRef.current = requestAnimationFrame(detectVoice);
+    } catch {
+      setError(t("flash.micDenied", locale));
+    }
+  }, [cleanupAudioContext, startRecordingFromStream, locale]);
+
+  const cancelListening = useCallback(() => {
+    cleanupAudioContext();
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+    setPhase("ready");
+  }, [cleanupAudioContext]);
 
   const pauseRecording = () => {
     if (mediaRecorderRef.current?.state === "recording") {
@@ -150,9 +238,16 @@ export default function FlashRecordPage() {
   useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
+      if (vadFrameRef.current) cancelAnimationFrame(vadFrameRef.current);
+      if (audioContextRef.current?.state !== "closed") {
+        audioContextRef.current?.close().catch(() => {});
+      }
       if (mediaRecorderRef.current?.state === "recording") {
         mediaRecorderRef.current.stop();
         mediaRecorderRef.current.stream.getTracks().forEach((t) => t.stop());
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((t) => t.stop());
       }
     };
   }, []);
@@ -229,18 +324,59 @@ export default function FlashRecordPage() {
         </>
       )}
 
+      {phase === "listening" && (
+        <>
+          <div className="flex flex-col items-center">
+            <div className="relative flex h-28 w-28 items-center justify-center">
+              <div
+                className="absolute inset-0 animate-pulse rounded-full bg-blue-100 transition-transform"
+                style={{ transform: `scale(${0.6 + audioLevel / 200})`, opacity: 0.5 + audioLevel / 200 }}
+              />
+              <Radio size={36} className="relative z-10 text-blue-600 animate-pulse" />
+            </div>
+            <p className="mt-4 text-[13px] font-medium text-blue-600">
+              {locale === "en" ? "Listening... Start speaking to begin recording" : "Écoute en cours... Parlez pour démarrer l'enregistrement"}
+            </p>
+            <p className="mt-1 text-[11px] text-neutral-400">
+              {locale === "en" ? "Say \"Hello\" or start dictating" : "Dites \"Bonjour\" ou commencez à dicter"}
+            </p>
+            <div className="mt-4 h-1 w-48 overflow-hidden bg-neutral-200">
+              <div className="h-full bg-blue-500 transition-all duration-100" style={{ width: `${audioLevel}%` }} />
+            </div>
+          </div>
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={cancelListening}
+              className="border border-neutral-300 px-4 py-2 text-[10px] font-semibold text-neutral-500 transition-colors hover:border-black hover:text-black"
+            >
+              {locale === "en" ? "Cancel" : "Annuler"}
+            </button>
+          </div>
+        </>
+      )}
+
       <div className="flex items-center justify-center gap-4">
-        {phase === "ready" ? (
-          <button
-            onClick={startRecording}
-            className="group flex h-28 w-28 flex-col items-center justify-center bg-black text-white transition-transform hover:scale-105 active:scale-95"
-          >
-            <Mic size={36} />
-            <span className="mt-2 text-[9px] font-semibold tracking-[0.15em] uppercase">
-              {t("flash.start", locale)}
-            </span>
-          </button>
-        ) : (
+        {phase === "ready" && (
+          <div className="flex flex-col items-center gap-4">
+            <button
+              onClick={startRecording}
+              className="group flex h-28 w-28 flex-col items-center justify-center bg-black text-white transition-transform hover:scale-105 active:scale-95"
+            >
+              <Mic size={36} />
+              <span className="mt-2 text-[9px] font-semibold tracking-[0.15em] uppercase">
+                {t("flash.start", locale)}
+              </span>
+            </button>
+            <button
+              onClick={startListening}
+              className="flex items-center gap-2 border border-blue-300 bg-blue-50 px-4 py-2.5 text-[11px] font-medium text-blue-600 transition-colors hover:bg-blue-100 hover:border-blue-400"
+            >
+              <Radio size={14} />
+              {locale === "en" ? "Auto mode — Start on voice" : "Mode auto — Démarrer à la voix"}
+            </button>
+          </div>
+        )}
+        {phase === "recording" && (
           <>
             <button
               onClick={isPaused ? resumeRecording : pauseRecording}
@@ -270,6 +406,17 @@ export default function FlashRecordPage() {
             <p>{t("flash.step2", locale)}</p>
             <p>{t("flash.step3", locale)}</p>
             <p>{t("flash.step4", locale)}</p>
+          </div>
+          <div className="mx-auto h-px w-16 bg-neutral-200" />
+          <div className="space-y-1 text-[10px] text-neutral-300">
+            <p className="font-semibold text-neutral-400">
+              {locale === "en" ? "💡 Auto mode" : "💡 Mode automatique"}
+            </p>
+            <p>
+              {locale === "en"
+                ? "Click \"Auto mode\" — the microphone will listen and start recording as soon as you speak."
+                : "Cliquez sur \"Mode auto\" — le micro écoute et l'enregistrement démarre automatiquement dès que vous parlez."}
+            </p>
           </div>
         </div>
       )}

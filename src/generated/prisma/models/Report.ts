@@ -31,6 +31,7 @@ export type ReportMinAggregateOutputType = {
   keyPoints: string | null
   actionItems: string | null
   legalNotes: string | null
+  suggestions: string | null
   category: string | null
   status: string | null
   format: string | null
@@ -48,6 +49,7 @@ export type ReportMaxAggregateOutputType = {
   keyPoints: string | null
   actionItems: string | null
   legalNotes: string | null
+  suggestions: string | null
   category: string | null
   status: string | null
   format: string | null
@@ -65,6 +67,7 @@ export type ReportCountAggregateOutputType = {
   keyPoints: number
   actionItems: number
   legalNotes: number
+  suggestions: number
   category: number
   status: number
   format: number
@@ -84,6 +87,7 @@ export type ReportMinAggregateInputType = {
   keyPoints?: true
   actionItems?: true
   legalNotes?: true
+  suggestions?: true
   category?: true
   status?: true
   format?: true
@@ -101,6 +105,7 @@ export type ReportMaxAggregateInputType = {
   keyPoints?: true
   actionItems?: true
   legalNotes?: true
+  suggestions?: true
   category?: true
   status?: true
   format?: true
@@ -118,6 +123,7 @@ export type ReportCountAggregateInputType = {
   keyPoints?: true
   actionItems?: true
   legalNotes?: true
+  suggestions?: true
   category?: true
   status?: true
   format?: true
@@ -208,6 +214,7 @@ export type ReportGroupByOutputType = {
   keyPoints: string
   actionItems: string | null
   legalNotes: string | null
+  suggestions: string | null
   category: string
   status: string
   format: string
@@ -246,6 +253,7 @@ export type ReportWhereInput = {
   keyPoints?: Prisma.StringFilter<"Report"> | string
   actionItems?: Prisma.StringNullableFilter<"Report"> | string | null
   legalNotes?: Prisma.StringNullableFilter<"Report"> | string | null
+  suggestions?: Prisma.StringNullableFilter<"Report"> | string | null
   category?: Prisma.StringFilter<"Report"> | string
   status?: Prisma.StringFilter<"Report"> | string
   format?: Prisma.StringFilter<"Report"> | string
@@ -265,6 +273,7 @@ export type ReportOrderByWithRelationInput = {
   keyPoints?: Prisma.SortOrder
   actionItems?: Prisma.SortOrderInput | Prisma.SortOrder
   legalNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  suggestions?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
   status?: Prisma.SortOrder
   format?: Prisma.SortOrder
@@ -287,6 +296,7 @@ export type ReportWhereUniqueInput = Prisma.AtLeast<{
   keyPoints?: Prisma.StringFilter<"Report"> | string
   actionItems?: Prisma.StringNullableFilter<"Report"> | string | null
   legalNotes?: Prisma.StringNullableFilter<"Report"> | string | null
+  suggestions?: Prisma.StringNullableFilter<"Report"> | string | null
   category?: Prisma.StringFilter<"Report"> | string
   status?: Prisma.StringFilter<"Report"> | string
   format?: Prisma.StringFilter<"Report"> | string
@@ -306,6 +316,7 @@ export type ReportOrderByWithAggregationInput = {
   keyPoints?: Prisma.SortOrder
   actionItems?: Prisma.SortOrderInput | Prisma.SortOrder
   legalNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  suggestions?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
   status?: Prisma.SortOrder
   format?: Prisma.SortOrder
@@ -329,6 +340,7 @@ export type ReportScalarWhereWithAggregatesInput = {
   keyPoints?: Prisma.StringWithAggregatesFilter<"Report"> | string
   actionItems?: Prisma.StringNullableWithAggregatesFilter<"Report"> | string | null
   legalNotes?: Prisma.StringNullableWithAggregatesFilter<"Report"> | string | null
+  suggestions?: Prisma.StringNullableWithAggregatesFilter<"Report"> | string | null
   category?: Prisma.StringWithAggregatesFilter<"Report"> | string
   status?: Prisma.StringWithAggregatesFilter<"Report"> | string
   format?: Prisma.StringWithAggregatesFilter<"Report"> | string
@@ -346,6 +358,7 @@ export type ReportCreateInput = {
   keyPoints: string
   actionItems?: string | null
   legalNotes?: string | null
+  suggestions?: string | null
   category?: string
   status?: string
   format?: string
@@ -363,6 +376,7 @@ export type ReportUncheckedCreateInput = {
   keyPoints: string
   actionItems?: string | null
   legalNotes?: string | null
+  suggestions?: string | null
   category?: string
   status?: string
   format?: string
@@ -380,6 +394,7 @@ export type ReportUpdateInput = {
   keyPoints?: Prisma.StringFieldUpdateOperationsInput | string
   actionItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suggestions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   format?: Prisma.StringFieldUpdateOperationsInput | string
@@ -397,6 +412,7 @@ export type ReportUncheckedUpdateInput = {
   keyPoints?: Prisma.StringFieldUpdateOperationsInput | string
   actionItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suggestions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   format?: Prisma.StringFieldUpdateOperationsInput | string
@@ -414,6 +430,7 @@ export type ReportCreateManyInput = {
   keyPoints: string
   actionItems?: string | null
   legalNotes?: string | null
+  suggestions?: string | null
   category?: string
   status?: string
   format?: string
@@ -431,6 +448,7 @@ export type ReportUpdateManyMutationInput = {
   keyPoints?: Prisma.StringFieldUpdateOperationsInput | string
   actionItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suggestions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   format?: Prisma.StringFieldUpdateOperationsInput | string
@@ -446,6 +464,7 @@ export type ReportUncheckedUpdateManyInput = {
   keyPoints?: Prisma.StringFieldUpdateOperationsInput | string
   actionItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suggestions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   format?: Prisma.StringFieldUpdateOperationsInput | string
@@ -473,6 +492,7 @@ export type ReportCountOrderByAggregateInput = {
   keyPoints?: Prisma.SortOrder
   actionItems?: Prisma.SortOrder
   legalNotes?: Prisma.SortOrder
+  suggestions?: Prisma.SortOrder
   category?: Prisma.SortOrder
   status?: Prisma.SortOrder
   format?: Prisma.SortOrder
@@ -490,6 +510,7 @@ export type ReportMaxOrderByAggregateInput = {
   keyPoints?: Prisma.SortOrder
   actionItems?: Prisma.SortOrder
   legalNotes?: Prisma.SortOrder
+  suggestions?: Prisma.SortOrder
   category?: Prisma.SortOrder
   status?: Prisma.SortOrder
   format?: Prisma.SortOrder
@@ -507,6 +528,7 @@ export type ReportMinOrderByAggregateInput = {
   keyPoints?: Prisma.SortOrder
   actionItems?: Prisma.SortOrder
   legalNotes?: Prisma.SortOrder
+  suggestions?: Prisma.SortOrder
   category?: Prisma.SortOrder
   status?: Prisma.SortOrder
   format?: Prisma.SortOrder
@@ -608,6 +630,7 @@ export type ReportCreateWithoutUserInput = {
   keyPoints: string
   actionItems?: string | null
   legalNotes?: string | null
+  suggestions?: string | null
   category?: string
   status?: string
   format?: string
@@ -624,6 +647,7 @@ export type ReportUncheckedCreateWithoutUserInput = {
   keyPoints: string
   actionItems?: string | null
   legalNotes?: string | null
+  suggestions?: string | null
   category?: string
   status?: string
   format?: string
@@ -669,6 +693,7 @@ export type ReportScalarWhereInput = {
   keyPoints?: Prisma.StringFilter<"Report"> | string
   actionItems?: Prisma.StringNullableFilter<"Report"> | string | null
   legalNotes?: Prisma.StringNullableFilter<"Report"> | string | null
+  suggestions?: Prisma.StringNullableFilter<"Report"> | string | null
   category?: Prisma.StringFilter<"Report"> | string
   status?: Prisma.StringFilter<"Report"> | string
   format?: Prisma.StringFilter<"Report"> | string
@@ -686,6 +711,7 @@ export type ReportCreateWithoutSessionInput = {
   keyPoints: string
   actionItems?: string | null
   legalNotes?: string | null
+  suggestions?: string | null
   category?: string
   status?: string
   format?: string
@@ -702,6 +728,7 @@ export type ReportUncheckedCreateWithoutSessionInput = {
   keyPoints: string
   actionItems?: string | null
   legalNotes?: string | null
+  suggestions?: string | null
   category?: string
   status?: string
   format?: string
@@ -744,6 +771,7 @@ export type ReportCreateManyUserInput = {
   keyPoints: string
   actionItems?: string | null
   legalNotes?: string | null
+  suggestions?: string | null
   category?: string
   status?: string
   format?: string
@@ -760,6 +788,7 @@ export type ReportUpdateWithoutUserInput = {
   keyPoints?: Prisma.StringFieldUpdateOperationsInput | string
   actionItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suggestions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   format?: Prisma.StringFieldUpdateOperationsInput | string
@@ -776,6 +805,7 @@ export type ReportUncheckedUpdateWithoutUserInput = {
   keyPoints?: Prisma.StringFieldUpdateOperationsInput | string
   actionItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suggestions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   format?: Prisma.StringFieldUpdateOperationsInput | string
@@ -792,6 +822,7 @@ export type ReportUncheckedUpdateManyWithoutUserInput = {
   keyPoints?: Prisma.StringFieldUpdateOperationsInput | string
   actionItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suggestions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   format?: Prisma.StringFieldUpdateOperationsInput | string
@@ -808,6 +839,7 @@ export type ReportCreateManySessionInput = {
   keyPoints: string
   actionItems?: string | null
   legalNotes?: string | null
+  suggestions?: string | null
   category?: string
   status?: string
   format?: string
@@ -824,6 +856,7 @@ export type ReportUpdateWithoutSessionInput = {
   keyPoints?: Prisma.StringFieldUpdateOperationsInput | string
   actionItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suggestions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   format?: Prisma.StringFieldUpdateOperationsInput | string
@@ -840,6 +873,7 @@ export type ReportUncheckedUpdateWithoutSessionInput = {
   keyPoints?: Prisma.StringFieldUpdateOperationsInput | string
   actionItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suggestions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   format?: Prisma.StringFieldUpdateOperationsInput | string
@@ -856,6 +890,7 @@ export type ReportUncheckedUpdateManyWithoutSessionInput = {
   keyPoints?: Prisma.StringFieldUpdateOperationsInput | string
   actionItems?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suggestions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   format?: Prisma.StringFieldUpdateOperationsInput | string
@@ -874,6 +909,7 @@ export type ReportSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   keyPoints?: boolean
   actionItems?: boolean
   legalNotes?: boolean
+  suggestions?: boolean
   category?: boolean
   status?: boolean
   format?: boolean
@@ -893,6 +929,7 @@ export type ReportSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   keyPoints?: boolean
   actionItems?: boolean
   legalNotes?: boolean
+  suggestions?: boolean
   category?: boolean
   status?: boolean
   format?: boolean
@@ -912,6 +949,7 @@ export type ReportSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   keyPoints?: boolean
   actionItems?: boolean
   legalNotes?: boolean
+  suggestions?: boolean
   category?: boolean
   status?: boolean
   format?: boolean
@@ -931,6 +969,7 @@ export type ReportSelectScalar = {
   keyPoints?: boolean
   actionItems?: boolean
   legalNotes?: boolean
+  suggestions?: boolean
   category?: boolean
   status?: boolean
   format?: boolean
@@ -941,7 +980,7 @@ export type ReportSelectScalar = {
   userId?: boolean
 }
 
-export type ReportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "summary" | "keyPoints" | "actionItems" | "legalNotes" | "category" | "status" | "format" | "exportedAt" | "createdAt" | "updatedAt" | "sessionId" | "userId", ExtArgs["result"]["report"]>
+export type ReportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "summary" | "keyPoints" | "actionItems" | "legalNotes" | "suggestions" | "category" | "status" | "format" | "exportedAt" | "createdAt" | "updatedAt" | "sessionId" | "userId", ExtArgs["result"]["report"]>
 export type ReportInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -968,6 +1007,7 @@ export type $ReportPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     keyPoints: string
     actionItems: string | null
     legalNotes: string | null
+    suggestions: string | null
     category: string
     status: string
     format: string
@@ -1407,6 +1447,7 @@ export interface ReportFieldRefs {
   readonly keyPoints: Prisma.FieldRef<"Report", 'String'>
   readonly actionItems: Prisma.FieldRef<"Report", 'String'>
   readonly legalNotes: Prisma.FieldRef<"Report", 'String'>
+  readonly suggestions: Prisma.FieldRef<"Report", 'String'>
   readonly category: Prisma.FieldRef<"Report", 'String'>
   readonly status: Prisma.FieldRef<"Report", 'String'>
   readonly format: Prisma.FieldRef<"Report", 'String'>

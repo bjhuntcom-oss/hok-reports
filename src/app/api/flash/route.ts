@@ -106,6 +106,7 @@ export async function POST(req: NextRequest) {
         keyPoints: JSON.stringify(report.keyPoints),
         actionItems: JSON.stringify(report.actionItems),
         legalNotes: report.legalNotes,
+        suggestions: JSON.stringify(report.suggestions),
         category: metadata.category,
         format: "standard",
         sessionId,

@@ -51,6 +51,8 @@ function classifyPoint(text: string): "critical" | "warning" | "info" {
 function generatePdfHtml(report: any): string {
   const keyPoints = JSON.parse(report.keyPoints || "[]");
   const actionItems = JSON.parse(report.actionItems || "[]");
+  let suggestions: string[] = [];
+  try { suggestions = JSON.parse(report.suggestions || "[]"); } catch { suggestions = []; }
   const categoryLabels: Record<string, string> = {
     general: "Général", consultation: "Consultation", hearing: "Audience", deposition: "Déposition", meeting: "Réunion",
   };
@@ -145,6 +147,23 @@ function generatePdfHtml(report: any): string {
   .legal-box { background: #fffbeb; border: 1px solid #fbbf24; padding: 14px 16px; margin-top: 4px; }
   .legal-box p { font-size: 10pt; color: #78350f; line-height: 1.6; }
   .legal-icon { font-size: 12pt; margin-right: 4px; }
+
+  /* ── SUGGESTIONS ── */
+  .suggestion-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 12px; margin-bottom: 4px; border-left: 2px solid #6b7280; }
+  .suggestion-item .sug-type { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 7pt; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; padding: 1px 6px; flex-shrink: 0; margin-top: 2px; }
+  .sug-LOI { background: #eff6ff; border-color: #3b82f6 !important; } .sug-LOI .sug-type { color: #3b82f6; background: #dbeafe; }
+  .sug-ARGUMENT { background: #f0fdf4; border-color: #22c55e !important; } .sug-ARGUMENT .sug-type { color: #22c55e; background: #dcfce7; }
+  .sug-DEFENSE { background: #fef3c7; border-color: #f59e0b !important; } .sug-DEFENSE .sug-type { color: #d97706; background: #fef9c3; }
+  .sug-OUVERTURE { background: #f5f3ff; border-color: #8b5cf6 !important; } .sug-OUVERTURE .sug-type { color: #8b5cf6; background: #ede9fe; }
+  .sug-JURISPRUDENCE { background: #fff7ed; border-color: #ea580c !important; } .sug-JURISPRUDENCE .sug-type { color: #ea580c; background: #ffedd5; }
+  .sug-PREUVE { background: #f0f9ff; border-color: #0ea5e9 !important; } .sug-PREUVE .sug-type { color: #0ea5e9; background: #e0f2fe; }
+  .suggestion-text { font-size: 10pt; line-height: 1.5; color: #1f2937; }
+  .suggestion-disclaimer { font-size: 8pt; color: #9ca3af; font-style: italic; margin-bottom: 10px; }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer-box { background: #fef2f2; border: 1px solid #fecaca; padding: 12px 16px; margin-top: 20px; }
+  .disclaimer-title { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 8pt; font-weight: 800; color: #991b1b; margin-bottom: 4px; letter-spacing: 0.5px; }
+  .disclaimer-text { font-size: 8pt; color: #7f1d1d; line-height: 1.5; }
 
   /* ── TRANSCRIPTION ── */
   .transcription-box { background: #fafafa; border: 1px solid #e5e5e5; padding: 14px 16px; font-size: 9.5pt; line-height: 1.75; color: #444; white-space: pre-wrap; font-family: 'Georgia', serif; }
@@ -265,6 +284,35 @@ function generatePdfHtml(report: any): string {
       <div class="legal-box"><p><span class="legal-icon">⚖</span> ${safeHighlight(report.legalNotes)}</p></div>
     </div>
   </div>` : ""}
+
+  ${suggestions.length > 0 ? (() => {
+    let sugNum = 2;
+    if (keyPoints.length > 0) sugNum++;
+    if (actionItems.length > 0) sugNum++;
+    if (report.legalNotes) sugNum++;
+    return `
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">${sugNum}</div>
+      <div class="section-title">Suggestions juridiques</div>
+    </div>
+    <div class="section-body">
+      <p class="suggestion-disclaimer">⚠ Ces suggestions sont indicatives et générées par IA. Les références légales et jurisprudentielles doivent impérativement être vérifiées par l'avocat avant toute utilisation.</p>
+      ${suggestions.map((s: string) => {
+        const match = s.match(/^\[([A-ZÉ]+)\]\s*/);
+        const type = match ? match[1] : "";
+        const text = match ? s.slice(match[0].length) : s;
+        const cssClass = type ? `sug-${type.replace("É", "E")}` : "";
+        return `<div class="suggestion-item ${cssClass}">${type ? `<span class="sug-type">${escapeHtml(type)}</span>` : ""}<span class="suggestion-text">${safeHighlight(text)}</span></div>`;
+      }).join("")}
+    </div>
+  </div>`;
+  })() : ""}
+
+  <div class="disclaimer-box">
+    <div class="disclaimer-title">⚠ AVERTISSEMENT — VÉRIFICATION OBLIGATOIRE</div>
+    <div class="disclaimer-text">Ce rapport est généré automatiquement par intelligence artificielle à partir d'une transcription audio. Les références légales, jurisprudentielles et les suggestions citées doivent impérativement être vérifiées dans les textes officiels avant toute utilisation. La transcription peut contenir des erreurs ou omissions (homophones, passages inaudibles). Ce document ne constitue pas un avis juridique formel et ne remplace pas l'analyse personnelle de l'avocat. Tous les noms, dates, montants et références de dossier doivent être contrôlés.</div>
+  </div>
 
   ${report.session?.transcription?.content ? `
   <div class="section" style="page-break-before: always;">

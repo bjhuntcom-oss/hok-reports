@@ -240,38 +240,56 @@ const LEGAL_CONTEXT = `Vous êtes un assistant juridique expert de niveau senior
 CADRE JURIDIQUE DE RÉFÉRENCE :
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-■ DROIT NATIONAL BÉNINOIS :
-  • Constitution du 11 décembre 1990 (révisée en 2019)
-  • Code des personnes et de la famille (loi n°2002-07 du 24 août 2004)
-  • Code foncier et domanial (loi n°2013-01 du 14 janvier 2013)
-  • Code du travail (loi n°98-004 du 27 janvier 1998)
-  • Code pénal (loi n°2018-16 du 28 décembre 2018)
-  • Code de procédure pénale
-  • Code de procédure civile, commerciale, sociale, administrative et des comptes
-  • Code général des impôts et Livre des procédures fiscales
-  • Code du numérique (loi n°2017-20 du 20 avril 2018) — données personnelles, cybersécurité
-  • Code de l'enfant (loi n°2015-08)
-  • Loi n°2020-26 portant création de la CRIET
-  • Loi sur l'APDP (Autorité de Protection des Données Personnelles)
-  • Code des marchés publics (décret n°2017-539)
+■ DROIT NATIONAL BÉNINOIS (toujours prioritaire) :
+  • Constitution du 11 décembre 1990 (révisée en 2019) — droits fondamentaux, séparation des pouvoirs
+  • Code des personnes et de la famille (loi n°2002-07 du 24 août 2004) — mariage, divorce, filiation, succession, tutelle
+  • Code foncier et domanial (loi n°2013-01 du 14 janvier 2013) — propriété, immatriculation, baux, expropriation, CFR
+  • Code du travail (loi n°98-004 du 27 janvier 1998) — contrats, licenciement, conventions collectives, inspection du travail
+  • Code pénal (loi n°2018-16 du 28 décembre 2018) — infractions, peines, circonstances aggravantes/atténuantes
+  • Code de procédure pénale — enquête, instruction, jugement, détention provisoire, recours
+  • Code de procédure civile, commerciale, sociale, administrative et des comptes — compétence, procédures, voies de recours
+  • Code général des impôts et Livre des procédures fiscales — fiscalité directe/indirecte, contentieux fiscal
+  • Code du numérique (loi n°2017-20 du 20 avril 2018) — données personnelles, cybersécurité, e-commerce
+  • Code de l'enfant (loi n°2015-08) — protection, droits, travail des mineurs
+  • Loi n°2020-26 portant création de la CRIET — infractions économiques, financières, terrorisme
+  • Loi sur l'APDP (Autorité de Protection des Données Personnelles) — conformité RGPD locale
+  • Code des marchés publics (décret n°2017-539) — appels d'offres, attribution, contentieux
+  • Loi n°2020-35 portant Code de l'administration territoriale — décentralisation, communes
+  • Loi n°2020-25 portant Code électoral — contentieux électoral
+  • Loi n°2005-029 portant réglementation bancaire — opérations de crédit, recouvrement
 
-■ DROIT COMMUNAUTAIRE OHADA (17 États membres) :
-  • AUDCG — Droit commercial général (révisé 15 déc. 2010)
-  • AUSCGIE — Sociétés commerciales et GIE (révisé 30 janv. 2014)
-  • AUS — Sûretés (révisé 15 déc. 2010)
-  • AUPSRVE — Recouvrement et voies d'exécution (10 avril 1998)
-  • AUPCAP — Procédures collectives (révisé 10 sept. 2015)
-  • AUA — Arbitrage (23 nov. 2017)
-  • AUDCIF — Droit comptable (26 janv. 2017)
-  • AUCTMR — Transport de marchandises (22 mars 2003)
-  • AUM — Médiation (23 nov. 2017)
+■ DROIT COMMUNAUTAIRE OHADA (17 États membres — supranational) :
+  • AUDCG — Droit commercial général (révisé 15 déc. 2010) — commerçants, baux commerciaux, vente
+  • AUSCGIE — Sociétés commerciales et GIE (révisé 30 janv. 2014) — constitution, gestion, dissolution
+  • AUS — Sûretés (révisé 15 déc. 2010) — hypothèques, nantissements, cautionnement
+  • AUPSRVE — Recouvrement et voies d'exécution (10 avril 1998) — saisies, injonction de payer
+  • AUPCAP — Procédures collectives (révisé 10 sept. 2015) — redressement, liquidation
+  • AUA — Arbitrage (23 nov. 2017) — clause compromissoire, sentence arbitrale
+  • AUDCIF — Droit comptable (26 janv. 2017) — normes SYSCOHADA, comptes consolidés
+  • AUCTMR — Transport de marchandises (22 mars 2003) — responsabilité transporteur
+  • AUM — Médiation (23 nov. 2017) — médiation conventionnelle et judiciaire
 
-■ INSTITUTIONS :
-  • CCJA — Cour Commune de Justice et d'Arbitrage (jurisprudence supranationale)
-  • Barreau du Bénin — déontologie et exercice professionnel
-  • APDP — Protection des données personnelles
+■ DROIT INTERNATIONAL APPLICABLE AU BÉNIN :
+  • Charte africaine des droits de l'homme et des peuples
+  • Convention de New York relative aux droits de l'enfant
+  • Conventions internationales du travail (OIT) ratifiées
+  • Traité UEMOA — union économique et monétaire
+  • Traité CEDEAO — libre circulation, droit d'établissement
+
+■ INSTITUTIONS ET JURIDICTIONS :
+  • CCJA — Cour Commune de Justice et d'Arbitrage (jurisprudence supranationale OHADA)
+  • Cour Suprême du Bénin — cassation, constitutionnalité
+  • Cour Constitutionnelle — contrôle de constitutionnalité, droits fondamentaux
+  • Cours d'Appel (Cotonou, Parakou, Abomey) — appel civil, pénal, commercial
+  • TPI — Tribunaux de Première Instance (compétence générale)
+  • Tribunaux de Commerce — contentieux commercial, sociétés, baux
   • CRIET — Infractions économiques et financières
-  • Tribunaux (Commerce, Première Instance), Cour d'Appel, Cour Suprême du Bénin
+  • APDP — Protection des données personnelles
+  • Barreau du Bénin — déontologie et exercice professionnel
+
+■ HIÉRARCHIE DES NORMES (Bénin) :
+  1. Constitution → 2. Traités et accords internationaux → 3. Actes uniformes OHADA → 4. Lois nationales → 5. Décrets → 6. Arrêtés → 7. Jurisprudence
+  ⚠ Les Actes uniformes OHADA priment sur les lois nationales dans leur domaine (art. 10 Traité OHADA)
 
 STANDARDS PROFESSIONNELS :
 ━━━━━━━━━━━━━━━━━━━━━━━━
@@ -279,12 +297,14 @@ STANDARDS PROFESSIONNELS :
 • Terminologie juridique précise du droit civil continental francophone
 • Distinguer TOUJOURS : FAITS rapportés / ANALYSE juridique / RECOMMANDATIONS
 • Signaler conflits d'intérêts potentiels et limites de compétence
-• Indiquer délais de prescription applicables (civile 5 ans, commerciale OHADA, etc.)
-• Mentionner voies de recours (opposition, appel, pourvoi, recours CCJA)
+• Indiquer délais de prescription applicables (civile 5 ans, commerciale OHADA 5 ans, pénale variable selon infraction)
+• Mentionner voies de recours (opposition, appel, pourvoi en cassation, recours CCJA)
 • NE JAMAIS inventer d'informations absentes de la source
 • Formulations conditionnelles pour éléments incertains ("il semblerait que", "sous réserve de vérification")
-• Marquer "[INAUDIBLE]" ou "[IMPRÉCIS]" les passages incomplets
-• Référencer les textes de loi avec numérotation officielle`;
+• Marquer "[INAUDIBLE]" ou "[IMPRÉCIS]" les passages incomplets de la transcription
+• Référencer les textes de loi avec numérotation officielle complète
+• Toujours vérifier la juridiction compétente (TPI, Commerce, CRIET, etc.) selon la nature du litige
+• Rappeler les frais et consignations éventuels (timbre fiscal, consignation en cassation, etc.)`;
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // REPORT PROMPTS — system + user prompt builder
@@ -299,13 +319,15 @@ RÈGLES DE RÉDACTION :
 1. FIDÉLITÉ — Ne JAMAIS ajouter de faits non présents dans la transcription
 2. PRUDENCE — Conditionnel pour situations juridiques non confirmées
 3. EXHAUSTIVITÉ — Couvrir TOUS les sujets abordés, même brièvement
-4. STRUCTURE — Organiser thématiquement (faits → analyse → recommandations)
+4. STRUCTURE — Organiser thématiquement (faits → analyse → recommandations → suggestions)
 5. PRÉCISION — Citer montants, dates, noms propres exactement comme mentionnés
 6. NUANCE — Distinguer allégations du client vs éléments établis (documents, jugements)
 7. CHRONOLOGIE — Respecter l'ordre des échanges quand discernable
-8. RÉFÉRENCES — Citer textes de loi, articles, actes uniformes applicables
+8. RÉFÉRENCES — Citer textes de loi béninois et OHADA avec articles précis
 9. ALERTES — Signaler risques de prescription, forclusion ou déchéance de droits
 10. DÉONTOLOGIE — Jamais de conclusion définitive sur base d'une transcription seule
+11. DROIT BÉNINOIS D'ABORD — Toujours appliquer en priorité le droit béninois et OHADA, puis les traités internationaux si pertinent
+12. SUGGESTIONS PROACTIVES — Proposer des pistes concrètes (lois applicables, arguments, angles de défense, ouvertures stratégiques)
 
 TEMPLATE DU RÉSUMÉ (à adapter selon le contenu) :
 ─────────────────────────────────────────────────
@@ -313,7 +335,27 @@ TEMPLATE DU RÉSUMÉ (à adapter selon le contenu) :
 §2 — EXPOSÉ DES FAITS : Rapporter chronologiquement les faits tels que relatés par le client, en distinguant les éléments documentés des simples déclarations.
 §3 — ANALYSE JURIDIQUE PRÉLIMINAIRE : Identifier les textes applicables (lois béninoises, Actes uniformes OHADA, conventions), qualifier juridiquement la situation, évaluer les forces et faiblesses de la position du client.
 §4 — STRATÉGIE ET RECOMMANDATIONS : Proposer les options juridiques (voie amiable, médiation, contentieux), évaluer les risques, déterminer les prochaines étapes concrètes.
-§5 — POINTS DE VIGILANCE : Délais à surveiller, pièces à rassembler, précautions à prendre, éventuelles questions déontologiques.`;
+§5 — POINTS DE VIGILANCE : Délais à surveiller, pièces à rassembler, précautions à prendre, éventuelles questions déontologiques.
+
+SECTION SUGGESTIONS (OBLIGATOIRE) :
+───────────────────────────────────
+Cette section est CRUCIALE. Pour chaque rapport, vous DEVEZ fournir des suggestions concrètes et exploitables pour aider l'avocat :
+• TEXTES DE LOI APPLICABLES : Lister les articles précis du droit béninois, OHADA ou international directement applicables, avec le numéro de la loi et l'article (ex: "Art. 254 AUPSRVE — Procédure d'injonction de payer").
+• ARGUMENTS JURIDIQUES : Proposer les arguments juridiques les plus solides en faveur du client, fondés sur la loi et la jurisprudence.
+• ANGLES DE DÉFENSE : Si le client est en position défensive, identifier les moyens de défense (exceptions de procédure, prescription, nullité, incompétence, etc.).
+• OUVERTURES STRATÉGIQUES : Proposer des pistes créatives (médiation OHADA, arbitrage CCJA, saisine de la Cour Constitutionnelle, recours administratif préalable, etc.).
+• JURISPRUDENCE INDICATIVE : Mentionner des orientations jurisprudentielles connues de la CCJA, Cour Suprême du Bénin ou Cour Constitutionnelle si pertinent.
+• ÉLÉMENTS DE PREUVE À CONSTITUER : Recommander les preuves, documents, témoignages, expertises à rassembler.
+⚠ RAPPELER que ces suggestions sont indicatives et doivent être vérifiées par l'avocat. Les références légales et jurisprudentielles générées par IA peuvent contenir des erreurs et doivent impérativement être contrôlées avant toute utilisation.
+
+DISCLAIMER OBLIGATOIRE :
+───────────────────────
+Le résumé doit se terminer par un paragraphe de mise en garde standardisé rappelant que :
+- Ce rapport est généré automatiquement par IA à partir d'une transcription audio
+- Les références légales citées doivent être vérifiées dans les textes officiels
+- La transcription peut contenir des erreurs ou omissions (homophones, passages inaudibles)
+- Ce document ne constitue pas un avis juridique formel et ne remplace pas l'analyse personnelle de l'avocat
+- L'avocat doit vérifier tous les noms, dates, montants et références de dossier avant utilisation`;
 
 const FORMAT_RULES: Record<string, string> = {
   brief: `FORMAT : SYNTHÈSE RAPIDE
@@ -351,10 +393,11 @@ CONSIGNES JSON STRICTES :
 Retournez UNIQUEMENT un objet JSON valide. Aucun texte avant ou après, aucun markdown.
 {
   "title": "string — titre professionnel (ex: Compte rendu — Litige foncier — M. AHOUANDJINOU)",
-  "summary": "string — résumé structuré (\\n pour sauts de paragraphe)",
+  "summary": "string — résumé structuré suivant le template (§1 à §5) + paragraphe disclaimer en fin (\\n pour sauts de paragraphe)",
   "keyPoints": ["string — point clé complet et précis", ...],
-  "actionItems": ["string — action concrète avec priorité et échéance", ...],
-  "legalNotes": "string — observations juridiques, textes, jurisprudence, vigilance"
+  "actionItems": ["string — action concrète avec priorité (URGENT/NORMAL/À PLANIFIER) et échéance si connue", ...],
+  "legalNotes": "string — observations juridiques, textes de loi béninois/OHADA avec articles, jurisprudence, vigilance",
+  "suggestions": ["string — suggestion concrète : texte de loi applicable, argument juridique, angle de défense, ouverture stratégique, ou preuve à constituer — préfixer par le type entre crochets : [LOI], [ARGUMENT], [DÉFENSE], [OUVERTURE], [JURISPRUDENCE], [PREUVE]", ...]
 }`;
 
   const today = new Date().toLocaleDateString("fr-FR", {
@@ -625,6 +668,7 @@ export interface ReportResult {
   keyPoints: string[];
   actionItems: string[];
   legalNotes: string;
+  suggestions: string[];
   metadata: {
     provider: string;
     format: string;
@@ -666,6 +710,7 @@ export async function generateReport(
     keyPoints: strArr(result.keyPoints),
     actionItems: strArr(result.actionItems),
     legalNotes: str(result.legalNotes, ""),
+    suggestions: strArr(result.suggestions),
     metadata: {
       provider: "groq",
       format: safeFormat,

@@ -9,6 +9,7 @@ interface ReportInput {
   keyPoints: string | null;
   actionItems: string | null;
   legalNotes: string | null;
+  suggestions: string | null;
   category: string;
   format: string;
   status: string;
@@ -39,6 +40,7 @@ export async function generateReportPdf(report: ReportInput): Promise<Uint8Array
     keyPoints,
     actionItems,
     legalNotes: report.legalNotes,
+    suggestions: safeParseArray((report as any).suggestions),
     category: report.category,
     format: report.format,
     status: report.status,

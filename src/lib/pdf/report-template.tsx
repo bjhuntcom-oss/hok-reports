@@ -15,6 +15,7 @@ interface ReportData {
   keyPoints: string[];
   actionItems: string[];
   legalNotes: string | null;
+  suggestions: string[];
   category: string;
   format: string;
   status: string;
@@ -272,6 +273,71 @@ function LegalNotesSection({
   );
 }
 
+function SuggestionsSection({ suggestions, sectionNum }: { suggestions: string[]; sectionNum: string }) {
+  if (suggestions.length === 0) return null;
+
+  const typeColors: Record<string, { bg: string; border: string }> = {
+    LOI: { bg: "#EFF6FF", border: "#3B82F6" },
+    ARGUMENT: { bg: "#F0FDF4", border: "#22C55E" },
+    "DÉFENSE": { bg: "#FEF3C7", border: "#F59E0B" },
+    OUVERTURE: { bg: "#F5F3FF", border: "#8B5CF6" },
+    JURISPRUDENCE: { bg: "#FFF7ED", border: "#EA580C" },
+    PREUVE: { bg: "#F0F9FF", border: "#0EA5E9" },
+  };
+
+  return (
+    <View style={styles.section}>
+      <SectionHeader num={sectionNum} title="Suggestions juridiques" />
+      <View style={styles.sectionBody}>
+        <View style={{ marginBottom: 6 }}>
+          <Text style={{ fontSize: 7, color: "#9CA3AF", fontStyle: "italic" }}>
+            ⚠ Ces suggestions sont indicatives et générées par IA. Les références légales et jurisprudentielles doivent impérativement être vérifiées par l'avocat avant toute utilisation.
+          </Text>
+        </View>
+        {suggestions.map((s, i) => {
+          const match = s.match(/^\[([A-ZÉ]+)\]\s*/);
+          const type = match ? match[1] : "";
+          const text = match ? s.slice(match[0].length) : s;
+          const tc = typeColors[type] || { bg: "#F9FAFB", border: "#6B7280" };
+          return (
+            <View
+              key={i}
+              style={{
+                flexDirection: "row" as const,
+                marginBottom: 4,
+                padding: 6,
+                backgroundColor: tc.bg,
+                borderLeftWidth: 2,
+                borderLeftColor: tc.border,
+              }}
+            >
+              {type ? (
+                <Text style={{ fontSize: 6.5, fontFamily: "Helvetica-Bold", color: tc.border, marginRight: 6, minWidth: 55 }}>
+                  [{type}]
+                </Text>
+              ) : null}
+              <Text style={{ fontSize: 8, color: "#1F2937", flex: 1 }}>{text}</Text>
+            </View>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
+function DisclaimerSection() {
+  return (
+    <View style={{ marginTop: 12, padding: 10, backgroundColor: "#FEF2F2", borderWidth: 1, borderColor: "#FECACA" }}>
+      <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: "#991B1B", marginBottom: 4 }}>
+        ⚠ AVERTISSEMENT — VÉRIFICATION OBLIGATOIRE
+      </Text>
+      <Text style={{ fontSize: 6.5, color: "#7F1D1D", lineHeight: 1.4 }}>
+        Ce rapport est généré automatiquement par intelligence artificielle à partir d'une transcription audio. Les références légales, jurisprudentielles et les suggestions citées doivent impérativement être vérifiées dans les textes officiels avant toute utilisation. La transcription peut contenir des erreurs ou omissions (homophones, passages inaudibles). Ce document ne constitue pas un avis juridique formel et ne remplace pas l'analyse personnelle de l'avocat. Tous les noms, dates, montants et références de dossier doivent être contrôlés.
+      </Text>
+    </View>
+  );
+}
+
 function TranscriptionSection({ content }: { content: string }) {
   return (
     <View style={styles.section} break>
@@ -311,10 +377,14 @@ export function ReportPDF({ report }: { report: ReportData }) {
   const keyPoints = report.keyPoints;
   const actionItems = report.actionItems;
 
-  let legalSectionNum = "2";
-  if (keyPoints.length > 0 && actionItems.length > 0) legalSectionNum = "4";
-  else if (keyPoints.length > 0 || actionItems.length > 0)
-    legalSectionNum = "3";
+  const suggestions = report.suggestions || [];
+
+  let sectionCounter = 1;
+  const summaryNum = String(sectionCounter++);
+  const keyPointsNum = keyPoints.length > 0 ? String(sectionCounter++) : "";
+  const actionsNum = actionItems.length > 0 ? String(sectionCounter++) : "";
+  const legalNum = report.legalNotes ? String(sectionCounter++) : "";
+  const suggestionsNum = suggestions.length > 0 ? String(sectionCounter++) : "";
 
   return (
     <Document
@@ -336,9 +406,11 @@ export function ReportPDF({ report }: { report: ReportData }) {
         {report.legalNotes && (
           <LegalNotesSection
             notes={report.legalNotes}
-            sectionNum={legalSectionNum}
+            sectionNum={legalNum}
           />
         )}
+        <SuggestionsSection suggestions={suggestions} sectionNum={suggestionsNum} />
+        <DisclaimerSection />
         <Footer />
       </Page>
       {report.transcriptionContent && (

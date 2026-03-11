@@ -138,6 +138,7 @@ export const ReportScalarFieldEnum = {
   keyPoints: 'keyPoints',
   actionItems: 'actionItems',
   legalNotes: 'legalNotes',
+  suggestions: 'suggestions',
   category: 'category',
   status: 'status',
   format: 'format',

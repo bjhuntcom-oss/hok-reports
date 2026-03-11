@@ -75,6 +75,7 @@ model Report {
   keyPoints     String    // JSON array of key points
   actionItems   String?   // JSON array of action items
   legalNotes    String?   // Important legal notes
+  suggestions   String?   // JSON array of AI suggestions (laws, arguments, defense angles, strategic openings)
   category      String    @default("general") // "general" | "consultation" | "hearing" | "deposition" | "meeting"
   status        String    @default("draft") // "draft" | "final" | "archived"
   format        String    @default("standard") // "standard" | "detailed" | "brief"

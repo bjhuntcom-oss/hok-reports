@@ -16,23 +16,23 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(-
 .cover-sub{font-size:15px;font-weight:300;color:rgba(255,255,255,.5);margin-bottom:60px;position:relative}
 .cover-meta{position:relative;display:flex;gap:40px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3)}
 .cover-line{width:40px;height:1px;background:rgba(255,255,255,.15);margin:0 auto 30px;position:relative}
-.page{max-width:800px;margin:0 auto;padding:60px 40px}.page-break{page-break-before:always}
-.toc{padding:80px 0 40px}.toc-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--light);margin-bottom:30px}
+.page{max-width:800px;margin:0 auto;padding:40px 40px}.page-break{page-break-before:auto}
+.toc{padding:40px 0 30px}.toc-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--light);margin-bottom:30px}
 .toc-list{list-style:none;counter-reset:toc}.toc-list li{counter-increment:toc;display:flex;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--dark)}.toc-list li::before{content:counter(toc,decimal-leading-zero);font-size:10px;font-weight:600;color:var(--light);margin-right:16px;min-width:20px}.toc-list li span{flex:1}
 .section-number{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--light);display:block;margin-bottom:8px}
-h2{font-size:24px;font-weight:700;letter-spacing:-.5px;color:var(--black);margin-bottom:8px;padding-top:40px}h2.first{padding-top:0}
-.section-desc{font-size:12px;color:var(--light);margin-bottom:30px}
+h2{font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--black);margin-bottom:8px;padding-top:20px}h2.first{padding-top:0}
+.section-desc{font-size:12px;color:var(--light);margin-bottom:16px}
 h3{font-size:14px;font-weight:600;color:var(--dark);margin:28px 0 12px;letter-spacing:-.2px}
 p{margin-bottom:14px;color:var(--dark);font-size:13px}
 .highlight{background:var(--accent);border-left:2px solid var(--black);padding:16px 20px;margin:20px 0;font-size:12px;color:var(--mid)}.highlight strong{color:var(--black)}
 ul{list-style:none;margin:10px 0 18px}ul li{padding:4px 0 4px 18px;position:relative;font-size:12.5px;color:var(--dark)}ul li::before{content:'';position:absolute;left:0;top:12px;width:4px;height:4px;background:var(--border)}
 code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;background:var(--accent);padding:2px 6px;border-radius:2px}
 .sep{width:30px;height:1px;background:var(--border);margin:40px 0}
-.footer{text-align:center;padding:60px 40px 40px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--light);border-top:1px solid var(--border);margin-top:60px}
-.qa{margin:20px 0 28px}
+.footer{text-align:center;padding:40px 40px 30px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--light);border-top:1px solid var(--border);margin-top:30px}
+.qa{margin:12px 0 16px}
 .qa-q{font-size:13px;font-weight:600;color:var(--black);padding:12px 0 4px;border-bottom:none;display:flex;align-items:flex-start;gap:10px}
 .qa-q::before{content:'Q';display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--black);color:var(--white);font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px}
-.qa-a{font-size:12.5px;color:var(--dark);padding:6px 0 14px 32px;border-bottom:1px solid var(--border);line-height:1.8}
+.qa-a{font-size:12.5px;color:var(--dark);padding:4px 0 10px 32px;border-bottom:1px solid var(--border);line-height:1.7}
 .qa-a strong{color:var(--black)}
 .workflow{margin:20px 0 24px;counter-reset:step}
 .workflow-step{counter-increment:step;display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start}.workflow-step:last-child{border-bottom:none}
@@ -40,7 +40,8 @@ code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;backgro
 .workflow-text{padding-top:4px}.workflow-text strong{display:block;font-size:12px;margin-bottom:2px}.workflow-text span{font-size:11.5px;color:var(--mid)}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0 24px}
 .card{border:1px solid var(--border);padding:20px}.card-label{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--light);margin-bottom:8px}.card-value{font-size:18px;font-weight:300;color:var(--black)}.card p{font-size:11.5px;color:var(--mid);margin:0}
-@media print{.cover{height:auto;min-height:100vh}.page-break{page-break-before:always}body{font-size:11px}}
+.section-sep{width:100%;height:1px;background:var(--border);margin:30px 0 20px}
+@media print{.cover{height:auto;min-height:100vh;page-break-after:always;break-after:page}.page-break{page-break-before:auto}body{font-size:11px}.qa{page-break-inside:avoid}.qa-q{page-break-after:avoid}.section-sep{margin:20px 0 14px}}
 </style>
 </head>
 <body>
@@ -74,7 +75,7 @@ code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;backgro
 </div>
 
 <!-- 01 CONNEXION -->
-<div class="page page-break">
+<div class="page">
   <span class="section-number">Section 01</span>
   <h2 class="first">Se connecter &amp; G&eacute;rer son compte</h2>
   <p class="section-desc">Tout sur l'acc&egrave;s &agrave; la plateforme, l'inscription et la gestion du profil.</p>
@@ -107,7 +108,8 @@ code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;backgro
 </div>
 
 <!-- 02 SESSIONS -->
-<div class="page page-break">
+<div class="page">
+  <div class="section-sep"></div>
   <span class="section-number">Section 02</span>
   <h2 class="first">Cr&eacute;er et g&eacute;rer une session d'enregistrement</h2>
   <p class="section-desc">Tout sur les sessions audio : cr&eacute;ation, enregistrement, upload et gestion.</p>
@@ -137,7 +139,8 @@ code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;backgro
 </div>
 
 <!-- 03 FLASH -->
-<div class="page page-break">
+<div class="page">
+  <div class="section-sep"></div>
   <span class="section-number">Section 03</span>
   <h2 class="first">Enregistrement Flash (1 clic)</h2>
   <p class="section-desc">Le mode express pour enregistrer, transcrire et g&eacute;n&eacute;rer un rapport en un minimum d'&eacute;tapes.</p>
@@ -168,7 +171,8 @@ code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;backgro
 </div>
 
 <!-- 04 TRANSCRIPTION & RAPPORTS -->
-<div class="page page-break">
+<div class="page">
+  <div class="section-sep"></div>
   <span class="section-number">Section 04</span>
   <h2 class="first">Transcrire un audio &amp; G&eacute;n&eacute;rer un rapport</h2>
   <p class="section-desc">Le c&oelig;ur de la plateforme : transformer un enregistrement en rapport juridique.</p>
@@ -204,7 +208,8 @@ code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;backgro
 </div>
 
 <!-- 05 RAPPORTS -->
-<div class="page page-break">
+<div class="page">
+  <div class="section-sep"></div>
   <span class="section-number">Section 05</span>
   <h2 class="first">Consulter, modifier et exporter un rapport</h2>
   <p class="section-desc">Gestion compl&egrave;te des rapports g&eacute;n&eacute;r&eacute;s.</p>
@@ -238,7 +243,8 @@ code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;backgro
 </div>
 
 <!-- 06 AUDIENCES -->
-<div class="page page-break">
+<div class="page">
+  <div class="section-sep"></div>
   <span class="section-number">Section 06</span>
   <h2 class="first">Comptes rendus d'audience</h2>
   <p class="section-desc">Saisie, consultation et gestion des comptes rendus d'audience.</p>
@@ -268,7 +274,8 @@ code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;backgro
 </div>
 
 <!-- 07 ROLES HEBDO -->
-<div class="page page-break">
+<div class="page">
+  <div class="section-sep"></div>
   <span class="section-number">Section 07</span>
   <h2 class="first">R&ocirc;les d'audience hebdomadaires</h2>
   <p class="section-desc">G&eacute;n&eacute;ration automatique du planning des audiences de la semaine.</p>
@@ -295,7 +302,8 @@ code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;backgro
 </div>
 
 <!-- 08 WHATSAPP -->
-<div class="page page-break">
+<div class="page">
+  <div class="section-sep"></div>
   <span class="section-number">Section 08</span>
   <h2 class="first">Int&eacute;gration WhatsApp</h2>
   <p class="section-desc">Cr&eacute;ation automatique de comptes rendus d'audience depuis WhatsApp.</p>
@@ -331,7 +339,8 @@ code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;backgro
 </div>
 
 <!-- 09 ADMINISTRATION -->
-<div class="page page-break">
+<div class="page">
+  <div class="section-sep"></div>
   <span class="section-number">Section 09</span>
   <h2 class="first">Administration (r&eacute;serv&eacute; admin)</h2>
   <p class="section-desc">Gestion des utilisateurs, configuration IA et journal d'audit.</p>
@@ -367,7 +376,8 @@ code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;backgro
 </div>
 
 <!-- 10 PARAMETRES -->
-<div class="page page-break">
+<div class="page">
+  <div class="section-sep"></div>
   <span class="section-number">Section 10</span>
   <h2 class="first">Param&egrave;tres, langue et configuration</h2>
   <p class="section-desc">Personnalisation de l'exp&eacute;rience utilisateur.</p>

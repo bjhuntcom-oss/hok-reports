@@ -264,11 +264,16 @@ export default function SessionDetailPage() {
 
       {/* ── AUDIO ── */}
       {session.audioUrl && (() => {
-        // Normalize audioUrl: legacy /uploads/audio/X → /api/audio/X
+        // Normalize audioUrl: any legacy path → /api/audio/filename
         const rawUrl = session.audioUrl as string;
-        const audioSrc = rawUrl.startsWith("/uploads/audio/")
-          ? `/api/audio/${rawUrl.replace("/uploads/audio/", "")}`
-          : rawUrl;
+        let audioSrc = rawUrl;
+        if (rawUrl.startsWith("/api/audio/")) {
+          audioSrc = rawUrl; // Already correct
+        } else {
+          // Extract just the filename from any path (/uploads/audio/X, /uploads/X, etc.)
+          const filename = rawUrl.split("/").pop();
+          audioSrc = filename ? `/api/audio/${filename}` : rawUrl;
+        }
         return (
           <div className="border border-neutral-200 bg-white p-5">
             <h3 className="mb-3 flex items-center gap-2 text-[11px] font-bold tracking-[0.15em] text-black uppercase">

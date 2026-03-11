@@ -34,31 +34,32 @@ export async function GET(
       return NextResponse.json({ error: "Chemin invalide" }, { status: 400 });
     }
 
-    // Try new location first (data/audio/), then legacy (public/uploads/audio/)
-    const newPath = path.join(process.cwd(), "data", "audio", filename);
-    const legacyPath = path.join(process.cwd(), "public", "uploads", "audio", filename);
+    // Search order: data/audio/ → public/uploads/audio/ → public/uploads/
+    const candidates = [
+      path.join(process.cwd(), "data", "audio", filename),
+      path.join(process.cwd(), "public", "uploads", "audio", filename),
+      path.join(process.cwd(), "public", "uploads", filename),
+    ];
 
-    // Verify resolved paths are within their respective directories
-    const audioDir = path.resolve(path.join(process.cwd(), "data", "audio"));
-    const legacyDir = path.resolve(path.join(process.cwd(), "public", "uploads", "audio"));
-    const resolvedNew = path.resolve(newPath);
-    const resolvedLegacy = path.resolve(legacyPath);
-    if (!resolvedNew.startsWith(audioDir) || !resolvedLegacy.startsWith(legacyDir)) {
-      return NextResponse.json({ error: "Accès interdit" }, { status: 403 });
+    // Verify all resolved paths stay within project directory
+    const projectRoot = path.resolve(process.cwd());
+    for (const c of candidates) {
+      if (!path.resolve(c).startsWith(projectRoot)) {
+        return NextResponse.json({ error: "Accès interdit" }, { status: 403 });
+      }
     }
 
-    // Find file in new or legacy location
+    // Find file in first available location
     let filePath: string | null = null;
-    try {
-      await stat(newPath);
-      filePath = newPath;
-    } catch {
+    for (const c of candidates) {
       try {
-        await stat(legacyPath);
-        filePath = legacyPath;
-      } catch {
-        return NextResponse.json({ error: "Fichier audio non trouvé" }, { status: 404 });
-      }
+        await stat(c);
+        filePath = c;
+        break;
+      } catch { /* try next */ }
+    }
+    if (!filePath) {
+      return NextResponse.json({ error: "Fichier audio non trouvé" }, { status: 404 });
     }
 
     const buffer = await readFile(filePath);

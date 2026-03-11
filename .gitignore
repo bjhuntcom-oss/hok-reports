@@ -49,3 +49,6 @@ prisma/dev.db-journal
 # uploads & audio data
 public/uploads/
 /data/
+
+# doc preview artifacts
+docs/_preview/

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOK REPORTS — Guide Fonctionnel</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#0a0a0a;--dark:#1a1a1a;--mid:#555;--light:#999;--border:#e5e5e5;--white:#fff;--accent:#f5f5f5}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--black);background:var(--white);line-height:1.7;font-size:13px;-webkit-font-smoothing:antialiased}
+.cover{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:var(--black);color:var(--white);page-break-after:always;position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at center,rgba(255,255,255,.03) 0%,transparent 70%)}
+.cover-badge{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:40px;position:relative}
+.cover h1{font-size:48px;font-weight:700;letter-spacing:-1px;margin-bottom:8px;position:relative}
+.cover-sub{font-size:15px;font-weight:300;color:rgba(255,255,255,.5);margin-bottom:60px;position:relative}
+.cover-meta{position:relative;display:flex;gap:40px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.cover-line{width:40px;height:1px;background:rgba(255,255,255,.15);margin:0 auto 30px;position:relative}
+.page{max-width:800px;margin:0 auto;padding:60px 40px}.page-break{page-break-before:always}
+.toc{padding:80px 0 40px}.toc-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--light);margin-bottom:30px}
+.toc-list{list-style:none;counter-reset:toc}.toc-list li{counter-increment:toc;display:flex;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--dark)}.toc-list li::before{content:counter(toc,decimal-leading-zero);font-size:10px;font-weight:600;color:var(--light);margin-right:16px;min-width:20px}.toc-list li span{flex:1}
+.section-number{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--light);display:block;margin-bottom:8px}
+h2{font-size:24px;font-weight:700;letter-spacing:-.5px;color:var(--black);margin-bottom:8px;padding-top:40px}h2.first{padding-top:0}
+.section-desc{font-size:12px;color:var(--light);margin-bottom:30px}
+h3{font-size:14px;font-weight:600;color:var(--dark);margin:28px 0 12px;letter-spacing:-.2px}
+p{margin-bottom:14px;color:var(--dark);font-size:13px}
+.highlight{background:var(--accent);border-left:2px solid var(--black);padding:16px 20px;margin:20px 0;font-size:12px;color:var(--mid)}.highlight strong{color:var(--black)}
+ul{list-style:none;margin:10px 0 18px}ul li{padding:4px 0 4px 18px;position:relative;font-size:12.5px;color:var(--dark)}ul li::before{content:'';position:absolute;left:0;top:12px;width:4px;height:4px;background:var(--border)}
+code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;background:var(--accent);padding:2px 6px;border-radius:2px}
+.sep{width:30px;height:1px;background:var(--border);margin:40px 0}
+.footer{text-align:center;padding:60px 40px 40px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--light);border-top:1px solid var(--border);margin-top:60px}
+.qa{margin:20px 0 28px}
+.qa-q{font-size:13px;font-weight:600;color:var(--black);padding:12px 0 4px;border-bottom:none;display:flex;align-items:flex-start;gap:10px}
+.qa-q::before{content:'Q';display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--black);color:var(--white);font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px}
+.qa-a{font-size:12.5px;color:var(--dark);padding:6px 0 14px 32px;border-bottom:1px solid var(--border);line-height:1.8}
+.qa-a strong{color:var(--black)}
+.workflow{margin:20px 0 24px;counter-reset:step}
+.workflow-step{counter-increment:step;display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start}.workflow-step:last-child{border-bottom:none}
+.workflow-num{width:28px;height:28px;background:var(--black);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}.workflow-num::before{content:counter(step)}
+.workflow-text{padding-top:4px}.workflow-text strong{display:block;font-size:12px;margin-bottom:2px}.workflow-text span{font-size:11.5px;color:var(--mid)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0 24px}
+.card{border:1px solid var(--border);padding:20px}.card-label{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--light);margin-bottom:8px}.card-value{font-size:18px;font-weight:300;color:var(--black)}.card p{font-size:11.5px;color:var(--mid);margin:0}
+@media print{.cover{height:auto;min-height:100vh}.page-break{page-break-before:always}body{font-size:11px}}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-badge">Document interne &mdash; Guide utilisateur</div>
+  <div class="cover-line"></div>
+  <h1>HOK REPORTS</h1>
+  <div class="cover-sub">Guide Fonctionnel &mdash; Questions &amp; R&eacute;ponses</div>
+  <div class="cover-meta"><span>Version 2.0.0</span><span>Mars 2026</span><span>Cabinet HOK</span></div>
+</div>
+
+<!-- TOC -->
+<div class="page">
+  <div class="toc">
+    <div class="toc-label">Table des mati&egrave;res</div>
+    <ol class="toc-list">
+      <li><span>Se connecter &amp; G&eacute;rer son compte</span></li>
+      <li><span>Cr&eacute;er et g&eacute;rer une session d'enregistrement</span></li>
+      <li><span>Enregistrement Flash (1 clic)</span></li>
+      <li><span>Transcrire un audio &amp; G&eacute;n&eacute;rer un rapport</span></li>
+      <li><span>Consulter, modifier et exporter un rapport</span></li>
+      <li><span>Comptes rendus d'audience</span></li>
+      <li><span>R&ocirc;les d'audience hebdomadaires</span></li>
+      <li><span>Int&eacute;gration WhatsApp</span></li>
+      <li><span>Administration (r&eacute;serv&eacute; admin)</span></li>
+      <li><span>Param&egrave;tres, langue et configuration</span></li>
+    </ol>
+  </div>
+</div>
+
+<!-- 01 CONNEXION -->
+<div class="page page-break">
+  <span class="section-number">Section 01</span>
+  <h2 class="first">Se connecter &amp; G&eacute;rer son compte</h2>
+  <p class="section-desc">Tout sur l'acc&egrave;s &agrave; la plateforme, l'inscription et la gestion du profil.</p>
+
+  <div class="qa">
+    <div class="qa-q">Comment acc&eacute;der &agrave; la plateforme HOK Reports ?</div>
+    <div class="qa-a">Ouvrez votre navigateur et rendez-vous sur l'URL de la plateforme. Vous serez redirig&eacute; vers la <strong>page de connexion</strong> si vous n'&ecirc;tes pas d&eacute;j&agrave; connect&eacute;. Deux m&eacute;thodes de connexion sont disponibles : <strong>email + mot de passe</strong> ou <strong>Google</strong> (bouton &laquo; Se connecter avec Google &raquo;).</div>
+
+    <div class="qa-q">Comment cr&eacute;er un compte ?</div>
+    <div class="qa-a">Cliquez sur le lien <strong>&laquo; Cr&eacute;er un compte &raquo;</strong> depuis la page de connexion. Renseignez votre <strong>nom complet</strong>, votre <strong>email</strong> et un <strong>mot de passe</strong> respectant les r&egrave;gles de complexit&eacute; : minimum 8 caract&egrave;res, au moins une majuscule, une minuscule, un chiffre et un caract&egrave;re sp&eacute;cial. Apr&egrave;s inscription, votre compte est en <strong>statut &laquo; En attente &raquo;</strong> jusqu'&agrave; ce qu'un administrateur l'approuve.</div>
+
+    <div class="qa-q">Que se passe-t-il si je me connecte avec Google ?</div>
+    <div class="qa-a">Un compte est automatiquement cr&eacute;&eacute; avec votre nom et email Google. Il est &eacute;galement en <strong>statut &laquo; En attente &raquo;</strong> et doit &ecirc;tre approuv&eacute; par un administrateur. Votre photo de profil Google est utilis&eacute;e comme avatar. Si un compte avec le m&ecirc;me email existe d&eacute;j&agrave;, il sera li&eacute; automatiquement.</div>
+
+    <div class="qa-q">Mon compte est &laquo; En attente &raquo;, que faire ?</div>
+    <div class="qa-a">Contactez un administrateur du cabinet. Il peut approuver votre compte depuis le <strong>panneau d'administration &rarr; onglet &laquo; En attente &raquo;</strong>. Une fois approuv&eacute;, vous pourrez vous connecter normalement.</div>
+
+    <div class="qa-q">Comment modifier mon nom ou mon mot de passe ?</div>
+    <div class="qa-a">Rendez-vous dans <strong>Mon profil</strong> (ic&ocirc;ne utilisateur dans la sidebar). Vous pouvez y modifier votre <strong>nom</strong> et changer votre <strong>mot de passe</strong> (il faut saisir l'ancien mot de passe puis le nouveau, qui doit respecter les r&egrave;gles de complexit&eacute;). Les comptes Google-only ne peuvent pas changer de mot de passe par cette voie.</div>
+
+    <div class="qa-q">Que signifie &laquo; Compte bloqu&eacute; &raquo; ?</div>
+    <div class="qa-a">Un administrateur a temporairement bloqu&eacute; votre acc&egrave;s. Vous ne pouvez plus vous connecter. Contactez l'administrateur pour comprendre la raison et demander le d&eacute;blocage.</div>
+
+    <div class="qa-q">Comment changer la langue de l'interface ?</div>
+    <div class="qa-a">Cliquez sur le <strong>s&eacute;lecteur de langue</strong> dans l'en-t&ecirc;te de la page (drapeau ou initiales &laquo; FR &raquo; / &laquo; EN &raquo;). Trois langues sont disponibles : <strong>Fran&ccedil;ais</strong> (par d&eacute;faut), <strong>Anglais</strong> et <strong>Fon</strong> (support partiel). Le choix est m&eacute;moris&eacute; automatiquement.</div>
+
+    <div class="qa-q">Comment me d&eacute;connecter ?</div>
+    <div class="qa-a">Cliquez sur l'ic&ocirc;ne de <strong>d&eacute;connexion</strong> en bas de la sidebar ou dans l'en-t&ecirc;te. Vous serez redirig&eacute; vers la page de connexion.</div>
+  </div>
+</div>
+
+<!-- 02 SESSIONS -->
+<div class="page page-break">
+  <span class="section-number">Section 02</span>
+  <h2 class="first">Cr&eacute;er et g&eacute;rer une session d'enregistrement</h2>
+  <p class="section-desc">Tout sur les sessions audio : cr&eacute;ation, enregistrement, upload et gestion.</p>
+
+  <div class="qa">
+    <div class="qa-q">Qu'est-ce qu'une &laquo; session &raquo; sur HOK Reports ?</div>
+    <div class="qa-a">Une session repr&eacute;sente une <strong>unit&eacute; de travail</strong> : un enregistrement audio li&eacute; &agrave; un client et un dossier. Elle passe par 5 &eacute;tats : <strong>Enregistrement</strong> &rarr; <strong>Transcription</strong> &rarr; <strong>R&eacute;sum&eacute;</strong> &rarr; <strong>Termin&eacute;</strong> (ou <strong>Erreur</strong>). Chaque session contient les m&eacute;tadonn&eacute;es du dossier, l'audio, la transcription, les notes et les rapports g&eacute;n&eacute;r&eacute;s.</div>
+
+    <div class="qa-q">Comment cr&eacute;er une nouvelle session ?</div>
+    <div class="qa-a">Cliquez sur <strong>&laquo; Nouvelle session &raquo;</strong> dans la sidebar ou sur le bouton &laquo; + &raquo; depuis la liste des sessions. Remplissez le formulaire : <strong>Titre</strong> (obligatoire, max 200 car.), <strong>Nom du client</strong> (obligatoire), et optionnellement la description, l'email/t&eacute;l&eacute;phone du client, la r&eacute;f&eacute;rence du dossier et la langue de l'enregistrement (fran&ccedil;ais par d&eacute;faut).</div>
+
+    <div class="qa-q">Comment enregistrer de l'audio dans le navigateur ?</div>
+    <div class="qa-a">Depuis la page de la session, cliquez sur le bouton <strong>&laquo; Enregistrer &raquo;</strong> (ic&ocirc;ne microphone). Le navigateur vous demandera la permission d'acc&eacute;der au microphone. Pendant l'enregistrement, vous pouvez <strong>mettre en pause</strong> et <strong>reprendre</strong>. Cliquez sur <strong>&laquo; Arr&ecirc;ter &raquo;</strong> pour terminer. L'audio est enregistr&eacute; au format <strong>WebM/Opus</strong>.</div>
+
+    <div class="qa-q">Puis-je importer un fichier audio existant ?</div>
+    <div class="qa-a">Oui. Utilisez le bouton <strong>&laquo; Importer un fichier &raquo;</strong> depuis la page de la session. Formats accept&eacute;s : <strong>MP3, WAV, WebM, OGG, MP4, M4A</strong>. Taille maximale : <strong>100 Mo</strong>. Le fichier est stock&eacute; sur le serveur.</div>
+
+    <div class="qa-q">Comment retrouver mes sessions ?</div>
+    <div class="qa-a">Cliquez sur <strong>&laquo; Sessions &raquo;</strong> dans la sidebar. La liste est <strong>pagin&eacute;e</strong> et offre une <strong>recherche par titre ou client</strong> et un <strong>filtre par statut</strong> (en cours, transcrit, termin&eacute;, erreur). Les sessions les plus r&eacute;centes apparaissent en premier.</div>
+
+    <div class="qa-q">Comment supprimer une session ?</div>
+    <div class="qa-a">Ouvrez la session, puis cliquez sur <strong>&laquo; Supprimer &raquo;</strong> (ic&ocirc;ne poubelle). <strong>Attention :</strong> la suppression est d&eacute;finitive et entra&icirc;ne la suppression de l'audio, de la transcription, de toutes les notes et de tous les rapports associ&eacute;s.</div>
+
+    <div class="qa-q">Comment ajouter des notes pendant un enregistrement ?</div>
+    <div class="qa-a">Pendant ou apr&egrave;s l'enregistrement, utilisez la section <strong>&laquo; Notes &raquo;</strong> dans la page de session. Chaque note peut &ecirc;tre <strong>horodat&eacute;e</strong> (li&eacute;e &agrave; un moment pr&eacute;cis de l'audio) et <strong>marqu&eacute;e comme importante</strong>. Maximum 5000 caract&egrave;res par note.</div>
+  </div>
+</div>
+
+<!-- 03 FLASH -->
+<div class="page page-break">
+  <span class="section-number">Section 03</span>
+  <h2 class="first">Enregistrement Flash (1 clic)</h2>
+  <p class="section-desc">Le mode express pour enregistrer, transcrire et g&eacute;n&eacute;rer un rapport en un minimum d'&eacute;tapes.</p>
+
+  <div class="qa">
+    <div class="qa-q">Qu'est-ce que l'enregistrement Flash ?</div>
+    <div class="qa-a">C'est un mode <strong>express</strong> qui permet d'enregistrer un audio, le transcrire et g&eacute;n&eacute;rer un rapport en <strong>un seul flux</strong>. Id&eacute;al pour les situations o&ugrave; vous sortez d'audience et souhaitez dicter rapidement un r&eacute;sum&eacute;. L'IA identifie automatiquement le client, le dossier et la cat&eacute;gorie.</div>
+
+    <div class="qa-q">Comment utiliser le mode Flash ?</div>
+    <div class="qa-a">
+      <strong>1.</strong> Cliquez sur <strong>&laquo; Flash &raquo;</strong> dans la sidebar (ic&ocirc;ne &eacute;clair).<br>
+      <strong>2.</strong> Cliquez sur le bouton <strong>Enregistrer</strong> (gros bouton central).<br>
+      <strong>3.</strong> Parlez normalement : dictez le r&eacute;sum&eacute; de l'audience, le nom du client, le dossier, etc.<br>
+      <strong>4.</strong> Cliquez sur <strong>Arr&ecirc;ter</strong> une fois termin&eacute;.<br>
+      <strong>5.</strong> Le syst&egrave;me traite automatiquement en 4 &eacute;tapes : transcription Whisper &rarr; extraction des m&eacute;tadonn&eacute;es par IA &rarr; mise &agrave; jour de la session &rarr; g&eacute;n&eacute;ration du rapport.<br>
+      <strong>6.</strong> Vous &ecirc;tes redirig&eacute; vers le rapport g&eacute;n&eacute;r&eacute;.
+    </div>
+
+    <div class="qa-q">Que se passe-t-il si l'IA ne d&eacute;tecte pas correctement le client ou le dossier ?</div>
+    <div class="qa-a">Vous pouvez <strong>modifier la session</strong> et le <strong>rapport</strong> apr&egrave;s la g&eacute;n&eacute;ration. Les m&eacute;tadonn&eacute;es extraites sont des suggestions : le titre, le nom du client, la r&eacute;f&eacute;rence du dossier et la cat&eacute;gorie sont tous modifiables.</div>
+
+    <div class="qa-q">Quelle est la diff&eacute;rence entre Flash et une session normale ?</div>
+    <div class="qa-a">En mode <strong>Flash</strong>, tout est automatis&eacute; en un seul flux. En mode <strong>session normale</strong>, vous contr&ocirc;lez chaque &eacute;tape ind&eacute;pendamment : cr&eacute;ation manuelle des m&eacute;tadonn&eacute;es, enregistrement/upload, lancement de la transcription, puis g&eacute;n&eacute;ration du rapport avec choix du format et de la cat&eacute;gorie.</div>
+
+    <div class="qa-q">Puis-je utiliser Flash sans connexion internet ?</div>
+    <div class="qa-a">L'enregistrement audio fonctionne en local dans le navigateur. Cependant, la <strong>transcription</strong> et la <strong>g&eacute;n&eacute;ration du rapport</strong> n&eacute;cessitent une connexion internet car elles utilisent l'API Groq.</div>
+  </div>
+</div>
+
+<!-- 04 TRANSCRIPTION & RAPPORTS -->
+<div class="page page-break">
+  <span class="section-number">Section 04</span>
+  <h2 class="first">Transcrire un audio &amp; G&eacute;n&eacute;rer un rapport</h2>
+  <p class="section-desc">Le c&oelig;ur de la plateforme : transformer un enregistrement en rapport juridique.</p>
+
+  <div class="qa">
+    <div class="qa-q">Comment lancer une transcription ?</div>
+    <div class="qa-a">Depuis la page d'une session qui poss&egrave;de un audio, cliquez sur <strong>&laquo; Transcrire &raquo;</strong>. Le syst&egrave;me envoie l'audio &agrave; <strong>Groq Whisper</strong> (<code>whisper-large-v3-turbo</code>) qui retourne le texte complet et des segments horodat&eacute;s. Le statut de la session passe &agrave; &laquo; Transcription en cours &raquo; puis &laquo; Transcrit &raquo;.</div>
+
+    <div class="qa-q">Dans quelles langues la transcription fonctionne-t-elle ?</div>
+    <div class="qa-a">Whisper supporte plus de 50 langues. La plateforme est configur&eacute;e par d&eacute;faut en <strong>fran&ccedil;ais</strong> et <strong>anglais</strong>. Vous choisissez la langue lors de la cr&eacute;ation de la session. Le mod&egrave;le d&eacute;tecte aussi automatiquement la langue parl&eacute;e.</div>
+
+    <div class="qa-q">Comment g&eacute;n&eacute;rer un rapport &agrave; partir d'une transcription ?</div>
+    <div class="qa-a">Une fois la transcription termin&eacute;e, cliquez sur <strong>&laquo; G&eacute;n&eacute;rer un rapport &raquo;</strong>. Vous pouvez choisir :<br>
+      &bull; <strong>Format :</strong> Standard (par d&eacute;faut), D&eacute;taill&eacute; ou Bref<br>
+      &bull; <strong>Cat&eacute;gorie :</strong> G&eacute;n&eacute;ral, Consultation, Audience, D&eacute;position, R&eacute;union, N&eacute;gociation, M&eacute;diation, Contentieux<br>
+      Le rapport est g&eacute;n&eacute;r&eacute; par <strong>Groq LLaMA 3.3</strong> en quelques secondes.</div>
+
+    <div class="qa-q">Que contient un rapport g&eacute;n&eacute;r&eacute; par l'IA ?</div>
+    <div class="qa-a">Chaque rapport contient :<br>
+      &bull; <strong>Titre</strong> g&eacute;n&eacute;r&eacute; automatiquement<br>
+      &bull; <strong>Synth&egrave;se narrative</strong> r&eacute;dig&eacute;e en prose juridique<br>
+      &bull; <strong>Points cl&eacute;s</strong> extraits de la conversation<br>
+      &bull; <strong>Actions &agrave; entreprendre</strong> identifi&eacute;es par l'IA<br>
+      &bull; <strong>Observations juridiques</strong> pertinentes<br>
+      &bull; <strong>Suggestions IA</strong> typ&eacute;es : lois applicables, arguments, pistes de d&eacute;fense, ouvertures strat&eacute;giques, jurisprudence, preuves &agrave; recueillir</div>
+
+    <div class="qa-q">Puis-je g&eacute;n&eacute;rer plusieurs rapports pour la m&ecirc;me session ?</div>
+    <div class="qa-a">Oui. Vous pouvez g&eacute;n&eacute;rer autant de rapports que souhait&eacute; avec diff&eacute;rents formats et cat&eacute;gories. Tous les rapports sont li&eacute;s &agrave; la session et accessibles depuis sa page de d&eacute;tail.</div>
+
+    <div class="qa-q">La transcription est-elle exacte &agrave; 100% ?</div>
+    <div class="qa-a">Whisper est tr&egrave;s performant mais peut faire des erreurs, surtout avec les noms propres, le jargon juridique sp&eacute;cifique ou dans un environnement bruyant. Nous recommandons de <strong>relire la transcription</strong> avant de g&eacute;n&eacute;rer le rapport. Un score de confiance est affich&eacute; quand disponible.</div>
+  </div>
+</div>
+
+<!-- 05 RAPPORTS -->
+<div class="page page-break">
+  <span class="section-number">Section 05</span>
+  <h2 class="first">Consulter, modifier et exporter un rapport</h2>
+  <p class="section-desc">Gestion compl&egrave;te des rapports g&eacute;n&eacute;r&eacute;s.</p>
+
+  <div class="qa">
+    <div class="qa-q">Comment retrouver mes rapports ?</div>
+    <div class="qa-a">Cliquez sur <strong>&laquo; Rapports &raquo;</strong> dans la sidebar. La liste offre une <strong>recherche par titre, client ou r&eacute;f&eacute;rence</strong>, un <strong>filtre par cat&eacute;gorie</strong> (g&eacute;n&eacute;ral, audience, consultation, etc.) et un <strong>filtre par statut</strong> (brouillon, final, archiv&eacute;). Les rapports sont pagin&eacute;s.</div>
+
+    <div class="qa-q">Puis-je modifier un rapport apr&egrave;s sa g&eacute;n&eacute;ration ?</div>
+    <div class="qa-a">Oui. Ouvrez le rapport et cliquez sur <strong>&laquo; Modifier &raquo;</strong>. Vous pouvez &eacute;diter le titre, la synth&egrave;se, les points cl&eacute;s, les actions, les observations juridiques, la cat&eacute;gorie et le statut. Les suggestions IA ne sont pas modifiables mais vous pouvez r&eacute;g&eacute;n&eacute;rer le rapport.</div>
+
+    <div class="qa-q">Comment exporter un rapport en PDF ?</div>
+    <div class="qa-a">Depuis la page de d&eacute;tail du rapport, cliquez sur le bouton <strong>&laquo; Exporter en PDF &raquo;</strong>. Le PDF g&eacute;n&eacute;r&eacute; contient l'en-t&ecirc;te du Cabinet HOK, toutes les sections du rapport (synth&egrave;se, points cl&eacute;s color&eacute;s par criticit&eacute;, actions, suggestions typ&eacute;es) et la transcription compl&egrave;te en annexe. La date d'export est enregistr&eacute;e.</div>
+
+    <div class="qa-q">Quels sont les statuts possibles d'un rapport ?</div>
+    <div class="qa-a"><strong>Brouillon</strong> : rapport g&eacute;n&eacute;r&eacute; mais pas valid&eacute;. <strong>Final</strong> : rapport valid&eacute; et pr&ecirc;t &agrave; &ecirc;tre utilis&eacute;. <strong>Archiv&eacute;</strong> : rapport conserv&eacute; mais plus actif. Vous changez le statut depuis la page de modification.</div>
+
+    <div class="qa-q">Comment supprimer un rapport ?</div>
+    <div class="qa-a">Depuis la page du rapport, cliquez sur <strong>&laquo; Supprimer &raquo;</strong>. La suppression est d&eacute;finitive. La session et la transcription ne sont pas affect&eacute;es.</div>
+
+    <div class="qa-q">Que sont les &laquo; Suggestions IA &raquo; dans un rapport ?</div>
+    <div class="qa-a">Ce sont des recommandations g&eacute;n&eacute;r&eacute;es automatiquement par l'IA, typ&eacute;es par cat&eacute;gorie :<br>
+      &bull; <strong>[LOI]</strong> &mdash; Textes de loi applicables<br>
+      &bull; <strong>[ARGUMENT]</strong> &mdash; Arguments juridiques &agrave; d&eacute;velopper<br>
+      &bull; <strong>[DEFENSE]</strong> &mdash; Pistes de d&eacute;fense<br>
+      &bull; <strong>[OUVERTURE]</strong> &mdash; Ouvertures strat&eacute;giques<br>
+      &bull; <strong>[JURISPRUDENCE]</strong> &mdash; Jurisprudence pertinente<br>
+      &bull; <strong>[PREUVE]</strong> &mdash; Preuves &agrave; recueillir<br>
+      Ces suggestions sont indicatives et doivent &ecirc;tre valid&eacute;es par l'avocat.</div>
+  </div>
+</div>
+
+<!-- 06 AUDIENCES -->
+<div class="page page-break">
+  <span class="section-number">Section 06</span>
+  <h2 class="first">Comptes rendus d'audience</h2>
+  <p class="section-desc">Saisie, consultation et gestion des comptes rendus d'audience.</p>
+
+  <div class="qa">
+    <div class="qa-q">Qu'est-ce qu'un compte rendu d'audience ?</div>
+    <div class="qa-a">C'est un enregistrement structur&eacute; de ce qui s'est pass&eacute; lors d'une audience au tribunal. Il contient la date, la juridiction, la chambre, la r&eacute;f&eacute;rence du dossier, le nom du client, l'adversaire, l'avocat, le r&eacute;sum&eacute; de l'audience, les t&acirc;ches &agrave; effectuer et la date de la prochaine audience.</div>
+
+    <div class="qa-q">Comment saisir un nouveau compte rendu d'audience ?</div>
+    <div class="qa-a">Allez dans <strong>&laquo; R&ocirc;les d'audience &raquo;</strong> depuis la sidebar, puis cliquez sur <strong>&laquo; Nouveau compte rendu &raquo;</strong>. Remplissez les champs obligatoires : <strong>date de l'audience</strong>, <strong>juridiction</strong>, <strong>r&eacute;f&eacute;rence du dossier</strong>, <strong>nom du client</strong> et <strong>compte rendu</strong> (r&eacute;sum&eacute; de ce qui s'est pass&eacute;). Renseignez optionnellement la chambre, l'adversaire, l'avocat, les t&acirc;ches et la prochaine audience.</div>
+
+    <div class="qa-q">Pourquoi la &laquo; prochaine audience &raquo; est-elle importante ?</div>
+    <div class="qa-a">La date de prochaine audience est utilis&eacute;e pour g&eacute;n&eacute;rer automatiquement les <strong>r&ocirc;les d'audience hebdomadaires</strong>. Si vous renseignez une date dans les prochaines semaines, le dossier appara&icirc;tra automatiquement dans le r&ocirc;le de la semaine correspondante.</div>
+
+    <div class="qa-q">Comment rechercher un compte rendu existant ?</div>
+    <div class="qa-a">Depuis la page &laquo; R&ocirc;les d'audience &raquo;, utilisez la <strong>barre de recherche</strong> pour chercher par nom de client, r&eacute;f&eacute;rence de dossier, juridiction ou partie adverse. Vous pouvez aussi filtrer par statut (actif/archiv&eacute;).</div>
+
+    <div class="qa-q">Puis-je modifier ou supprimer un compte rendu ?</div>
+    <div class="qa-a">Oui. Cliquez sur un compte rendu pour l'ouvrir, puis utilisez les boutons <strong>&laquo; Modifier &raquo;</strong> ou <strong>&laquo; Supprimer &raquo;</strong>. Toutes les modifications sont trac&eacute;es dans le journal d'audit.</div>
+
+    <div class="qa-q">Quelle diff&eacute;rence entre un compte rendu &laquo; manuel &raquo; et &laquo; WhatsApp &raquo; ?</div>
+    <div class="qa-a">Un compte rendu <strong>manuel</strong> est saisi directement depuis l'interface. Un compte rendu <strong>WhatsApp</strong> est cr&eacute;&eacute; automatiquement par l'IA &agrave; partir d'un message WhatsApp (voir section 08). Les comptes rendus WhatsApp portent un badge vert distinctif et mentionnent l'exp&eacute;diteur du message.</div>
+
+    <div class="qa-q">Que sont les &laquo; t&acirc;ches &raquo; dans un compte rendu ?</div>
+    <div class="qa-a">Ce sont les actions &agrave; accomplir avant la prochaine audience : pi&egrave;ces &agrave; fournir, conclusions &agrave; r&eacute;diger, expertises &agrave; demander, etc. Elles apparaissent dans le r&ocirc;le hebdomadaire pour faciliter la pr&eacute;paration.</div>
+  </div>
+</div>
+
+<!-- 07 ROLES HEBDO -->
+<div class="page page-break">
+  <span class="section-number">Section 07</span>
+  <h2 class="first">R&ocirc;les d'audience hebdomadaires</h2>
+  <p class="section-desc">G&eacute;n&eacute;ration automatique du planning des audiences de la semaine.</p>
+
+  <div class="qa">
+    <div class="qa-q">Qu'est-ce qu'un r&ocirc;le d'audience hebdomadaire ?</div>
+    <div class="qa-a">C'est un <strong>planning automatique</strong> qui r&eacute;capitule toutes les audiences pr&eacute;vues pour une semaine donn&eacute;e. Il agr&egrave;ge les comptes rendus d'audience dont la <strong>date de prochaine audience</strong> tombe dans la semaine s&eacute;lectionn&eacute;e. Chaque entr&eacute;e du r&ocirc;le contient le dossier, le client, la juridiction, les t&acirc;ches &agrave; pr&eacute;parer et le r&eacute;sum&eacute; de la derni&egrave;re audience.</div>
+
+    <div class="qa-q">Comment g&eacute;n&eacute;rer le r&ocirc;le de la semaine ?</div>
+    <div class="qa-a">Dans la page <strong>&laquo; R&ocirc;les d'audience &raquo;</strong>, s&eacute;lectionnez la semaine souhait&eacute;e et cliquez sur <strong>&laquo; G&eacute;n&eacute;rer le r&ocirc;le &raquo;</strong>. Le syst&egrave;me calcule automatiquement les bornes lundi-dimanche et agr&egrave;ge tous les comptes rendus pertinents. Un seul r&ocirc;le peut exister par semaine par utilisateur.</div>
+
+    <div class="qa-q">Que se passe-t-il si je r&eacute;g&eacute;n&egrave;re un r&ocirc;le existant ?</div>
+    <div class="qa-a">Le r&ocirc;le est <strong>mis &agrave; jour</strong> avec les donn&eacute;es les plus r&eacute;centes. Si de nouveaux comptes rendus ont &eacute;t&eacute; saisis depuis la derni&egrave;re g&eacute;n&eacute;ration, ils seront int&eacute;gr&eacute;s. Le r&ocirc;le n'est pas dupliqu&eacute;.</div>
+
+    <div class="qa-q">Comment publier un r&ocirc;le ?</div>
+    <div class="qa-a">Un r&ocirc;le est cr&eacute;&eacute; en statut <strong>&laquo; Brouillon &raquo;</strong>. Pour le publier, cliquez sur <strong>&laquo; Publier &raquo;</strong>. Le statut passe &agrave; <strong>&laquo; Publi&eacute; &raquo;</strong>. Vous pouvez aussi l'<strong>archiver</strong> une fois la semaine pass&eacute;e.</div>
+
+    <div class="qa-q">Le r&ocirc;le contient-il aussi les audiences issues de WhatsApp ?</div>
+    <div class="qa-a">Oui, absolument. Le r&ocirc;le agr&egrave;ge <strong>tous les comptes rendus actifs</strong> ayant une prochaine audience dans la semaine, qu'ils soient saisis manuellement ou cr&eacute;&eacute;s automatiquement via WhatsApp.</div>
+
+    <div class="qa-q">Puis-je supprimer un r&ocirc;le ?</div>
+    <div class="qa-a">Oui, via le bouton <strong>&laquo; Supprimer &raquo;</strong> depuis la page du r&ocirc;le. La suppression est d&eacute;finitive mais n'affecte pas les comptes rendus d'audience sous-jacents.</div>
+  </div>
+</div>
+
+<!-- 08 WHATSAPP -->
+<div class="page page-break">
+  <span class="section-number">Section 08</span>
+  <h2 class="first">Int&eacute;gration WhatsApp</h2>
+  <p class="section-desc">Cr&eacute;ation automatique de comptes rendus d'audience depuis WhatsApp.</p>
+
+  <div class="qa">
+    <div class="qa-q">Comment fonctionne l'int&eacute;gration WhatsApp ?</div>
+    <div class="qa-a">La plateforme est connect&eacute;e &agrave; l'API WhatsApp Cloud (Meta). Lorsqu'un avocat envoie un message dans le groupe WhatsApp du cabinet d&eacute;crivant une audience, l'<strong>intelligence artificielle</strong> d&eacute;tecte automatiquement qu'il s'agit d'un compte rendu, extrait les informations structur&eacute;es et cr&eacute;e un <strong>compte rendu d'audience</strong> dans la plateforme.</div>
+
+    <div class="qa-q">Dois-je utiliser un format sp&eacute;cifique pour mes messages WhatsApp ?</div>
+    <div class="qa-a"><strong>Non.</strong> L'IA comprend les messages en langage courant et informel. Vous pouvez simplement &eacute;crire quelque chose comme : &laquo; <em>Audience aujourd'hui au TPI Cotonou pour le dossier ADJANOHOUN c/ DOSSOU, renvoi au 15 mars, il faut pr&eacute;parer les conclusions</em> &raquo;. L'IA extraira automatiquement la date, la juridiction, le client, l'adversaire, le r&eacute;sum&eacute; et les t&acirc;ches.</div>
+
+    <div class="qa-q">Que se passe-t-il apr&egrave;s l'envoi d'un message d&eacute;tect&eacute; ?</div>
+    <div class="qa-a">
+      <strong>1.</strong> L'IA analyse le message et d&eacute;termine s'il s'agit d'un compte rendu d'audience (score de confiance &ge; 60%).<br>
+      <strong>2.</strong> Si d&eacute;tect&eacute;, l'IA extrait les donn&eacute;es : date, client, r&eacute;f&eacute;rence, juridiction, chambre, avocat, adversaire, r&eacute;sum&eacute; professionnel, t&acirc;ches, prochaine audience.<br>
+      <strong>3.</strong> Un compte rendu est cr&eacute;&eacute; automatiquement avec le badge <strong>&laquo; WhatsApp &raquo;</strong>.<br>
+      <strong>4.</strong> Une <strong>confirmation</strong> est envoy&eacute;e dans le groupe WhatsApp.<br>
+      <strong>5.</strong> Le r&ocirc;le hebdomadaire int&egrave;gre automatiquement la prochaine audience.
+    </div>
+
+    <div class="qa-q">Que se passe-t-il si l'IA ne comprend pas mon message ?</div>
+    <div class="qa-a">Si le score de confiance est inf&eacute;rieur &agrave; 60%, le message est ignor&eacute; (pas de compte rendu cr&eacute;&eacute;). Si la cl&eacute; IA n'est pas configur&eacute;e, le syst&egrave;me utilise un <strong>fallback par mots-cl&eacute;s</strong> qui ne fonctionne qu'avec des messages structur&eacute;s.</div>
+
+    <div class="qa-q">Les messages en double sont-ils g&eacute;r&eacute;s ?</div>
+    <div class="qa-a">Oui. Chaque message WhatsApp poss&egrave;de un identifiant unique. Si le m&ecirc;me message est re&ccedil;u deux fois (r&eacute;essai Meta), il ne cr&eacute;era qu'<strong>un seul compte rendu</strong>.</div>
+
+    <div class="qa-q">Comment configurer WhatsApp ?</div>
+    <div class="qa-a">La configuration est g&eacute;r&eacute;e par l'administrateur depuis la page <strong>Param&egrave;tres</strong>. Il faut renseigner les cl&eacute;s Meta (token d'acc&egrave;s, ID du num&eacute;ro, token de v&eacute;rification, ID du compte Business). Un <strong>guide de configuration</strong> et un <strong>simulateur de test</strong> sont int&eacute;gr&eacute;s &agrave; la page des param&egrave;tres.</div>
+
+    <div class="qa-q">Puis-je tester l'int&eacute;gration sans WhatsApp r&eacute;el ?</div>
+    <div class="qa-a">Oui. L'administrateur dispose d'un <strong>simulateur de test</strong> depuis la page Param&egrave;tres qui permet d'envoyer un faux message WhatsApp et de v&eacute;rifier que le pipeline fonctionne correctement.</div>
+  </div>
+</div>
+
+<!-- 09 ADMINISTRATION -->
+<div class="page page-break">
+  <span class="section-number">Section 09</span>
+  <h2 class="first">Administration (r&eacute;serv&eacute; admin)</h2>
+  <p class="section-desc">Gestion des utilisateurs, configuration IA et journal d'audit.</p>
+
+  <div class="qa">
+    <div class="qa-q">Comment acc&eacute;der au panneau d'administration ?</div>
+    <div class="qa-a">Cliquez sur <strong>&laquo; Administration &raquo;</strong> dans la sidebar. Ce lien n'est visible que pour les utilisateurs ayant le r&ocirc;le <strong>admin</strong>. Le panneau comporte 8 onglets : Vue d'ensemble, En attente, Utilisateurs, Rapports, Sessions, Activit&eacute;, Audit et Configuration LLM.</div>
+
+    <div class="qa-q">Comment approuver un nouvel utilisateur ?</div>
+    <div class="qa-a">Allez dans l'onglet <strong>&laquo; En attente &raquo;</strong>. Vous verrez la liste des comptes en attente d'approbation. Cliquez sur <strong>&laquo; Approuver &raquo;</strong> pour activer le compte ou <strong>&laquo; Rejeter &raquo;</strong> pour le refuser. L'action est enregistr&eacute;e dans le journal d'audit.</div>
+
+    <div class="qa-q">Comment bloquer ou d&eacute;bloquer un utilisateur ?</div>
+    <div class="qa-a">Dans l'onglet <strong>&laquo; Utilisateurs &raquo;</strong>, trouvez l'utilisateur concern&eacute; et cliquez sur le bouton <strong>Bloquer/D&eacute;bloquer</strong>. Un utilisateur bloqu&eacute; ne peut plus se connecter. Vous ne pouvez pas vous bloquer vous-m&ecirc;me.</div>
+
+    <div class="qa-q">Comment changer le r&ocirc;le d'un utilisateur ?</div>
+    <div class="qa-a">Dans l'onglet &laquo; Utilisateurs &raquo;, cliquez sur le <strong>badge de r&ocirc;le</strong> de l'utilisateur pour basculer entre <strong>admin</strong> et <strong>user</strong>. Vous ne pouvez pas changer votre propre r&ocirc;le.</div>
+
+    <div class="qa-q">Comment r&eacute;initialiser le mot de passe d'un utilisateur ?</div>
+    <div class="qa-a">Dans l'onglet &laquo; Utilisateurs &raquo;, cliquez sur l'ic&ocirc;ne <strong>cadenas</strong> &agrave; c&ocirc;t&eacute; de l'utilisateur. Un formulaire appara&icirc;t pour saisir le nouveau mot de passe. Le mot de passe doit respecter les r&egrave;gles de complexit&eacute; (8+ car, majuscule, minuscule, chiffre, sp&eacute;cial). Les comptes Google-only ne peuvent pas avoir leur mot de passe r&eacute;initialis&eacute;.</div>
+
+    <div class="qa-q">Comment supprimer un utilisateur ?</div>
+    <div class="qa-a">Cliquez sur le bouton <strong>&laquo; Supprimer &raquo;</strong> &agrave; c&ocirc;t&eacute; de l'utilisateur. <strong>Attention :</strong> la suppression est d&eacute;finitive et entra&icirc;ne la suppression de <strong>toutes ses donn&eacute;es</strong> : sessions, rapports, transcriptions, notes, comptes rendus et r&ocirc;les. Vous ne pouvez pas vous supprimer vous-m&ecirc;me.</div>
+
+    <div class="qa-q">Comment configurer la cl&eacute; API IA ?</div>
+    <div class="qa-a">Allez dans l'onglet <strong>&laquo; Configuration LLM &raquo;</strong>. Entrez votre cl&eacute; Groq API (format <code>gsk_...</code>) et cliquez sur <strong>&laquo; Sauvegarder &raquo;</strong>. Vous pouvez <strong>tester la cl&eacute;</strong> avec le bouton &laquo; Tester &raquo; qui v&eacute;rifie qu'elle est valide en contactant l'API Groq. La cl&eacute; est masqu&eacute;e dans l'interface (seuls les premiers et derniers caract&egrave;res sont visibles).</div>
+
+    <div class="qa-q">Qu'est-ce que le journal d'audit ?</div>
+    <div class="qa-a">C'est un <strong>historique complet de toutes les actions</strong> effectu&eacute;es sur la plateforme : connexions, cr&eacute;ations, modifications, suppressions, exports, etc. Chaque entr&eacute;e contient l'utilisateur, l'action, l'entit&eacute; concern&eacute;e, l'adresse IP, le navigateur et la date. Accessible depuis l'onglet <strong>&laquo; Audit &raquo;</strong> du panneau admin.</div>
+
+    <div class="qa-q">Quelles statistiques sont disponibles ?</div>
+    <div class="qa-a">L'onglet <strong>&laquo; Vue d'ensemble &raquo;</strong> affiche le nombre total d'utilisateurs, de sessions, de rapports et la dur&eacute;e audio totale. Les onglets &laquo; Rapports &raquo; et &laquo; Sessions &raquo; permettent de consulter toutes les donn&eacute;es de tous les utilisateurs.</div>
+  </div>
+</div>
+
+<!-- 10 PARAMETRES -->
+<div class="page page-break">
+  <span class="section-number">Section 10</span>
+  <h2 class="first">Param&egrave;tres, langue et configuration</h2>
+  <p class="section-desc">Personnalisation de l'exp&eacute;rience utilisateur.</p>
+
+  <div class="qa">
+    <div class="qa-q">Comment changer la langue de l'interface ?</div>
+    <div class="qa-a">Deux m&eacute;thodes : (1) depuis le <strong>s&eacute;lecteur de langue</strong> dans l'en-t&ecirc;te (toujours visible), ou (2) depuis la page <strong>Param&egrave;tres</strong>. Trois langues : <strong>Fran&ccedil;ais</strong> (d&eacute;faut), <strong>Anglais</strong>, <strong>Fon</strong> (partiel). Le choix est sauvegard&eacute; automatiquement.</div>
+
+    <div class="qa-q">Comment v&eacute;rifier si le moteur IA est configur&eacute; ?</div>
+    <div class="qa-a">Depuis la page <strong>Param&egrave;tres</strong>, une section affiche le statut du moteur IA. Un indicateur vert signifie que la cl&eacute; Groq est configur&eacute;e et fonctionnelle. Un indicateur rouge signifie que la cl&eacute; est absente ou invalide.</div>
+
+    <div class="qa-q">O&ugrave; trouver la documentation de la plateforme ?</div>
+    <div class="qa-a">Depuis la sidebar, cliquez sur <strong>&laquo; Documentation &raquo;</strong>. Vous pouvez aussi acc&eacute;der &agrave; la documentation compl&egrave;te via la page <strong>/platform-docs</strong> (prot&eacute;g&eacute;e par un mot de passe fourni par l'administrateur).</div>
+
+    <div class="qa-q">Le tableau de bord affiche quoi exactement ?</div>
+    <div class="qa-a">Le <strong>tableau de bord</strong> (page d'accueil apr&egrave;s connexion) affiche :<br>
+      &bull; <strong>Statistiques r&eacute;sum&eacute;es</strong> : nombre de sessions, rapports, dur&eacute;e audio totale<br>
+      &bull; <strong>5 derni&egrave;res sessions</strong> avec leur statut<br>
+      &bull; <strong>5 derniers rapports</strong> avec leur cat&eacute;gorie<br>
+      Les administrateurs voient les donn&eacute;es de tous les utilisateurs. Les utilisateurs normaux ne voient que leurs propres donn&eacute;es.</div>
+
+    <div class="qa-q">La plateforme est-elle s&eacute;curis&eacute;e ?</div>
+    <div class="qa-a">Oui. Voici les principales mesures de s&eacute;curit&eacute; :<br>
+      &bull; <strong>Mots de passe hach&eacute;s</strong> (bcrypt) &mdash; jamais stock&eacute;s en clair<br>
+      &bull; <strong>Sessions JWT sign&eacute;es</strong> avec expiration<br>
+      &bull; <strong>Protection IDOR</strong> &mdash; chaque utilisateur ne peut acc&eacute;der qu'&agrave; ses propres donn&eacute;es<br>
+      &bull; <strong>Sanitisation des entr&eacute;es</strong> contre les attaques XSS<br>
+      &bull; <strong>Rate limiting</strong> contre les tentatives de force brute<br>
+      &bull; <strong>Headers HTTP de s&eacute;curit&eacute;</strong> (clickjacking, MIME sniffing, etc.)<br>
+      &bull; <strong>Journal d'audit complet</strong> de toutes les actions</div>
+
+    <div class="qa-q">Qui contacter en cas de probl&egrave;me ?</div>
+    <div class="qa-a">Contactez l'administrateur de la plateforme au sein du cabinet. Pour les probl&egrave;mes techniques, consultez la page <strong>&laquo; &Agrave; propos &raquo;</strong> depuis la sidebar pour les informations de contact et la version de la plateforme.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Cabinet HOK &mdash; HOK Reports Platform v2.0.0 &mdash; Mars 2026<br>
+  Guide fonctionnel &mdash; Usage interne exclusivement
+</div>
+
+</body>
+</html>

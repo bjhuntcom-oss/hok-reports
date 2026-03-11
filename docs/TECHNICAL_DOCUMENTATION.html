@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOK REPORTS — Documentation Technique</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#0a0a0a;--dark:#1a1a1a;--mid:#555;--light:#999;--border:#e5e5e5;--bg:#fafafa;--white:#fff;--accent:#f5f5f5}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--black);background:var(--white);line-height:1.7;font-size:13px;-webkit-font-smoothing:antialiased}
+.cover{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:var(--black);color:var(--white);page-break-after:always;position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at center,rgba(255,255,255,.03) 0%,transparent 70%)}
+.cover-badge{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:40px;position:relative}
+.cover h1{font-size:48px;font-weight:700;letter-spacing:-1px;margin-bottom:8px;position:relative}
+.cover-sub{font-size:15px;font-weight:300;color:rgba(255,255,255,.5);margin-bottom:60px;position:relative}
+.cover-meta{position:relative;display:flex;gap:40px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.cover-line{width:40px;height:1px;background:rgba(255,255,255,.15);margin:0 auto 30px;position:relative}
+.page{max-width:800px;margin:0 auto;padding:60px 40px}.page-break{page-break-before:always}
+.toc{padding:80px 0 40px}.toc-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--light);margin-bottom:30px}
+.toc-list{list-style:none;counter-reset:toc}.toc-list li{counter-increment:toc;display:flex;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--dark)}.toc-list li::before{content:counter(toc,decimal-leading-zero);font-size:10px;font-weight:600;color:var(--light);margin-right:16px;min-width:20px}.toc-list li span{flex:1}
+.section-number{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--light);display:block;margin-bottom:8px}
+h2{font-size:24px;font-weight:700;letter-spacing:-.5px;color:var(--black);margin-bottom:8px;padding-top:40px}h2.first{padding-top:0}
+.section-desc{font-size:12px;color:var(--light);margin-bottom:30px}
+h3{font-size:14px;font-weight:600;color:var(--dark);margin:28px 0 12px;letter-spacing:-.2px}
+h4{font-size:12px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:1px;margin:24px 0 10px}
+p{margin-bottom:14px;color:var(--dark);font-size:13px}
+.highlight{background:var(--accent);border-left:2px solid var(--black);padding:16px 20px;margin:20px 0;font-size:12px;color:var(--mid)}.highlight strong{color:var(--black)}
+ul{list-style:none;margin:10px 0 18px}ul li{padding:4px 0 4px 18px;position:relative;font-size:12.5px;color:var(--dark)}ul li::before{content:'';position:absolute;left:0;top:12px;width:4px;height:4px;background:var(--border)}
+table{width:100%;border-collapse:collapse;margin:16px 0 24px;font-size:11.5px}thead th{text-align:left;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--light);padding:10px 12px;border-bottom:2px solid var(--black)}tbody td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--dark);vertical-align:top}tbody tr:last-child td{border-bottom:none}
+.col-route{font-family:'SF Mono','Fira Code',monospace;font-size:10.5px;color:var(--mid)}
+.badge{display:inline-block;font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;background:var(--accent);color:var(--mid)}
+.badge-pk{background:#dbeafe;color:#1d4ed8}.badge-fk{background:#fef3c7;color:#92400e}.badge-idx{background:#f3e8ff;color:#7c3aed}.badge-unique{background:#dcfce7;color:#166534}.badge-nullable{background:#f1f5f9;color:#64748b}.badge-new{background:var(--black);color:var(--white)}
+.badge-get{background:#dbeafe;color:#1d4ed8}.badge-post{background:#dcfce7;color:#166534}.badge-patch{background:#fef3c7;color:#92400e}.badge-delete{background:#fee2e2;color:#991b1b}
+code{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;background:var(--accent);padding:2px 6px;border-radius:2px}
+pre{background:var(--black);color:rgba(255,255,255,.8);padding:20px 24px;margin:16px 0 24px;font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;line-height:1.8;overflow-x:auto}pre code{background:none;padding:0;color:inherit}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0 24px}
+.card{border:1px solid var(--border);padding:20px}.card-label{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--light);margin-bottom:8px}.card-value{font-size:18px;font-weight:300;color:var(--black)}.card p{font-size:11.5px;color:var(--mid);margin:0}
+.tree{background:var(--accent);padding:24px 28px;margin:16px 0 24px;font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;line-height:1.9;color:var(--mid)}.tree .hl{color:var(--black);font-weight:600}
+.sep{width:30px;height:1px;background:var(--border);margin:40px 0}
+.footer{text-align:center;padding:60px 40px 40px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--light);border-top:1px solid var(--border);margin-top:60px}
+.sec-row{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start}.sec-row:last-child{border-bottom:none}.sec-icon{width:6px;height:6px;background:var(--black);margin-top:6px;flex-shrink:0}.sec-content strong{font-size:12px;display:block;margin-bottom:2px}.sec-content span{font-size:11.5px;color:var(--mid)}
+.schema-diagram{background:var(--accent);border:1px solid var(--border);padding:30px;margin:20px 0 24px;font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:11px;line-height:2;overflow-x:auto}.schema-diagram .tbl{font-weight:700;color:var(--black);font-size:12px}
+@media print{.cover{height:auto;min-height:100vh}.page-break{page-break-before:always}body{font-size:11px}}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-badge">Document interne &mdash; Confidentiel</div>
+  <div class="cover-line"></div>
+  <h1>HOK REPORTS</h1>
+  <div class="cover-sub">Documentation Technique Compl&egrave;te</div>
+  <div class="cover-meta"><span>Version 2.0.0</span><span>Mars 2026</span><span>Cabinet HOK</span></div>
+</div>
+
+<!-- TOC -->
+<div class="page">
+  <div class="toc">
+    <div class="toc-label">Table des mati&egrave;res</div>
+    <ol class="toc-list">
+      <li><span>Pr&eacute;sentation &amp; Stack technique</span></li>
+      <li><span>Architecture &amp; Structure du projet</span></li>
+      <li><span>Sch&eacute;ma de la base de donn&eacute;es (10 tables)</span></li>
+      <li><span>Diagramme relationnel &amp; Index</span></li>
+      <li><span>Routes API &mdash; R&eacute;f&eacute;rence compl&egrave;te (40 endpoints)</span></li>
+      <li><span>Librairies internes (src/lib)</span></li>
+      <li><span>Composants &amp; Pages</span></li>
+      <li><span>S&eacute;curit&eacute; &amp; Middleware</span></li>
+      <li><span>Moteur IA (Groq) &amp; WhatsApp</span></li>
+      <li><span>Internationalisation &amp; Journal d'audit</span></li>
+    </ol>
+  </div>
+</div>
+
+<!-- 01 PRESENTATION -->
+<div class="page page-break">
+  <span class="section-number">Section 01</span>
+  <h2 class="first">Pr&eacute;sentation &amp; Stack technique</h2>
+  <p class="section-desc">Vue d'ensemble de la plateforme et de ses technologies.</p>
+  <p><strong>HOK Reports</strong> est une plateforme interne de gestion documentaire pour le Cabinet HOK (Avocats &mdash; Cotonou, B&eacute;nin). Elle automatise la transcription audio, la g&eacute;n&eacute;ration de rapports juridiques par IA, le suivi des audiences et la gestion des dossiers.</p>
+  <div class="highlight"><strong>Mission</strong> &mdash; Automatiser la transcription, la synth&egrave;se et le suivi des audiences pour permettre aux avocats de se concentrer sur leur m&eacute;tier.</div>
+  <table>
+    <thead><tr><th style="width:25%">Couche</th><th>Technologie</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Framework</strong></td><td>Next.js 16.1.6 (App Router, Turbopack)</td></tr>
+      <tr><td><strong>Langage</strong></td><td>TypeScript 5.x</td></tr>
+      <tr><td><strong>Styles</strong></td><td>Tailwind CSS 4.x</td></tr>
+      <tr><td><strong>Base de donn&eacute;es</strong></td><td>PostgreSQL via Prisma v7 + <code>@prisma/adapter-pg</code></td></tr>
+      <tr><td><strong>Auth</strong></td><td>NextAuth v5 (beta.30) &mdash; JWT + Credentials + Google OAuth</td></tr>
+      <tr><td><strong>&Eacute;tat client</strong></td><td>Zustand 5.x (persistance localStorage)</td></tr>
+      <tr><td><strong>IA / LLM</strong></td><td>Groq uniquement &mdash; Whisper <code>whisper-large-v3-turbo</code> (transcription) + <code>llama-3.3-70b-versatile</code> (rapports &amp; parsing WhatsApp)</td></tr>
+      <tr><td><strong>Ic&ocirc;nes</strong></td><td>Lucide React 0.574</td></tr>
+      <tr><td><strong>PDF</strong></td><td><code>@react-pdf/renderer</code> + <code>pdf-lib</code></td></tr>
+      <tr><td><strong>i18n</strong></td><td>Syst&egrave;me personnalis&eacute; (fr / en / fon) &mdash; ~370 cl&eacute;s</td></tr>
+      <tr><td><strong>Hachage</strong></td><td>bcryptjs (salt factor 12)</td></tr>
+    </tbody>
+  </table>
+  <div class="grid-2">
+    <div class="card"><div class="card-label">Cl&eacute; API requise</div><div class="card-value">GROQ_API_KEY</div><p>Format <code>gsk_...</code> &mdash; configurable en DB ou .env</p></div>
+    <div class="card"><div class="card-label">Client Prisma</div><div class="card-value">v7 + PG Pool</div><p>Import depuis <code>@/generated/prisma/client</code>, adaptateur <code>@prisma/adapter-pg</code></p></div>
+  </div>
+</div>
+
+<!-- 02 ARCHITECTURE -->
+<div class="page page-break">
+  <span class="section-number">Section 02</span>
+  <h2 class="first">Architecture &amp; Structure du projet</h2>
+  <p class="section-desc">Organisation du code, flux de donn&eacute;es et architecture d'authentification.</p>
+  <div class="tree">
+hok-reports/<br>
+├── prisma/schema.prisma &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>10 mod&egrave;les, PostgreSQL</em><br>
+├── prisma.config.ts &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Datasource URL</em><br>
+├── src/<br>
+│&nbsp;&nbsp;├── app/<br>
+│&nbsp;&nbsp;│&nbsp;&nbsp;├── (dashboard)/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>admin, dashboard, sessions, flash, reports, roles, profile, settings, about, documentation</em><br>
+│&nbsp;&nbsp;│&nbsp;&nbsp;├── api/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>40 endpoints (19 fichiers route.ts)</em><br>
+│&nbsp;&nbsp;│&nbsp;&nbsp;├── login/, register/ &nbsp;<em>Pages publiques</em><br>
+│&nbsp;&nbsp;│&nbsp;&nbsp;├── platform-docs/ &nbsp;&nbsp;&nbsp;&nbsp;<em>Doc prot&eacute;g&eacute;e par mot de passe</em><br>
+│&nbsp;&nbsp;│&nbsp;&nbsp;└── mentions-legales/, confidentialite/, cgu/<br>
+│&nbsp;&nbsp;├── components/<br>
+│&nbsp;&nbsp;│&nbsp;&nbsp;├── layout/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>sidebar.tsx, header.tsx, dashboard-shell.tsx</em><br>
+│&nbsp;&nbsp;│&nbsp;&nbsp;└── ui/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Composants r&eacute;utilisables</em><br>
+│&nbsp;&nbsp;├── lib/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>auth, prisma, llm, audit, sanitize, rate-limit, whatsapp-parser, whatsapp, i18n, store, utils</em><br>
+│&nbsp;&nbsp;├── generated/prisma/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Client Prisma g&eacute;n&eacute;r&eacute;</em><br>
+│&nbsp;&nbsp;└── middleware.ts &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Auth + headers s&eacute;curit&eacute;</em><br>
+├── docs/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Documentation HTML</em><br>
+└── data/audio/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Fichiers audio (hors git)</em>
+  </div>
+  <h3>Flux de donn&eacute;es</h3>
+  <div class="highlight"><strong>Navigateur</strong> &rarr; Middleware (NextAuth + Headers) &rarr; API Route (Auth + Sanitize + Rate Limit) &rarr; <strong>Prisma ORM</strong> &rarr; PostgreSQL</div>
+  <h3>Architecture d'authentification (split edge)</h3>
+  <table>
+    <thead><tr><th style="width:30%">Fichier</th><th>R&ocirc;le</th></tr></thead>
+    <tbody>
+      <tr><td><code>auth.config.ts</code></td><td>Config edge-compatible (middleware). Callbacks jwt/session/authorized. D&eacute;finit pages publiques, redirections admin, protection des routes.</td></tr>
+      <tr><td><code>auth.ts</code></td><td>Config compl&egrave;te : Credentials (email + bcrypt) + Google OAuth. G&egrave;re signIn Google (cr&eacute;ation compte <code>pending</code>), mise &agrave; jour <code>lastLoginAt</code>, audit log, rate limit login (5/5min).</td></tr>
+      <tr><td><code>middleware.ts</code></td><td>Utilise auth.config.ts. Headers s&eacute;curit&eacute; (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy). Bloque <code>/api/admin/*</code> pour non-admins.</td></tr>
+    </tbody>
+  </table>
+  <h3>Client Prisma v7</h3>
+  <p>Instanci&eacute; via <code>@prisma/adapter-pg</code> avec pool de connexions <code>pg</code>. D&eacute;tection localhost pour d&eacute;sactivation SSL. Pattern singleton global en dev.</p>
+  <pre><code>import { PrismaClient } from "@/generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
+const pool = new Pool({ /* config depuis DATABASE_URL */ });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });</code></pre>
+</div>
+
+<!-- 03 SCHEMA DB -->
+<div class="page page-break">
+  <span class="section-number">Section 03</span>
+  <h2 class="first">Sch&eacute;ma de la base de donn&eacute;es</h2>
+  <p class="section-desc">10 tables &mdash; description exhaustive de chaque colonne, type, contrainte et relation.</p>
+
+  <h3>3.1 &mdash; User</h3>
+  <p>Table centrale. Toutes les entit&eacute;s principales sont li&eacute;es via <code>onDelete: Cascade</code>.</p>
+  <table>
+    <thead><tr><th>Colonne</th><th>Type</th><th>Contraintes</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>String</td><td><span class="badge badge-pk">PK</span> cuid()</td><td>Identifiant unique</td></tr>
+      <tr><td><code>name</code></td><td>String</td><td>Requis</td><td>Nom complet</td></tr>
+      <tr><td><code>email</code></td><td>String</td><td><span class="badge badge-unique">UNIQUE</span></td><td>Email (login)</td></tr>
+      <tr><td><code>password</code></td><td>String?</td><td><span class="badge badge-nullable">NULL</span></td><td>Hash bcrypt. <code>null</code> = Google-only</td></tr>
+      <tr><td><code>role</code></td><td>String</td><td>D&eacute;f: "user"</td><td><code>admin</code> | <code>user</code></td></tr>
+      <tr><td><code>status</code></td><td>String</td><td>D&eacute;f: "pending"</td><td><code>pending</code> | <code>active</code> | <code>rejected</code></td></tr>
+      <tr><td><code>blocked</code></td><td>Boolean</td><td>D&eacute;f: false</td><td>Bloqu&eacute; par admin</td></tr>
+      <tr><td><code>avatar</code></td><td>String?</td><td><span class="badge badge-nullable">NULL</span></td><td>URL avatar Google</td></tr>
+      <tr><td><code>language</code></td><td>String</td><td>D&eacute;f: "fr"</td><td>fr | en | fon</td></tr>
+      <tr><td><code>lastLoginAt</code></td><td>DateTime?</td><td><span class="badge badge-nullable">NULL</span></td><td>Derni&egrave;re connexion</td></tr>
+      <tr><td><code>createdAt</code></td><td>DateTime</td><td>now()</td><td>Cr&eacute;ation</td></tr>
+      <tr><td><code>updatedAt</code></td><td>DateTime</td><td>@updatedAt</td><td>Mise &agrave; jour</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Relations :</strong> sessions[], reports[], loginHistory[], auditLogs[], hearingReports[], weeklyRoles[]</p>
+
+  <div class="sep"></div>
+
+  <h3>3.2 &mdash; Session</h3>
+  <p>Session d'enregistrement audio avec cycle de vie &agrave; 5 &eacute;tats.</p>
+  <table>
+    <thead><tr><th>Colonne</th><th>Type</th><th>Contraintes</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>String</td><td><span class="badge badge-pk">PK</span></td><td>Identifiant</td></tr>
+      <tr><td><code>title</code></td><td>String</td><td>Requis, max 200</td><td>Titre</td></tr>
+      <tr><td><code>description</code></td><td>String?</td><td>max 2000</td><td>Description</td></tr>
+      <tr><td><code>clientName</code></td><td>String</td><td>Requis, max 100</td><td>Client</td></tr>
+      <tr><td><code>clientEmail</code></td><td>String?</td><td></td><td>Email client</td></tr>
+      <tr><td><code>clientPhone</code></td><td>String?</td><td></td><td>T&eacute;l&eacute;phone</td></tr>
+      <tr><td><code>caseReference</code></td><td>String?</td><td></td><td>R&eacute;f dossier</td></tr>
+      <tr><td><code>audioUrl</code></td><td>String?</td><td></td><td>Chemin audio</td></tr>
+      <tr><td><code>audioDuration</code></td><td>Int?</td><td></td><td>Dur&eacute;e (sec)</td></tr>
+      <tr><td><code>status</code></td><td>String</td><td>D&eacute;f: "recording"</td><td>recording | transcribing | summarizing | completed | error</td></tr>
+      <tr><td><code>language</code></td><td>String</td><td>D&eacute;f: "fr"</td><td>fr | en</td></tr>
+      <tr><td><code>userId</code></td><td>String</td><td><span class="badge badge-fk">FK</span> &rarr; User</td><td>Propri&eacute;taire</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Relations :</strong> user, transcription? (1:1), reports[], notes[] &mdash; <strong>Index :</strong> userId, createdAt &mdash; <strong>Cascade :</strong> depuis User</p>
+
+  <div class="sep"></div>
+
+  <h3>3.3 &mdash; Transcription</h3>
+  <p>Transcription Whisper. Relation <strong>1:1</strong> avec Session.</p>
+  <table>
+    <thead><tr><th>Colonne</th><th>Type</th><th>Contraintes</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>String</td><td><span class="badge badge-pk">PK</span></td><td>Identifiant</td></tr>
+      <tr><td><code>content</code></td><td>String</td><td>Requis</td><td>Texte complet</td></tr>
+      <tr><td><code>segments</code></td><td>String?</td><td>JSON</td><td>Segments horodat&eacute;s [{start, end, text}]</td></tr>
+      <tr><td><code>language</code></td><td>String</td><td>D&eacute;f: "fr"</td><td>Langue d&eacute;tect&eacute;e</td></tr>
+      <tr><td><code>confidence</code></td><td>Float?</td><td></td><td>Score confiance</td></tr>
+      <tr><td><code>sessionId</code></td><td>String</td><td><span class="badge badge-fk">FK</span> <span class="badge badge-unique">UNIQUE</span></td><td>Session (1:1)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sep"></div>
+
+  <h3>3.4 &mdash; Report</h3>
+  <p>Rapport juridique g&eacute;n&eacute;r&eacute; par IA. Contient synth&egrave;se, points cl&eacute;s, actions, observations juridiques et suggestions typ&eacute;es.</p>
+  <table>
+    <thead><tr><th>Colonne</th><th>Type</th><th>Contraintes</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>String</td><td><span class="badge badge-pk">PK</span></td><td>Identifiant</td></tr>
+      <tr><td><code>title</code></td><td>String</td><td>Requis</td><td>Titre IA</td></tr>
+      <tr><td><code>summary</code></td><td>String</td><td>Requis</td><td>Synth&egrave;se narrative</td></tr>
+      <tr><td><code>keyPoints</code></td><td>String</td><td>JSON</td><td>["Point 1","Point 2"]</td></tr>
+      <tr><td><code>actionItems</code></td><td>String?</td><td>JSON</td><td>["Action 1","Action 2"]</td></tr>
+      <tr><td><code>legalNotes</code></td><td>String?</td><td></td><td>Observations juridiques</td></tr>
+      <tr><td><code>suggestions</code></td><td>String?</td><td>JSON</td><td>["[LOI] ...","[ARGUMENT] ...","[DEFENSE] ...","[OUVERTURE] ...","[JURISPRUDENCE] ...","[PREUVE] ..."]</td></tr>
+      <tr><td><code>category</code></td><td>String</td><td>D&eacute;f: "general"</td><td>general | consultation | hearing | deposition | meeting</td></tr>
+      <tr><td><code>status</code></td><td>String</td><td>D&eacute;f: "draft"</td><td>draft | final | archived</td></tr>
+      <tr><td><code>format</code></td><td>String</td><td>D&eacute;f: "standard"</td><td>standard | detailed | brief</td></tr>
+      <tr><td><code>exportedAt</code></td><td>DateTime?</td><td></td><td>Dernier export PDF</td></tr>
+      <tr><td><code>sessionId</code></td><td>String</td><td><span class="badge badge-fk">FK</span></td><td>Session source</td></tr>
+      <tr><td><code>userId</code></td><td>String</td><td><span class="badge badge-fk">FK</span></td><td>Auteur</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Index :</strong> userId, sessionId, category, createdAt</p>
+
+  <div class="sep"></div>
+
+  <h3>3.5 &mdash; Note</h3>
+  <table>
+    <thead><tr><th>Colonne</th><th>Type</th><th>Contraintes</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>String</td><td><span class="badge badge-pk">PK</span></td><td>Identifiant</td></tr>
+      <tr><td><code>content</code></td><td>String</td><td>max 5000</td><td>Contenu</td></tr>
+      <tr><td><code>timestamp</code></td><td>Int?</td><td></td><td>Timestamp audio (sec)</td></tr>
+      <tr><td><code>isImportant</code></td><td>Boolean</td><td>D&eacute;f: false</td><td>Marqu&eacute; important</td></tr>
+      <tr><td><code>sessionId</code></td><td>String</td><td><span class="badge badge-fk">FK</span></td><td>Session parente</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Index :</strong> sessionId</p>
+</div>
+
+<!-- 03B SCHEMA DB suite -->
+<div class="page page-break">
+  <span class="section-number">Section 03 (suite)</span>
+  <h2 class="first">Sch&eacute;ma DB (suite)</h2>
+
+  <h3>3.6 &mdash; HearingReport</h3>
+  <p>Compte rendu d'audience. Source : manuelle ou WhatsApp.</p>
+  <table>
+    <thead><tr><th>Colonne</th><th>Type</th><th>Contraintes</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>String</td><td><span class="badge badge-pk">PK</span></td><td>Identifiant</td></tr>
+      <tr><td><code>hearingDate</code></td><td>DateTime</td><td>Requis</td><td>Date audience</td></tr>
+      <tr><td><code>jurisdiction</code></td><td>String</td><td>Requis</td><td>Tribunal</td></tr>
+      <tr><td><code>chamber</code></td><td>String?</td><td></td><td>Chambre</td></tr>
+      <tr><td><code>caseReference</code></td><td>String</td><td>Requis</td><td>R&eacute;f dossier</td></tr>
+      <tr><td><code>clientName</code></td><td>String</td><td>Requis</td><td>Client</td></tr>
+      <tr><td><code>opponent</code></td><td>String?</td><td></td><td>Adversaire</td></tr>
+      <tr><td><code>lawyerName</code></td><td>String?</td><td></td><td>Avocat</td></tr>
+      <tr><td><code>outcome</code></td><td>String</td><td>Requis</td><td>Compte rendu</td></tr>
+      <tr><td><code>nextHearingDate</code></td><td>DateTime?</td><td></td><td>Prochaine audience</td></tr>
+      <tr><td><code>tasks</code></td><td>String?</td><td>JSON</td><td>T&acirc;ches ["..."]</td></tr>
+      <tr><td><code>notes</code></td><td>String?</td><td></td><td>Notes</td></tr>
+      <tr><td><code>status</code></td><td>String</td><td>D&eacute;f: "active"</td><td>active | archived</td></tr>
+      <tr><td><code>source</code></td><td>String</td><td>D&eacute;f: "manual"</td><td>manual | whatsapp</td></tr>
+      <tr><td><code>whatsappMessageId</code></td><td>String?</td><td></td><td>ID message WhatsApp</td></tr>
+      <tr><td><code>whatsappSender</code></td><td>String?</td><td></td><td>Exp&eacute;diteur WhatsApp</td></tr>
+      <tr><td><code>userId</code></td><td>String</td><td><span class="badge badge-fk">FK</span></td><td>Utilisateur</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Index :</strong> userId, hearingDate, nextHearingDate, caseReference, createdAt, source</p>
+
+  <div class="sep"></div>
+
+  <h3>3.7 &mdash; WeeklyRole</h3>
+  <p>R&ocirc;le d'audience hebdomadaire auto-g&eacute;n&eacute;r&eacute; depuis les HearingReport.</p>
+  <table>
+    <thead><tr><th>Colonne</th><th>Type</th><th>Contraintes</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>String</td><td><span class="badge badge-pk">PK</span></td><td>Identifiant</td></tr>
+      <tr><td><code>weekStart</code></td><td>DateTime</td><td>Requis</td><td>Lundi</td></tr>
+      <tr><td><code>weekEnd</code></td><td>DateTime</td><td>Requis</td><td>Dimanche</td></tr>
+      <tr><td><code>title</code></td><td>String</td><td>Requis</td><td>Titre auto-g&eacute;n&eacute;r&eacute;</td></tr>
+      <tr><td><code>entries</code></td><td>String</td><td>JSON</td><td>[{hearingReportId, hearingDate, jurisdiction, caseReference, clientName, opponent, lawyerName, previousOutcome, tasks[], notes}]</td></tr>
+      <tr><td><code>notes</code></td><td>String?</td><td></td><td>Notes</td></tr>
+      <tr><td><code>status</code></td><td>String</td><td>D&eacute;f: "draft"</td><td>draft | published | archived</td></tr>
+      <tr><td><code>userId</code></td><td>String</td><td><span class="badge badge-fk">FK</span></td><td>Propri&eacute;taire</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Unique :</strong> <span class="badge badge-unique">UNIQUE</span> (weekStart, userId) &mdash; <strong>Index :</strong> userId, weekStart, status</p>
+
+  <div class="sep"></div>
+
+  <h3>3.8 &mdash; LoginHistory</h3>
+  <table>
+    <thead><tr><th>Colonne</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>String <span class="badge badge-pk">PK</span></td><td>Identifiant</td></tr>
+      <tr><td><code>ipAddress</code></td><td>String?</td><td>IP client</td></tr>
+      <tr><td><code>userAgent</code></td><td>String?</td><td>Navigateur</td></tr>
+      <tr><td><code>success</code></td><td>Boolean (d&eacute;f: true)</td><td>Connexion r&eacute;ussie</td></tr>
+      <tr><td><code>userId</code></td><td>String <span class="badge badge-fk">FK</span></td><td>Utilisateur</td></tr>
+      <tr><td><code>createdAt</code></td><td>DateTime</td><td>Date tentative</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.9 &mdash; SystemSetting</h3>
+  <table>
+    <thead><tr><th>Colonne</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>String <span class="badge badge-pk">PK</span></td><td>Identifiant</td></tr>
+      <tr><td><code>key</code></td><td>String <span class="badge badge-unique">UNIQUE</span></td><td>Cl&eacute; (ex: "groq_api_key")</td></tr>
+      <tr><td><code>value</code></td><td>String</td><td>Valeur</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.10 &mdash; AuditLog</h3>
+  <table>
+    <thead><tr><th>Colonne</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>String <span class="badge badge-pk">PK</span></td><td>Identifiant</td></tr>
+      <tr><td><code>action</code></td><td>String</td><td>Type d'action (voir section 10)</td></tr>
+      <tr><td><code>entity</code></td><td>String?</td><td>session | report | user | settings | hearing_report | weekly_role</td></tr>
+      <tr><td><code>entityId</code></td><td>String?</td><td>ID entit&eacute;</td></tr>
+      <tr><td><code>details</code></td><td>String? (JSON)</td><td>D&eacute;tails variables</td></tr>
+      <tr><td><code>ipAddress</code></td><td>String?</td><td>IP client</td></tr>
+      <tr><td><code>userAgent</code></td><td>String?</td><td>Navigateur</td></tr>
+      <tr><td><code>userId</code></td><td>String <span class="badge badge-fk">FK</span></td><td>Auteur action</td></tr>
+      <tr><td><code>createdAt</code></td><td>DateTime</td><td>Horodatage</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Index :</strong> userId, action, createdAt</p>
+</div>
+
+<!-- 04 DIAGRAMME VISUEL -->
+<div class="page page-break" style="max-width:1100px;padding:40px 20px;">
+  <span class="section-number">Section 04</span>
+  <h2 class="first">Diagramme relationnel de la base de donn&eacute;es</h2>
+  <p class="section-desc">Vue compl&egrave;te des 10 tables, colonnes cl&eacute;s, relations et r&egrave;gles de cascade. Toutes les FK utilisent <code>onDelete: Cascade</code>.</p>
+
+  <div style="position:relative;width:100%;overflow-x:auto;">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 820" style="width:100%;height:auto;font-family:'Inter',-apple-system,sans-serif;">
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#94a3b8" stroke-width="1.2"/></marker>
+      <marker id="dot" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><circle cx="3" cy="3" r="2.5" fill="#94a3b8"/></marker>
+      <filter id="shadow"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.06"/></filter>
+      <linearGradient id="hdr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a0a0a"/><stop offset="100%" stop-color="#1a1a1a"/></linearGradient>
+    </defs>
+
+    <!-- ========== RELATION LINES (behind tables) ========== -->
+    <!-- User -> Session -->
+    <path d="M 255,155 L 305,155 Q 315,155 315,165 L 315,78 Q 315,68 325,68 L 370,68" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="none" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+    <!-- User -> HearingReport -->
+    <path d="M 255,175 L 285,175 Q 295,175 295,185 L 295,340 Q 295,350 305,350 L 370,350" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+    <!-- User -> WeeklyRole -->
+    <path d="M 255,195 L 275,195 Q 285,195 285,205 L 285,510 Q 285,520 295,520 L 370,520" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+    <!-- User -> LoginHistory -->
+    <path d="M 130,265 L 130,660 Q 130,670 140,670 L 370,670" fill="none" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,3" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+    <!-- User -> AuditLog -->
+    <path d="M 175,265 L 175,760 Q 175,770 185,770 L 370,770" fill="none" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,3" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+    <!-- Session -> Transcription -->
+    <path d="M 575,100 L 670,100" fill="none" stroke="#8b5cf6" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+    <!-- Session -> Report -->
+    <path d="M 575,80 L 625,80 Q 635,80 635,90 L 635,215 Q 635,225 645,225 L 670,225" fill="none" stroke="#8b5cf6" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+    <!-- Session -> Note -->
+    <path d="M 575,60 L 615,60 Q 625,60 625,70 L 625,365 Q 625,375 635,375 L 670,375" fill="none" stroke="#8b5cf6" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+    <!-- User -> Report (userId) -->
+    <path d="M 255,215 L 265,215 Q 275,215 275,225 L 275,240 Q 275,250 650,250 L 670,250" fill="none" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+
+    <!-- ========== TABLE: USER (central, left) ========== -->
+    <g filter="url(#shadow)">
+      <rect x="20" y="100" width="235" height="165" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <rect x="20" y="100" width="235" height="30" rx="4" fill="url(#hdr)"/>
+      <rect x="20" y="100" width="235" height="30" rx="4" fill="url(#hdr)"/>
+      <rect x="20" y="126" width="235" height="4" fill="url(#hdr)" rx="0"/>
+      <text x="32" y="120" fill="white" font-size="11" font-weight="700" letter-spacing="0.5">USER</text>
+      <text x="210" y="120" fill="rgba(255,255,255,0.4)" font-size="8" font-weight="500">CENTRAL</text>
+      <!-- columns -->
+      <text x="32" y="150" font-size="10" fill="#1d4ed8" font-weight="600">PK</text><text x="52" y="150" font-size="10" fill="#334155">id</text><text x="160" y="150" font-size="9" fill="#94a3b8">String @id</text>
+      <text x="32" y="168" font-size="10" fill="#16a34a" font-weight="600">UQ</text><text x="52" y="168" font-size="10" fill="#334155">email</text><text x="160" y="168" font-size="9" fill="#94a3b8">String</text>
+      <text x="32" y="186" font-size="10" fill="#94a3b8"></text><text x="52" y="186" font-size="10" fill="#334155">name, password?</text><text x="160" y="186" font-size="9" fill="#94a3b8">String</text>
+      <text x="32" y="204" font-size="10" fill="#94a3b8"></text><text x="52" y="204" font-size="10" fill="#334155">role, status</text><text x="160" y="204" font-size="9" fill="#94a3b8">String</text>
+      <text x="32" y="222" font-size="10" fill="#94a3b8"></text><text x="52" y="222" font-size="10" fill="#334155">image?, provider?</text><text x="160" y="222" font-size="9" fill="#94a3b8">String?</text>
+      <text x="32" y="240" font-size="10" fill="#94a3b8"></text><text x="52" y="240" font-size="10" fill="#64748b" font-style="italic">+ 7 relations &darr;</text>
+      <line x1="20" y1="155" x2="255" y2="155" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="20" y1="173" x2="255" y2="173" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="20" y1="191" x2="255" y2="191" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="20" y1="209" x2="255" y2="209" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="20" y1="227" x2="255" y2="227" stroke="#f1f5f9" stroke-width="1"/>
+    </g>
+
+    <!-- ========== TABLE: SESSION ========== -->
+    <g filter="url(#shadow)">
+      <rect x="370" y="18" width="205" height="128" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <rect x="370" y="18" width="205" height="28" rx="4" fill="url(#hdr)"/>
+      <rect x="370" y="42" width="205" height="4" fill="url(#hdr)" rx="0"/>
+      <text x="382" y="37" fill="white" font-size="11" font-weight="700" letter-spacing="0.5">SESSION</text>
+      <text x="382" y="62" font-size="10" fill="#1d4ed8" font-weight="600">PK</text><text x="402" y="62" font-size="10" fill="#334155">id</text>
+      <text x="382" y="78" font-size="10" fill="#f59e0b" font-weight="600">FK</text><text x="402" y="78" font-size="10" fill="#334155">userId</text><text x="500" y="78" font-size="9" fill="#3b82f6">&rarr; User</text>
+      <text x="382" y="94" font-size="10" fill="#94a3b8"></text><text x="402" y="94" font-size="10" fill="#334155">title, clientName</text>
+      <text x="382" y="110" font-size="10" fill="#94a3b8"></text><text x="402" y="110" font-size="10" fill="#334155">status, audioPath?</text>
+      <text x="382" y="126" font-size="10" fill="#94a3b8"></text><text x="402" y="126" font-size="10" fill="#334155">duration?, language</text>
+      <line x1="370" y1="67" x2="575" y2="67" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="83" x2="575" y2="83" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="99" x2="575" y2="99" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="115" x2="575" y2="115" stroke="#f1f5f9" stroke-width="1"/>
+    </g>
+
+    <!-- ========== TABLE: TRANSCRIPTION ========== -->
+    <g filter="url(#shadow)">
+      <rect x="670" y="55" width="205" height="110" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <rect x="670" y="55" width="205" height="28" rx="4" fill="url(#hdr)"/>
+      <rect x="670" y="79" width="205" height="4" fill="url(#hdr)" rx="0"/>
+      <text x="682" y="74" fill="white" font-size="11" font-weight="700" letter-spacing="0.5">TRANSCRIPTION</text>
+      <text x="830" y="74" fill="rgba(255,255,255,0.4)" font-size="8">1:1</text>
+      <text x="682" y="99" font-size="10" fill="#1d4ed8" font-weight="600">PK</text><text x="702" y="99" font-size="10" fill="#334155">id</text>
+      <text x="682" y="115" font-size="10" fill="#f59e0b" font-weight="600">FK</text><text x="702" y="115" font-size="10" fill="#334155">sessionId</text><text x="800" y="115" font-size="9" fill="#8b5cf6">UQ &rarr; Session</text>
+      <text x="682" y="131" font-size="10" fill="#94a3b8"></text><text x="702" y="131" font-size="10" fill="#334155">text, segments?</text>
+      <text x="682" y="147" font-size="10" fill="#94a3b8"></text><text x="702" y="147" font-size="10" fill="#334155">language?, confidence?</text>
+      <line x1="670" y1="104" x2="875" y2="104" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="670" y1="120" x2="875" y2="120" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="670" y1="136" x2="875" y2="136" stroke="#f1f5f9" stroke-width="1"/>
+    </g>
+
+    <!-- ========== TABLE: REPORT ========== -->
+    <g filter="url(#shadow)">
+      <rect x="670" y="185" width="205" height="128" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <rect x="670" y="185" width="205" height="28" rx="4" fill="url(#hdr)"/>
+      <rect x="670" y="209" width="205" height="4" fill="url(#hdr)" rx="0"/>
+      <text x="682" y="204" fill="white" font-size="11" font-weight="700" letter-spacing="0.5">REPORT</text>
+      <text x="682" y="229" font-size="10" fill="#1d4ed8" font-weight="600">PK</text><text x="702" y="229" font-size="10" fill="#334155">id</text>
+      <text x="682" y="245" font-size="10" fill="#f59e0b" font-weight="600">FK</text><text x="702" y="245" font-size="10" fill="#334155">sessionId, userId</text><text x="825" y="245" font-size="9" fill="#8b5cf6">&rarr;</text>
+      <text x="682" y="261" font-size="10" fill="#94a3b8"></text><text x="702" y="261" font-size="10" fill="#334155">title, content, format</text>
+      <text x="682" y="277" font-size="10" fill="#94a3b8"></text><text x="702" y="277" font-size="10" fill="#334155">category, status</text>
+      <text x="682" y="293" font-size="10" fill="#94a3b8"></text><text x="702" y="293" font-size="10" fill="#334155">keyPoints?, actions?</text>
+      <line x1="670" y1="234" x2="875" y2="234" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="670" y1="250" x2="875" y2="250" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="670" y1="266" x2="875" y2="266" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="670" y1="282" x2="875" y2="282" stroke="#f1f5f9" stroke-width="1"/>
+    </g>
+
+    <!-- ========== TABLE: NOTE ========== -->
+    <g filter="url(#shadow)">
+      <rect x="670" y="335" width="205" height="95" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <rect x="670" y="335" width="205" height="28" rx="4" fill="url(#hdr)"/>
+      <rect x="670" y="359" width="205" height="4" fill="url(#hdr)" rx="0"/>
+      <text x="682" y="354" fill="white" font-size="11" font-weight="700" letter-spacing="0.5">NOTE</text>
+      <text x="682" y="379" font-size="10" fill="#1d4ed8" font-weight="600">PK</text><text x="702" y="379" font-size="10" fill="#334155">id</text>
+      <text x="682" y="395" font-size="10" fill="#f59e0b" font-weight="600">FK</text><text x="702" y="395" font-size="10" fill="#334155">sessionId</text><text x="800" y="395" font-size="9" fill="#8b5cf6">&rarr; Session</text>
+      <text x="682" y="411" font-size="10" fill="#94a3b8"></text><text x="702" y="411" font-size="10" fill="#334155">content, timestamp?, isImportant</text>
+      <line x1="670" y1="384" x2="875" y2="384" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="670" y1="400" x2="875" y2="400" stroke="#f1f5f9" stroke-width="1"/>
+    </g>
+
+    <!-- ========== TABLE: HEARING_REPORT ========== -->
+    <g filter="url(#shadow)">
+      <rect x="370" y="290" width="230" height="148" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <rect x="370" y="290" width="230" height="28" rx="4" fill="url(#hdr)"/>
+      <rect x="370" y="314" width="230" height="4" fill="url(#hdr)" rx="0"/>
+      <text x="382" y="309" fill="white" font-size="11" font-weight="700" letter-spacing="0.5">HEARING_REPORT</text>
+      <text x="382" y="334" font-size="10" fill="#1d4ed8" font-weight="600">PK</text><text x="402" y="334" font-size="10" fill="#334155">id</text>
+      <text x="382" y="350" font-size="10" fill="#f59e0b" font-weight="600">FK</text><text x="402" y="350" font-size="10" fill="#334155">userId</text><text x="500" y="350" font-size="9" fill="#3b82f6">&rarr; User</text>
+      <text x="382" y="366" font-size="10" fill="#94a3b8"></text><text x="402" y="366" font-size="10" fill="#334155">hearingDate, jurisdiction</text>
+      <text x="382" y="382" font-size="10" fill="#94a3b8"></text><text x="402" y="382" font-size="10" fill="#334155">caseReference, clientName</text>
+      <text x="382" y="398" font-size="10" fill="#94a3b8"></text><text x="402" y="398" font-size="10" fill="#334155">outcome, nextHearingDate?</text>
+      <text x="382" y="414" font-size="10" fill="#94a3b8"></text><text x="402" y="414" font-size="10" fill="#334155">source, tasks?, status</text>
+      <text x="382" y="430" font-size="10" fill="#94a3b8"></text><text x="402" y="430" font-size="10" fill="#64748b" font-style="italic">whatsappMessageId?, whatsappSender?</text>
+      <line x1="370" y1="339" x2="600" y2="339" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="355" x2="600" y2="355" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="371" x2="600" y2="371" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="387" x2="600" y2="387" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="403" x2="600" y2="403" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="419" x2="600" y2="419" stroke="#f1f5f9" stroke-width="1"/>
+    </g>
+
+    <!-- ========== TABLE: WEEKLY_ROLE ========== -->
+    <g filter="url(#shadow)">
+      <rect x="370" y="462" width="230" height="128" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <rect x="370" y="462" width="230" height="28" rx="4" fill="url(#hdr)"/>
+      <rect x="370" y="486" width="230" height="4" fill="url(#hdr)" rx="0"/>
+      <text x="382" y="481" fill="white" font-size="11" font-weight="700" letter-spacing="0.5">WEEKLY_ROLE</text>
+      <text x="382" y="506" font-size="10" fill="#1d4ed8" font-weight="600">PK</text><text x="402" y="506" font-size="10" fill="#334155">id</text>
+      <text x="382" y="522" font-size="10" fill="#f59e0b" font-weight="600">FK</text><text x="402" y="522" font-size="10" fill="#334155">userId</text><text x="500" y="522" font-size="9" fill="#3b82f6">&rarr; User</text>
+      <text x="382" y="538" font-size="10" fill="#16a34a" font-weight="600">UQ</text><text x="402" y="538" font-size="10" fill="#334155">weekStart + userId</text>
+      <text x="382" y="554" font-size="10" fill="#94a3b8"></text><text x="402" y="554" font-size="10" fill="#334155">weekEnd, title, entries</text>
+      <text x="382" y="570" font-size="10" fill="#94a3b8"></text><text x="402" y="570" font-size="10" fill="#334155">status, notes?</text>
+      <line x1="370" y1="511" x2="600" y2="511" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="527" x2="600" y2="527" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="543" x2="600" y2="543" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="559" x2="600" y2="559" stroke="#f1f5f9" stroke-width="1"/>
+    </g>
+
+    <!-- ========== TABLE: LOGIN_HISTORY ========== -->
+    <g filter="url(#shadow)">
+      <rect x="370" y="618" width="205" height="110" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <rect x="370" y="618" width="205" height="28" rx="4" fill="#334155"/>
+      <rect x="370" y="642" width="205" height="4" fill="#334155" rx="0"/>
+      <text x="382" y="637" fill="white" font-size="11" font-weight="600" letter-spacing="0.5">LOGIN_HISTORY</text>
+      <text x="382" y="662" font-size="10" fill="#1d4ed8" font-weight="600">PK</text><text x="402" y="662" font-size="10" fill="#334155">id</text>
+      <text x="382" y="678" font-size="10" fill="#f59e0b" font-weight="600">FK</text><text x="402" y="678" font-size="10" fill="#334155">userId</text><text x="500" y="678" font-size="9" fill="#3b82f6">&rarr; User</text>
+      <text x="382" y="694" font-size="10" fill="#94a3b8"></text><text x="402" y="694" font-size="10" fill="#334155">ipAddress?, userAgent?</text>
+      <text x="382" y="710" font-size="10" fill="#94a3b8"></text><text x="402" y="710" font-size="10" fill="#334155">success, createdAt</text>
+      <line x1="370" y1="667" x2="575" y2="667" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="683" x2="575" y2="683" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="370" y1="699" x2="575" y2="699" stroke="#f1f5f9" stroke-width="1"/>
+    </g>
+
+    <!-- ========== TABLE: AUDIT_LOG ========== -->
+    <g filter="url(#shadow)">
+      <rect x="370" y="742" width="230" height="75" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <rect x="370" y="742" width="230" height="28" rx="4" fill="#334155"/>
+      <rect x="370" y="766" width="230" height="4" fill="#334155" rx="0"/>
+      <text x="382" y="761" fill="white" font-size="11" font-weight="600" letter-spacing="0.5">AUDIT_LOG</text>
+      <text x="382" y="786" font-size="10" fill="#1d4ed8" font-weight="600">PK</text><text x="402" y="786" font-size="10" fill="#334155">id</text>
+      <text x="470" y="786" font-size="10" fill="#f59e0b" font-weight="600">FK</text><text x="490" y="786" font-size="10" fill="#334155">userId</text><text x="545" y="786" font-size="9" fill="#3b82f6">&rarr; User</text>
+      <text x="382" y="802" font-size="10" fill="#94a3b8"></text><text x="402" y="802" font-size="10" fill="#334155">action, entity?, entityId?, details?, ipAddress?</text>
+      <line x1="370" y1="791" x2="600" y2="791" stroke="#f1f5f9" stroke-width="1"/>
+    </g>
+
+    <!-- ========== TABLE: SYSTEM_SETTING (isolated) ========== -->
+    <g filter="url(#shadow)">
+      <rect x="830" y="462" width="205" height="78" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <rect x="830" y="462" width="205" height="28" rx="4" fill="#6b7280"/>
+      <rect x="830" y="486" width="205" height="4" fill="#6b7280" rx="0"/>
+      <text x="842" y="481" fill="white" font-size="11" font-weight="700" letter-spacing="0.5">SYSTEM_SETTING</text>
+      <text x="998" y="481" fill="rgba(255,255,255,0.4)" font-size="7">ISOL&Eacute;E</text>
+      <text x="842" y="506" font-size="10" fill="#1d4ed8" font-weight="600">PK</text><text x="862" y="506" font-size="10" fill="#334155">id</text>
+      <text x="842" y="522" font-size="10" fill="#16a34a" font-weight="600">UQ</text><text x="862" y="522" font-size="10" fill="#334155">key</text><text x="920" y="522" font-size="10" fill="#334155">value</text>
+      <line x1="830" y1="511" x2="1035" y2="511" stroke="#f1f5f9" stroke-width="1"/>
+    </g>
+
+    <!-- ========== LEGEND ========== -->
+    <rect x="700" y="620" width="340" height="120" rx="4" fill="#fafafa" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="720" y="641" font-size="10" font-weight="700" fill="#0a0a0a" letter-spacing="1" text-transform="uppercase">L&Eacute;GENDE</text>
+
+    <!-- PK -->
+    <rect x="720" y="652" width="22" height="14" rx="2" fill="#dbeafe"/>
+    <text x="725" y="662" font-size="8" font-weight="700" fill="#1d4ed8">PK</text>
+    <text x="748" y="663" font-size="9" fill="#64748b">Cl&eacute; primaire</text>
+
+    <!-- FK -->
+    <rect x="850" y="652" width="22" height="14" rx="2" fill="#fef3c7"/>
+    <text x="855" y="662" font-size="8" font-weight="700" fill="#f59e0b">FK</text>
+    <text x="878" y="663" font-size="9" fill="#64748b">Cl&eacute; &eacute;trang&egrave;re</text>
+
+    <!-- UQ -->
+    <rect x="720" y="674" width="22" height="14" rx="2" fill="#dcfce7"/>
+    <text x="724" y="684" font-size="8" font-weight="700" fill="#16a34a">UQ</text>
+    <text x="748" y="685" font-size="9" fill="#64748b">Contrainte unique</text>
+
+    <!-- Relation lines -->
+    <line x1="850" y1="681" x2="878" y2="681" stroke="#3b82f6" stroke-width="1.5"/>
+    <circle cx="850" cy="681" r="2.5" fill="#3b82f6"/>
+    <text x="884" y="685" font-size="9" fill="#64748b">Relation User &rarr;</text>
+
+    <line x1="720" y1="703" x2="748" y2="703" stroke="#8b5cf6" stroke-width="1.5"/>
+    <circle cx="720" cy="703" r="2.5" fill="#8b5cf6"/>
+    <text x="754" y="707" font-size="9" fill="#64748b">Relation Session &rarr;</text>
+
+    <line x1="850" y1="703" x2="878" y2="703" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <text x="884" y="707" font-size="9" fill="#64748b">Relation secondaire</text>
+
+    <text x="720" y="728" font-size="9" fill="#94a3b8" font-style="italic">Toutes les FK : onDelete Cascade</text>
+
+  </svg>
+  </div>
+
+  <div class="sep"></div>
+
+  <h3>Inventaire des index</h3>
+  <table>
+    <thead><tr><th>Table</th><th>Colonnes</th><th>Type</th></tr></thead>
+    <tbody>
+      <tr><td>User</td><td>email</td><td><span class="badge badge-unique">UNIQUE</span></td></tr>
+      <tr><td>Session</td><td>userId, createdAt</td><td><span class="badge badge-idx">INDEX</span></td></tr>
+      <tr><td>Transcription</td><td>sessionId</td><td><span class="badge badge-unique">UNIQUE</span></td></tr>
+      <tr><td>Report</td><td>userId, sessionId, category, createdAt</td><td><span class="badge badge-idx">INDEX</span></td></tr>
+      <tr><td>Note</td><td>sessionId</td><td><span class="badge badge-idx">INDEX</span></td></tr>
+      <tr><td>HearingReport</td><td>userId, hearingDate, nextHearingDate, caseReference, createdAt, source</td><td><span class="badge badge-idx">INDEX</span></td></tr>
+      <tr><td>WeeklyRole</td><td>(weekStart, userId)</td><td><span class="badge badge-unique">UNIQUE</span></td></tr>
+      <tr><td>WeeklyRole</td><td>userId, weekStart, status</td><td><span class="badge badge-idx">INDEX</span></td></tr>
+      <tr><td>LoginHistory</td><td>userId, createdAt</td><td><span class="badge badge-idx">INDEX</span></td></tr>
+      <tr><td>SystemSetting</td><td>key</td><td><span class="badge badge-unique">UNIQUE</span></td></tr>
+      <tr><td>AuditLog</td><td>userId, action, createdAt</td><td><span class="badge badge-idx">INDEX</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 05 ROUTES API -->
+<div class="page page-break">
+  <span class="section-number">Section 05</span>
+  <h2 class="first">Routes API &mdash; R&eacute;f&eacute;rence compl&egrave;te</h2>
+  <p class="section-desc">40 endpoints REST organis&eacute;s par domaine.</p>
+
+  <h3>5.1 &mdash; Authentification &amp; Inscription</h3>
+  <table>
+    <thead><tr><th style="width:10%">Verbe</th><th style="width:35%">Route</th><th style="width:8%">Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-post">*</span></td><td class="col-route">/api/auth/[...nextauth]</td><td>Non</td><td>Endpoints NextAuth v5 (signIn, signOut, session, callback)</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/register</td><td>Non</td><td>Inscription. Validation nom/email/mdp (8+ car, maj, min, chiffre, sp&eacute;cial), hash bcrypt (12), status "pending". Rate: 5/5min/IP</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 &mdash; Dashboard &amp; Health</h3>
+  <table>
+    <thead><tr><th style="width:10%">Verbe</th><th style="width:35%">Route</th><th style="width:8%">Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/dashboard</td><td>Oui</td><td>Stats: totalSessions, totalReports, totalDuration, 5 r&eacute;centes. Admin=tout, user=ses donn&eacute;es.</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/health</td><td>Non</td><td>Health check (user count, timestamp)</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/docs</td><td>Non</td><td>Acc&egrave;s doc HTML prot&eacute;g&eacute;e par mot de passe. Rate: 5/15min/IP</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.3 &mdash; Sessions</h3>
+  <table>
+    <thead><tr><th style="width:10%">Verbe</th><th style="width:35%">Route</th><th style="width:8%">Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/sessions</td><td>Oui</td><td>Liste pagin&eacute;e (search, status, page, limit max 100)</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/sessions</td><td>Oui</td><td>Cr&eacute;ation. Requis: title, clientName. Sanitisation. Audit.</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/sessions/[id]</td><td>Oui</td><td>D&eacute;tail + transcription + rapports + notes. V&eacute;rif ownership.</td></tr>
+      <tr><td><span class="badge badge-patch">PATCH</span></td><td class="col-route">/api/sessions/[id]</td><td>Oui</td><td>Modification (whitelist champs). Audit.</td></tr>
+      <tr><td><span class="badge badge-delete">DEL</span></td><td class="col-route">/api/sessions/[id]</td><td>Oui</td><td>Suppression + fichier audio disque. Audit.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.4 &mdash; Audio, Transcription &amp; Flash</h3>
+  <table>
+    <thead><tr><th style="width:10%">Verbe</th><th style="width:35%">Route</th><th style="width:8%">Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/upload</td><td>Oui</td><td>Upload audio (MP3,WAV,WebM,OGG,MP4,M4A). Max 100Mo. Rate: 20/min</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/transcribe</td><td>Oui</td><td>Transcription Groq Whisper. Rate: 10/min</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/audio/[filename]</td><td>Oui</td><td>Sert le fichier audio</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/transcriptions/[id]</td><td>Oui</td><td>R&eacute;cup&egrave;re transcription par session</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/flash</td><td>Oui</td><td>Flash 4 &eacute;tapes: Transcribe &rarr; Extract metadata &rarr; Update session &rarr; Generate report. Rate: 5/min</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.5 &mdash; Rapports</h3>
+  <table>
+    <thead><tr><th style="width:10%">Verbe</th><th style="width:35%">Route</th><th style="width:8%">Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/reports</td><td>Oui</td><td>Liste pagin&eacute;e (search, category, status, page, limit)</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/reports</td><td>Oui</td><td>G&eacute;n&eacute;ration rapport IA (Groq llama-3.3-70b). Params: sessionId, format, category</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/reports/[id]</td><td>Oui</td><td>D&eacute;tail + session + transcription</td></tr>
+      <tr><td><span class="badge badge-patch">PATCH</span></td><td class="col-route">/api/reports/[id]</td><td>Oui</td><td>Modification (whitelist). Audit.</td></tr>
+      <tr><td><span class="badge badge-delete">DEL</span></td><td class="col-route">/api/reports/[id]</td><td>Oui</td><td>Suppression. Audit.</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/reports/[id]/pdf</td><td>Oui</td><td>Export PDF. En-t&ecirc;te Cabinet HOK, points cl&eacute;s, suggestions typ&eacute;es, transcription</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.6 &mdash; Notes &amp; Profil</h3>
+  <table>
+    <thead><tr><th style="width:10%">Verbe</th><th style="width:35%">Route</th><th style="width:8%">Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/notes</td><td>Oui</td><td>Cr&eacute;er note (sessionId, content max 5000, timestamp, isImportant)</td></tr>
+      <tr><td><span class="badge badge-delete">DEL</span></td><td class="col-route">/api/notes?id=xxx</td><td>Oui</td><td>Supprimer note</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/profile</td><td>Oui</td><td>Infos profil</td></tr>
+      <tr><td><span class="badge badge-patch">PATCH</span></td><td class="col-route">/api/profile</td><td>Oui</td><td>Modifier nom. Audit.</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/profile/password</td><td>Oui</td><td>Changer mdp (v&eacute;rif ancien, validation nouveau, hash bcrypt). Audit.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 05B ROUTES API suite -->
+<div class="page page-break">
+  <span class="section-number">Section 05 (suite)</span>
+  <h2 class="first">Routes API (suite)</h2>
+
+  <h3>5.7 &mdash; Comptes rendus d'audience</h3>
+  <table>
+    <thead><tr><th style="width:10%">Verbe</th><th style="width:35%">Route</th><th style="width:8%">Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/hearing-reports</td><td>Oui</td><td>Liste pagin&eacute;e (search, status)</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/hearing-reports</td><td>Oui</td><td>Cr&eacute;ation. Requis: hearingDate, jurisdiction, caseReference, clientName, outcome. Audit.</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/hearing-reports/[id]</td><td>Oui</td><td>D&eacute;tail</td></tr>
+      <tr><td><span class="badge badge-patch">PATCH</span></td><td class="col-route">/api/hearing-reports/[id]</td><td>Oui</td><td>Modification. Audit.</td></tr>
+      <tr><td><span class="badge badge-delete">DEL</span></td><td class="col-route">/api/hearing-reports/[id]</td><td>Oui</td><td>Suppression. Audit.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.8 &mdash; R&ocirc;les hebdomadaires</h3>
+  <table>
+    <thead><tr><th style="width:10%">Verbe</th><th style="width:35%">Route</th><th style="width:8%">Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/weekly-roles</td><td>Oui</td><td>Liste pagin&eacute;e (status)</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/weekly-roles</td><td>Oui</td><td>G&eacute;n&eacute;rer/r&eacute;g&eacute;n&eacute;rer r&ocirc;le. Agr&egrave;ge HearingReport actifs de la semaine. Upsert. Audit.</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/weekly-roles/[id]</td><td>Oui</td><td>D&eacute;tail</td></tr>
+      <tr><td><span class="badge badge-patch">PATCH</span></td><td class="col-route">/api/weekly-roles/[id]</td><td>Oui</td><td>Publier/archiver. Audit.</td></tr>
+      <tr><td><span class="badge badge-delete">DEL</span></td><td class="col-route">/api/weekly-roles/[id]</td><td>Oui</td><td>Supprimer. Audit.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.9 &mdash; Param&egrave;tres &amp; WhatsApp</h3>
+  <table>
+    <thead><tr><th style="width:10%">Verbe</th><th style="width:35%">Route</th><th style="width:8%">Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/settings/engine-status</td><td>Oui</td><td>V&eacute;rifie si Groq est configur&eacute;</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/settings/engine-key</td><td>Admin</td><td>Sauver cl&eacute; Groq (pr&eacute;fixe gsk_)</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/whatsapp/webhook</td><td>Non</td><td>V&eacute;rification webhook Meta</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/whatsapp/webhook</td><td>Non</td><td>R&eacute;ception messages. D&eacute;tection IA (&ge;0.6) + extraction IA + cr&eacute;ation HearingReport</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/whatsapp/status</td><td>Admin</td><td>Statut connexion WhatsApp</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/whatsapp/test</td><td>Admin</td><td>Simuler message WhatsApp</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.10 &mdash; Administration (toutes prot&eacute;g&eacute;es admin)</h3>
+  <table>
+    <thead><tr><th style="width:10%">Verbe</th><th style="width:35%">Route</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/admin/users</td><td>Liste utilisateurs + compteurs</td></tr>
+      <tr><td><span class="badge badge-patch">PATCH</span></td><td class="col-route">/api/admin/users</td><td>Changer r&ocirc;le. Anti auto-changement. Audit.</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/admin/users/approve</td><td>Approuver/rejeter. Audit.</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/admin/users/block</td><td>Bloquer/d&eacute;bloquer. Audit.</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/admin/users/edit</td><td>&Eacute;diter nom/email. V&eacute;rif doublons. Audit.</td></tr>
+      <tr><td><span class="badge badge-delete">DEL</span></td><td class="col-route">/api/admin/users/delete</td><td>Supprimer (cascade). Anti auto-suppression. Audit.</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/admin/users/reset-password</td><td>Reset mdp. Validation complexit&eacute;, anti self-reset, anti Google-only, bcrypt. Rate: 10/10min. Audit.</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/admin/stats</td><td>Stats globales (users, sessions, rapports, dur&eacute;e)</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/admin/activity</td><td>Activit&eacute; r&eacute;cente</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/admin/audit</td><td>Journal d'audit complet</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/admin/reports</td><td>Rapports admin</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/admin/sessions</td><td>Sessions admin</td></tr>
+      <tr><td><span class="badge badge-get">GET</span></td><td class="col-route">/api/admin/llm</td><td>Config LLM (cl&eacute; masqu&eacute;e)</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/admin/llm</td><td>Sauver cl&eacute; Groq (gsk_). Audit.</td></tr>
+      <tr><td><span class="badge badge-post">POST</span></td><td class="col-route">/api/admin/llm/test</td><td>Tester cl&eacute; Groq via /v1/models</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 06 LIBRAIRIES -->
+<div class="page page-break">
+  <span class="section-number">Section 06</span>
+  <h2 class="first">Librairies internes (src/lib)</h2>
+  <p class="section-desc">D&eacute;tail de chaque module utilitaire du projet.</p>
+
+  <h3>6.1 &mdash; llm.ts (Moteur IA Groq)</h3>
+  <p>Fichier central de l'intelligence artificielle. Utilise exclusivement <strong>Groq</strong> (cl&eacute; format <code>gsk_...</code>).</p>
+  <ul>
+    <li><code>getGroqApiKey()</code> &mdash; R&eacute;cup&egrave;re la cl&eacute; (DB prioritaire, puis .env)</li>
+    <li><code>validateGroqKey(key)</code> &mdash; V&eacute;rifie le pr&eacute;fixe <code>gsk_</code></li>
+    <li><code>getGroqTranscribeClient()</code> &mdash; Client OpenAI SDK point&eacute; vers <code>api.groq.com</code></li>
+    <li><code>transcribeAudio(buffer, lang)</code> &mdash; Whisper <code>whisper-large-v3-turbo</code> &rarr; {text, segments}</li>
+    <li><code>extractSessionMetadata(text)</code> &mdash; IA extrait titre, client, r&eacute;f&eacute;rence, cat&eacute;gorie, description</li>
+    <li><code>generateReport(text, client, ref, format, lang)</code> &mdash; G&eacute;n&egrave;re rapport juridique complet via <code>llama-3.3-70b-versatile</code></li>
+    <li><code>generateJSON(prompt, schema)</code> &mdash; G&eacute;n&eacute;ration JSON structur&eacute; avec validation</li>
+  </ul>
+
+  <h3>6.2 &mdash; sanitize.ts</h3>
+  <ul>
+    <li><code>sanitizeString(str)</code> &mdash; Strip HTML, scripts, iframes, event handlers, entit&eacute;s dangereuses</li>
+    <li><code>validateEmail(email)</code> &mdash; Regex standard</li>
+    <li><code>validatePassword(pwd)</code> &mdash; 8+ car, majuscule, minuscule, chiffre, sp&eacute;cial, max 128</li>
+    <li><code>validateName(name)</code> &mdash; 2-100 car, pas de caract&egrave;res sp&eacute;ciaux dangereux</li>
+    <li><code>filterSessionFields(body)</code> / <code>filterReportFields(body)</code> &mdash; Whitelist des champs modifiables</li>
+  </ul>
+
+  <h3>6.3 &mdash; audit.ts</h3>
+  <ul>
+    <li><code>logAudit({userId, action, entity?, entityId?, details?, ipAddress?, userAgent?})</code> &mdash; Enregistre dans AuditLog</li>
+    <li><code>getClientInfo(req)</code> &mdash; Extrait IP (x-forwarded-for / x-real-ip) et User-Agent</li>
+  </ul>
+
+  <h3>6.4 &mdash; rate-limit.ts</h3>
+  <ul>
+    <li><code>rateLimit(key, maxRequests, windowMs)</code> &mdash; Limiter en m&eacute;moire (Map). Fen&ecirc;tre glissante. Retourne <code>{allowed, remaining}</code></li>
+    <li>Nettoyage automatique des entr&eacute;es expir&eacute;es toutes les 5 minutes via <code>setInterval</code></li>
+  </ul>
+
+  <h3>6.5 &mdash; whatsapp-parser.ts &amp; whatsapp.ts</h3>
+  <ul>
+    <li><code>detectHearingReportAI(text)</code> &mdash; IA d&eacute;tecte si un message contient un compte rendu (confiance &ge; 0.6)</li>
+    <li><code>parseWhatsAppMessageAI(text, sender?)</code> &mdash; IA extrait donn&eacute;es structur&eacute;es + r&eacute;sum&eacute; professionnel juridique</li>
+    <li><code>isHearingReportKeywords(text)</code> / <code>parseWhatsAppMessageRegex(text)</code> &mdash; Fallback regex</li>
+    <li><code>isWhatsAppConfigured()</code> / <code>getVerifyToken()</code> / <code>sendReportConfirmation()</code> / <code>sendParseErrorReply()</code></li>
+  </ul>
+
+  <h3>6.6 &mdash; Autres modules</h3>
+  <table>
+    <thead><tr><th style="width:25%">Fichier</th><th>R&ocirc;le</th></tr></thead>
+    <tbody>
+      <tr><td><code>store.ts</code></td><td>Zustand store : locale (fr/en/fon), sidebarOpen. Persist&eacute; localStorage (<code>hok-app-store</code>)</td></tr>
+      <tr><td><code>i18n.ts</code></td><td>~370 cl&eacute;s de traduction. Fonction <code>t(key, locale)</code>. Fallback fran&ccedil;ais. Type <code>Locale = "fr"|"en"|"fon"</code></td></tr>
+      <tr><td><code>utils.ts</code></td><td>Fonction <code>cn()</code> = clsx + tailwind-merge pour les classes conditionnelles</td></tr>
+      <tr><td><code>prisma.ts</code></td><td>Client Prisma v7 singleton avec Pool PG et d&eacute;tection SSL automatique</td></tr>
+      <tr><td><code>auth.ts</code></td><td>NextAuth complet (Credentials + Google OAuth + callbacks)</td></tr>
+      <tr><td><code>auth.config.ts</code></td><td>Config edge-compatible pour middleware (pas d'imports Node)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 07 PAGES -->
+<div class="page page-break">
+  <span class="section-number">Section 07</span>
+  <h2 class="first">Composants &amp; Pages</h2>
+  <p class="section-desc">Navigation et structure de l'interface utilisateur.</p>
+
+  <h3>Navigation principale (sidebar)</h3>
+  <table>
+    <thead><tr><th style="width:22%">Route</th><th style="width:18%">Label</th><th style="width:10%">Acc&egrave;s</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="col-route">/dashboard</td><td>Tableau de bord</td><td>Tous</td><td>Stats, sessions et rapports r&eacute;cents</td></tr>
+      <tr><td class="col-route">/sessions</td><td>Sessions</td><td>Tous</td><td>Liste, recherche, filtrage par statut</td></tr>
+      <tr><td class="col-route">/sessions/new</td><td>Nouvelle session</td><td>Tous</td><td>Cr&eacute;ation + enregistrement audio navigateur (MediaRecorder)</td></tr>
+      <tr><td class="col-route">/sessions/[id]</td><td>D&eacute;tail session</td><td>Tous</td><td>Lecteur audio, transcription, notes horodat&eacute;es, rapports</td></tr>
+      <tr><td class="col-route">/flash</td><td>Flash Record</td><td>Tous</td><td>Enregistrement 1 clic, transcription + rapport auto. Format WebM/Opus.</td></tr>
+      <tr><td class="col-route">/reports</td><td>Rapports</td><td>Tous</td><td>Liste, recherche, filtrage cat&eacute;gorie/statut</td></tr>
+      <tr><td class="col-route">/reports/[id]</td><td>D&eacute;tail rapport</td><td>Tous</td><td>Synth&egrave;se, points cl&eacute;s, actions, suggestions IA, export PDF</td></tr>
+      <tr><td class="col-route">/roles</td><td>R&ocirc;les d'audience</td><td>Tous</td><td>Comptes rendus d'audience, r&ocirc;les hebdomadaires, g&eacute;n&eacute;ration, publication</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Navigation secondaire</h3>
+  <table>
+    <thead><tr><th style="width:22%">Route</th><th style="width:18%">Label</th><th style="width:10%">Acc&egrave;s</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="col-route">/admin</td><td>Administration</td><td>Admin</td><td>8 onglets: overview, pending, users, reports, sessions, activity, audit, llm</td></tr>
+      <tr><td class="col-route">/profile</td><td>Mon profil</td><td>Tous</td><td>Nom, email, changement mot de passe</td></tr>
+      <tr><td class="col-route">/settings</td><td>Param&egrave;tres</td><td>Tous</td><td>Langue, config WhatsApp, cl&eacute; IA</td></tr>
+      <tr><td class="col-route">/documentation</td><td>Documentation</td><td>Tous</td><td>Lien vers la documentation</td></tr>
+      <tr><td class="col-route">/about</td><td>&Agrave; propos</td><td>Tous</td><td>Informations sur la plateforme</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Pages publiques</h3>
+  <table>
+    <thead><tr><th style="width:22%">Route</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td class="col-route">/login</td><td>Connexion (email/mdp + Google OAuth)</td></tr>
+      <tr><td class="col-route">/register</td><td>Inscription (nom, email, mdp avec r&egrave;gles de complexit&eacute;)</td></tr>
+      <tr><td class="col-route">/platform-docs</td><td>Documentation prot&eacute;g&eacute;e par mot de passe (DOCS_PASSWORD)</td></tr>
+      <tr><td class="col-route">/mentions-legales</td><td>Mentions l&eacute;gales</td></tr>
+      <tr><td class="col-route">/confidentialite</td><td>Politique de confidentialit&eacute;</td></tr>
+      <tr><td class="col-route">/cgu</td><td>Conditions g&eacute;n&eacute;rales d'utilisation</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Composants layout</h3>
+  <ul>
+    <li><code>sidebar.tsx</code> &mdash; Sidebar r&eacute;tractable (60px/240px). Liens dynamiques selon le r&ocirc;le. Logo HOK. Version en pied.</li>
+    <li><code>header.tsx</code> &mdash; Barre sup&eacute;rieure avec titre de page, s&eacute;lecteur langue et bouton d&eacute;connexion</li>
+    <li><code>dashboard-shell.tsx</code> &mdash; Shell qui combine sidebar + header + contenu principal</li>
+  </ul>
+</div>
+
+<!-- 08 SECURITE -->
+<div class="page page-break">
+  <span class="section-number">Section 08</span>
+  <h2 class="first">S&eacute;curit&eacute; &amp; Middleware</h2>
+  <p class="section-desc">Toutes les mesures de protection impl&eacute;ment&eacute;es.</p>
+
+  <h3>Authentification</h3>
+  <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>JWT via NextAuth v5</strong><span>Strat&eacute;gie de session JWT sign&eacute;e avec AUTH_SECRET. Token contient id, role, picture.</span></div></div>
+  <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Hachage bcrypt (salt 12)</strong><span>Mots de passe hach&eacute;s avant stockage. Comparaison s&eacute;curis&eacute;e via <code>bcrypt.compare()</code>.</span></div></div>
+  <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Google OAuth</strong><span>Authentification compl&eacute;mentaire. Cr&eacute;ation auto de compte en <code>pending</code>. Linking d'email autoris&eacute;.</span></div></div>
+
+  <h3>Autorisation</h3>
+  <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>V&eacute;rification d'ownership (anti-IDOR)</strong><span>Chaque route API v&eacute;rifie que l'utilisateur est propri&eacute;taire de la ressource. Les admins peuvent acc&eacute;der &agrave; toutes les ressources.</span></div></div>
+  <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>R&ocirc;les diff&eacute;renci&eacute;s</strong><span>Admin : acc&egrave;s complet. User : uniquement ses propres donn&eacute;es. V&eacute;rification double (middleware + route).</span></div></div>
+  <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Approbation d'inscription</strong><span>Nouveaux comptes en <code>pending</code>. Activation manuelle par admin. Comptes bloqu&eacute;s/rejet&eacute;s ne peuvent pas se connecter.</span></div></div>
+
+  <h3>Validation des entr&eacute;es</h3>
+  <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Sanitisation XSS</strong><span>Nettoyage syst&eacute;matique : HTML entities, scripts, iframes, event handlers (<code>sanitizeString</code>).</span></div></div>
+  <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Validation stricte</strong><span>Email regex, mot de passe (8+ car, maj, min, chiffre, sp&eacute;cial, max 128), nom (2-100 car).</span></div></div>
+  <div class="sec-row"><div class="sec-icon"></div><div class="sec-content"><strong>Whitelist de champs</strong><span>Seuls les champs autoris&eacute;s sont accept&eacute;s lors des PATCH (<code>filterSessionFields</code>, <code>filterReportFields</code>).</span></div></div>
+
+  <h3>Headers HTTP de s&eacute;curit&eacute; (middleware)</h3>
+  <table>
+    <thead><tr><th>Header</th><th>Valeur</th><th>Protection</th></tr></thead>
+    <tbody>
+      <tr><td><code>X-Content-Type-Options</code></td><td>nosniff</td><td>MIME sniffing</td></tr>
+      <tr><td><code>X-Frame-Options</code></td><td>DENY</td><td>Clickjacking</td></tr>
+      <tr><td><code>X-XSS-Protection</code></td><td>1; mode=block</td><td>XSS navigateur</td></tr>
+      <tr><td><code>Referrer-Policy</code></td><td>strict-origin-when-cross-origin</td><td>Fuite referer</td></tr>
+      <tr><td><code>Permissions-Policy</code></td><td>camera=(), microphone=(self), geolocation=()</td><td>APIs navigateur</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Rate Limiting</h3>
+  <table>
+    <thead><tr><th>Endpoint</th><th>Limite</th><th>Fen&ecirc;tre</th><th>Cl&eacute;</th></tr></thead>
+    <tbody>
+      <tr><td>Login</td><td>5 tentatives</td><td>5 min</td><td>email</td></tr>
+      <tr><td>Inscription</td><td>5 tentatives</td><td>5 min</td><td>IP</td></tr>
+      <tr><td>Upload audio</td><td>20 requ&ecirc;tes</td><td>1 min</td><td>userId</td></tr>
+      <tr><td>Transcription</td><td>10 requ&ecirc;tes</td><td>1 min</td><td>userId</td></tr>
+      <tr><td>Flash</td><td>5 requ&ecirc;tes</td><td>1 min</td><td>userId</td></tr>
+      <tr><td>Admin reset password</td><td>10 tentatives</td><td>10 min</td><td>adminId</td></tr>
+      <tr><td>Acc&egrave;s docs</td><td>5 tentatives</td><td>15 min</td><td>IP</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 09 IA & WHATSAPP -->
+<div class="page page-break">
+  <span class="section-number">Section 09</span>
+  <h2 class="first">Moteur IA (Groq) &amp; Int&eacute;gration WhatsApp</h2>
+  <p class="section-desc">Architecture IA et pipeline WhatsApp.</p>
+
+  <h3>9.1 &mdash; Moteur IA Groq</h3>
+  <p>La plateforme utilise <strong>exclusivement Groq</strong> comme fournisseur IA. Aucune d&eacute;pendance OpenAI ou Anthropic directe.</p>
+  <div class="grid-2">
+    <div class="card"><div class="card-label">Transcription</div><div class="card-value">Whisper</div><p><code>whisper-large-v3-turbo</code> via Groq API</p></div>
+    <div class="card"><div class="card-label">G&eacute;n&eacute;ration</div><div class="card-value">LLaMA 3.3</div><p><code>llama-3.3-70b-versatile</code> pour rapports, m&eacute;tadonn&eacute;es, parsing WhatsApp</p></div>
+  </div>
+  <p>La cl&eacute; API Groq (<code>gsk_...</code>) peut &ecirc;tre configur&eacute;e via :</p>
+  <ul>
+    <li>Variable d'environnement <code>GROQ_API_KEY</code></li>
+    <li>Base de donn&eacute;es (table <code>SystemSetting</code>, cl&eacute; <code>groq_api_key</code>) &mdash; <strong>prioritaire</strong></li>
+    <li>Panneau d'administration (sauvegarde en DB + runtime)</li>
+  </ul>
+
+  <h3>9.2 &mdash; Pipeline de g&eacute;n&eacute;ration de rapport</h3>
+  <p>Le rapport g&eacute;n&eacute;r&eacute; par IA contient :</p>
+  <ul>
+    <li><strong>Titre</strong> &mdash; G&eacute;n&eacute;r&eacute; automatiquement</li>
+    <li><strong>Synth&egrave;se narrative</strong> &mdash; R&eacute;sum&eacute; structur&eacute; en prose juridique</li>
+    <li><strong>Points cl&eacute;s</strong> &mdash; Liste extraite des &eacute;l&eacute;ments importants</li>
+    <li><strong>Actions &agrave; entreprendre</strong> &mdash; T&acirc;ches concr&egrave;tes identifi&eacute;es</li>
+    <li><strong>Observations juridiques</strong> &mdash; Notes l&eacute;gales pertinentes</li>
+    <li><strong>Suggestions IA</strong> &mdash; Typ&eacute;es : [LOI], [ARGUMENT], [DEFENSE], [OUVERTURE], [JURISPRUDENCE], [PREUVE]</li>
+  </ul>
+
+  <h3>9.3 &mdash; Int&eacute;gration WhatsApp Cloud API</h3>
+  <p>Le syst&egrave;me est connect&eacute; via l'API WhatsApp Cloud (Meta). Variables d'environnement requises :</p>
+  <ul>
+    <li><code>WHATSAPP_ACCESS_TOKEN</code> &mdash; Token d'acc&egrave;s Meta</li>
+    <li><code>WHATSAPP_PHONE_NUMBER_ID</code> &mdash; ID du num&eacute;ro</li>
+    <li><code>WHATSAPP_VERIFY_TOKEN</code> &mdash; Token de v&eacute;rification webhook</li>
+    <li><code>WHATSAPP_BUSINESS_ACCOUNT_ID</code> &mdash; ID du compte Business</li>
+  </ul>
+
+  <h3>9.4 &mdash; Pipeline WhatsApp</h3>
+  <p>Lorsqu'un message WhatsApp est re&ccedil;u :</p>
+  <ul>
+    <li><strong>&Eacute;tape 1</strong> &mdash; D&eacute;tection IA : <code>detectHearingReportAI(text)</code> analyse si le message parle d'une audience (confiance &ge; 0.6)</li>
+    <li><strong>&Eacute;tape 2</strong> &mdash; Extraction IA : <code>parseWhatsAppMessageAI(text, sender)</code> extrait date, client, r&eacute;f&eacute;rence, juridiction, chambre, avocat, adversaire, r&eacute;sum&eacute; professionnel, t&acirc;ches</li>
+    <li><strong>&Eacute;tape 3</strong> &mdash; D&eacute;duplication : v&eacute;rification <code>whatsappMessageId</code> pour &eacute;viter les doublons</li>
+    <li><strong>&Eacute;tape 4</strong> &mdash; Cr&eacute;ation HearingReport avec <code>source: "whatsapp"</code> et association &agrave; un utilisateur</li>
+    <li><strong>&Eacute;tape 5</strong> &mdash; Confirmation envoy&eacute;e via WhatsApp au sender</li>
+  </ul>
+  <p>Si aucune cl&eacute; IA n'est disponible, le syst&egrave;me utilise le <strong>fallback regex</strong> (fonctionne uniquement pour les messages structur&eacute;s).</p>
+</div>
+
+<!-- 10 i18n & AUDIT -->
+<div class="page page-break">
+  <span class="section-number">Section 10</span>
+  <h2 class="first">Internationalisation &amp; Journal d'audit</h2>
+  <p class="section-desc">Syst&egrave;me de traduction et tra&ccedil;abilit&eacute; compl&egrave;te des actions.</p>
+
+  <h3>10.1 &mdash; Internationalisation (i18n)</h3>
+  <div class="grid-2">
+    <div class="card"><div class="card-label">Fran&ccedil;ais (fr)</div><div class="card-value">Langue par d&eacute;faut</div></div>
+    <div class="card"><div class="card-label">English (en)</div><div class="card-value">Compl&egrave;tement support&eacute;</div></div>
+  </div>
+  <ul>
+    <li>Syst&egrave;me l&eacute;ger bas&eacute; sur un dictionnaire cl&eacute;-valeur dans <code>src/lib/i18n.ts</code></li>
+    <li>Fonction <code>t(key, locale)</code> pour la r&eacute;cup&eacute;ration des traductions</li>
+    <li>Type <code>Locale = "fr" | "en" | "fon"</code> (Fon : support partiel)</li>
+    <li>Locale stock&eacute;e dans Zustand et persist&eacute;e dans <code>localStorage</code></li>
+    <li>Fallback automatique sur le fran&ccedil;ais si une cl&eacute; n'est pas trouv&eacute;e</li>
+    <li>~370 cl&eacute;s couvrant navigation, formulaires, messages, tableaux, module r&ocirc;les (~65 cl&eacute;s d&eacute;di&eacute;es)</li>
+  </ul>
+
+  <h3>10.2 &mdash; Journal d'audit</h3>
+  <p>Toutes les actions utilisateur sont enregistr&eacute;es avec m&eacute;tadonn&eacute;es compl&egrave;tes (IP, User-Agent, timestamp, d&eacute;tails JSON).</p>
+
+  <h4>Actions audit&eacute;es</h4>
+  <div class="highlight">
+    <strong>Authentification :</strong> login &middot; register<br>
+    <strong>Sessions :</strong> create_session &middot; delete_session &middot; update_session<br>
+    <strong>Audio :</strong> upload_audio &middot; transcribe &middot; flash_record<br>
+    <strong>Rapports :</strong> generate_report &middot; export_pdf &middot; delete_report<br>
+    <strong>Profil :</strong> update_profile &middot; change_password<br>
+    <strong>Audiences :</strong> create_hearing_report &middot; update_hearing_report &middot; delete_hearing_report<br>
+    <strong>R&ocirc;les :</strong> create_weekly_role &middot; update_weekly_role &middot; publish_weekly_role &middot; delete_weekly_role<br>
+    <strong>Admin :</strong> admin_block &middot; admin_unblock &middot; admin_delete &middot; admin_edit &middot; admin_change_role &middot; admin_approve &middot; admin_reject &middot; admin_update_llm &middot; admin_reset_password
+  </div>
+
+  <h4>Structure d'une entr&eacute;e d'audit</h4>
+  <pre><code>{
+  "id": "cuid...",
+  "userId": "cuid...",
+  "action": "create_session",
+  "entity": "session",
+  "entityId": "cuid...",
+  "details": "{\"title\":\"Audience TPI\",\"clientName\":\"AHOUANDJINOU\"}",
+  "ipAddress": "41.85.xxx.xxx",
+  "userAgent": "Mozilla/5.0 ...",
+  "createdAt": "2026-03-15T10:30:00Z"
+}</code></pre>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Cabinet HOK &mdash; HOK Reports Platform v2.0.0 &mdash; Mars 2026<br>
+  Documentation technique g&eacute;n&eacute;r&eacute;e automatiquement &mdash; Usage interne exclusivement
+</div>
+
+</body>
+</html>

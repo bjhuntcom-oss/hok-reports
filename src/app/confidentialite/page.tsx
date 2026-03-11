@@ -148,7 +148,7 @@ export default function Confidentialite() {
               béninois, chaque utilisateur dispose des droits suivants sur ses données
               personnelles : droit d&apos;accès, de rectification, d&apos;effacement, de limitation
               du traitement, de portabilité et d&apos;opposition. Ces droits peuvent être
-              exercés par courrier électronique à l&apos;adresse : dpo@cabinet-hok.bj.
+              exercés par courrier électronique à l&apos;adresse : dpo@cabinet-hok.com.
               En cas de litige, l&apos;utilisateur peut saisir l&apos;Autorité de Protection
               des Données Personnelles (APDP) du Bénin.
             </p>

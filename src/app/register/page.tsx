@@ -135,7 +135,7 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full border border-neutral-200 bg-neutral-50 px-4 py-3 text-[13px] text-black outline-none transition-colors focus:border-black focus:bg-white"
-                placeholder={locale === "en" ? "First Last" : "Prénom Nom"}
+                placeholder={locale === "en" ? "Koffi AGOSSOU" : "Koffi AGOSSOU"}
                 required
                 autoComplete="name"
               />
@@ -150,7 +150,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full border border-neutral-200 bg-neutral-50 px-4 py-3 text-[13px] text-black outline-none transition-colors focus:border-black focus:bg-white"
-                placeholder="nom@cabinet-hok.fr"
+                placeholder="nom@cabinet-hok.com"
                 required
                 autoComplete="email"
               />

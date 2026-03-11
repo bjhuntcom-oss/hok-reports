@@ -103,7 +103,7 @@ export default function AboutPage() {
             : "Pour toute question technique ou demande d'assistance, contactez l'administrateur de la plateforme à l'adresse suivante :"}
         </p>
         <p className="mt-2 text-[12px] font-medium text-black">
-          support@cabinet-hok.fr
+          support@cabinet-hok.com
         </p>
         <p className="mt-4 text-[10px] text-neutral-300">
           &copy; {new Date().getFullYear()} Cabinet HOK. {locale === "en" ? "All rights reserved. Internal use only." : "Tous droits réservés. Usage interne exclusivement."}

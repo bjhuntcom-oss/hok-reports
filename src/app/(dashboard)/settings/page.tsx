@@ -265,11 +265,11 @@ export default function SettingsPage() {
               </p>
               <pre className="text-[10px] text-green-800 whitespace-pre-wrap leading-relaxed font-mono">{`📋 COMPTE RENDU
 Date: 20/02/2026
-Client: Dupont
+Client: HOUNGBEDJI
 Dossier: RG 2026/0456
 Juridiction: TPI Cotonou
 Chambre: 1ère Ch. civile
-Adverse: SCI Immobilia
+Adverse: SCI Gbeto Immo
 Avocat: Me Ahouandjinou
 Résumé: Le tribunal a ordonné une expertise...
 Prochaine: 25/02/2026
@@ -294,7 +294,7 @@ Tâches: Préparer pièces, Déposer conclusions`}</pre>
                   Message WhatsApp *
                 </label>
                 <textarea value={testMessage} onChange={(e) => setTestMessage(e.target.value)}
-                  placeholder={`📋 COMPTE RENDU\nDate: 20/02/2026\nClient: Martin\nDossier: RG 2026/0789\nJuridiction: TPI Cotonou\nRésumé: Le tribunal a renvoyé l'affaire...\nProchaine: 27/02/2026\nTâches: Préparer conclusions`}
+                  placeholder={`📋 COMPTE RENDU\nDate: 20/02/2026\nClient: DOSSOU\nDossier: RG 2026/0789\nJuridiction: TPI Cotonou\nRésumé: Le tribunal a renvoyé l'affaire...\nProchaine: 27/02/2026\nTâches: Préparer conclusions`}
                   rows={6}
                   className="w-full border border-neutral-200 bg-neutral-50 px-3 py-2 text-[11px] font-mono outline-none focus:border-black focus:bg-white resize-none" />
               </div>

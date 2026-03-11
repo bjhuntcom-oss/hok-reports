@@ -363,7 +363,7 @@ export default function NewSessionPage() {
               value={clientEmail}
               onChange={(e) => setClientEmail(e.target.value)}
               className="w-full border border-neutral-200 bg-white px-4 py-3 text-[13px] outline-none transition-colors focus:border-black"
-              placeholder="client@exemple.fr"
+              placeholder="client@exemple.bj"
             />
           </div>
 
@@ -376,7 +376,7 @@ export default function NewSessionPage() {
               value={clientPhone}
               onChange={(e) => setClientPhone(e.target.value)}
               className="w-full border border-neutral-200 bg-white px-4 py-3 text-[13px] outline-none transition-colors focus:border-black"
-              placeholder="+33 6 00 00 00 00"
+              placeholder="+229 01 XX XX XX XX"
             />
           </div>
 

@@ -41,10 +41,11 @@ export default function MentionsLegales() {
               <li><span className="font-medium text-black">Raison sociale :</span> Cabinet HOK</li>
               <li><span className="font-medium text-black">Forme juridique :</span> Cabinet d&apos;avocats — Barreau du Bénin</li>
               <li><span className="font-medium text-black">Siège social :</span> Cotonou, République du Bénin</li>
-              <li><span className="font-medium text-black">Téléphone :</span> +229 XX XX XX XX</li>
-              <li><span className="font-medium text-black">Email :</span> contact@cabinet-hok.bj</li>
-              <li><span className="font-medium text-black">Directeur de la publication :</span> Maître [Nom du Bâtonnier / Responsable]</li>
+              <li><span className="font-medium text-black">Téléphone :</span> +229 01 XX XX XX XX</li>
+              <li><span className="font-medium text-black">Email :</span> contact@cabinet-hok.com</li>
+              <li><span className="font-medium text-black">Directeur de la publication :</span> Maître [Nom du Responsable]</li>
               <li><span className="font-medium text-black">RCCM :</span> RB/COT/XX/X-XXXXX</li>
+              <li><span className="font-medium text-black">IFU :</span> XXXXXXXXXXX</li>
             </ul>
           </section>
 

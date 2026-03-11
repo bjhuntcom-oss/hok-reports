@@ -145,7 +145,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full border border-neutral-200 bg-neutral-50 px-4 py-3 text-[13px] text-black outline-none transition-colors focus:border-black focus:bg-white"
-                placeholder="nom@cabinet-hok.fr"
+                placeholder="nom@cabinet-hok.com"
                 required
                 autoComplete="email"
               />

@@ -44,7 +44,7 @@ Un message est un compte rendu d'audience s'il mentionne AU MOINS deux des élé
 
 IMPORTANT : Les avocats écrivent souvent de manière INFORMELLE dans le groupe WhatsApp.
 Exemples de messages qui SONT des comptes rendus :
-- "Bonsoir confrères, audience ce matin au TPI, dossier Dupont c/ SCI Immo, renvoyé au 25 mars, il faut préparer les conclusions"
+- "Bonsoir confrères, audience ce matin au TPI, dossier HOUNGBEDJI c/ SCI Gbeto Immo, renvoyé au 25 mars, il faut préparer les conclusions"
 - "CR audience: Affaire RG 2026/456 devant la 2ème chambre. Expertise ordonnée. Prochain rdv 15 avril"
 - "Chers collègues l'affaire konan contre la banque a été appelée aujourd'hui. Le juge a renvoyé pour conclusions au 3 mars"
 

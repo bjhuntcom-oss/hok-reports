@@ -2,7 +2,7 @@
  * WhatsApp Message Parser for Hearing Reports
  * 
  * Two-tier parsing system:
- *   1. AI-powered parser (primary) — Uses GPT-4o/Claude to intelligently parse
+ *   1. AI-powered parser (primary) — Uses Groq (Llama 3.3 70B) to intelligently parse
  *      any free-form WhatsApp message about hearings. Detects hearing reports
  *      even in informal, conversational messages.
  *   2. Regex-based parser (fallback) — Used when AI is unavailable.

@@ -12,6 +12,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     const { id } = await params;
+    const userId = (session.user as any).id;
+    const role = (session.user as any).role;
+
     const report = await prisma.hearingReport.findUnique({
       where: { id },
       include: { user: { select: { name: true, email: true } } },
@@ -19,6 +22,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     if (!report) {
       return NextResponse.json({ error: "Compte rendu introuvable" }, { status: 404 });
+    }
+    if (role !== "admin" && report.userId !== userId) {
+      return NextResponse.json({ error: "Accès interdit" }, { status: 403 });
     }
 
     return NextResponse.json(report);
@@ -40,9 +46,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const { id } = await params;
     const body = await req.json();
 
+    const role = (session.user as any).role;
     const existing = await prisma.hearingReport.findUnique({ where: { id } });
     if (!existing) {
       return NextResponse.json({ error: "Compte rendu introuvable" }, { status: 404 });
+    }
+    if (role !== "admin" && existing.userId !== userId) {
+      return NextResponse.json({ error: "Accès interdit" }, { status: 403 });
     }
 
     const data: any = {};
@@ -87,11 +97,15 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
     const userId = (session.user as any).id;
     const { ipAddress, userAgent } = getClientInfo(req);
+    const role = (session.user as any).role;
     const { id } = await params;
 
     const existing = await prisma.hearingReport.findUnique({ where: { id } });
     if (!existing) {
       return NextResponse.json({ error: "Compte rendu introuvable" }, { status: 404 });
+    }
+    if (role !== "admin" && existing.userId !== userId) {
+      return NextResponse.json({ error: "Accès interdit" }, { status: 403 });
     }
 
     await prisma.hearingReport.delete({ where: { id } });

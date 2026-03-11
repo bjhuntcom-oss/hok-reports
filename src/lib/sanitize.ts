@@ -54,7 +54,7 @@ export function validateName(name: string): boolean {
   return name.length >= 2 && name.length <= 100 && !/[<>{}()$]/.test(name);
 }
 
-const ALLOWED_REPORT_FIELDS = ["status", "title", "category", "format", "exportedAt"];
+const ALLOWED_REPORT_FIELDS = ["status", "title", "category", "format", "exportedAt", "summary", "keyPoints", "actionItems", "legalNotes"];
 const ALLOWED_SESSION_FIELDS = ["title", "description", "clientName", "clientEmail", "clientPhone", "caseReference", "language", "status", "audioDuration"];
 
 export function filterFields(body: Record<string, any>, allowedFields: string[]): Record<string, any> {

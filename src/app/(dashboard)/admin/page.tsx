@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useAppStore } from "@/lib/store";
 import { t } from "@/lib/i18n";
 
-type Tab = "overview" | "pending" | "users" | "reports" | "activity" | "audit" | "llm";
+type Tab = "overview" | "pending" | "users" | "reports" | "sessions" | "activity" | "audit" | "llm";
 
 export default function AdminPage() {
   const { locale } = useAppStore();
@@ -18,6 +18,9 @@ export default function AdminPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [allReports, setAllReports] = useState<any[]>([]);
+  const [allSessions, setAllSessions] = useState<any[]>([]);
+  const [confirmDeleteReport, setConfirmDeleteReport] = useState<string | null>(null);
+  const [confirmDeleteSession, setConfirmDeleteSession] = useState<string | null>(null);
   const [loginHistory, setLoginHistory] = useState<any[]>([]);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [auditTotal, setAuditTotal] = useState(0);
@@ -44,8 +47,9 @@ export default function AdminPage() {
       fetch("/api/admin/activity").then((r) => r.json()),
       fetch(`/api/admin/audit?limit=50&page=1`).then((r) => r.json()),
       fetch("/api/admin/llm").then((r) => r.json()),
+      fetch("/api/admin/sessions").then((r) => r.json()),
     ])
-      .then(([usersData, statsData, reportsData, activityData, auditData, llmData]) => {
+      .then(([usersData, statsData, reportsData, activityData, auditData, llmData, sessionsData]) => {
         setUsers(Array.isArray(usersData) ? usersData : []);
         setStats(statsData);
         setAllReports(Array.isArray(reportsData) ? reportsData : []);
@@ -53,6 +57,7 @@ export default function AdminPage() {
         setAuditLogs(auditData?.logs || []);
         setAuditTotal(auditData?.total || 0);
         setLlmConfig(llmData || {});
+        setAllSessions(Array.isArray(sessionsData) ? sessionsData : []);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -180,6 +185,22 @@ export default function AdminPage() {
     setEditEmail(user.email);
   };
 
+  const handleDeleteReport = async (reportId: string) => {
+    const res = await fetch(`/api/reports/${reportId}`, { method: "DELETE" });
+    if (res.ok) {
+      setAllReports((p) => p.filter((r) => r.id !== reportId));
+      setConfirmDeleteReport(null);
+    }
+  };
+
+  const handleDeleteSession = async (sessionId: string) => {
+    const res = await fetch(`/api/sessions/${sessionId}`, { method: "DELETE" });
+    if (res.ok) {
+      setAllSessions((p) => p.filter((s) => s.id !== sessionId));
+      setConfirmDeleteSession(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -195,6 +216,7 @@ export default function AdminPage() {
     { id: "pending", label: t("admin.requests", locale), icon: UserCheck, badge: pendingUsers.length },
     { id: "users", label: t("admin.users", locale), icon: Users },
     { id: "reports", label: t("admin.reports", locale), icon: FileText },
+    { id: "sessions", label: locale === "en" ? "Sessions" : "Sessions", icon: Mic },
     { id: "activity", label: t("admin.activity", locale), icon: Activity },
     { id: "audit", label: t("admin.auditLog", locale), icon: ScrollText },
     { id: "llm", label: t("admin.llmEngine", locale), icon: Key },
@@ -577,7 +599,7 @@ export default function AdminPage() {
             <table className="w-full min-w-[700px]">
               <thead>
                 <tr className="border-b border-neutral-100">
-                  {[locale === "en" ? "Title" : "Titre", locale === "en" ? "Author" : "Auteur", locale === "en" ? "Client" : "Client", t("admin.statusCol", locale), t("report.tableCategory", locale), t("common.date", locale)].map((h) => (
+                  {[locale === "en" ? "Title" : "Titre", locale === "en" ? "Author" : "Auteur", locale === "en" ? "Client" : "Client", t("admin.statusCol", locale), t("report.tableCategory", locale), t("common.date", locale), t("admin.actionsCol", locale)].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-[9px] font-bold tracking-[0.15em] text-neutral-400 uppercase">
                       {h}
                     </th>
@@ -613,12 +635,111 @@ export default function AdminPage() {
                     <td className="px-4 py-3 text-[10px] text-neutral-400">
                       {new Date(r.createdAt).toLocaleDateString(locale === "en" ? "en-GB" : "fr-FR")}
                     </td>
+                    <td className="px-4 py-3">
+                      {confirmDeleteReport === r.id ? (
+                        <div className="flex items-center gap-1">
+                          <button onClick={() => handleDeleteReport(r.id)} className="flex h-6 items-center gap-1 bg-red-500 px-2 text-[9px] font-bold text-white uppercase">
+                            {locale === "en" ? "Confirm" : "Confirmer"}
+                          </button>
+                          <button onClick={() => setConfirmDeleteReport(null)} className="flex h-6 w-6 items-center justify-center text-neutral-400"><X size={12} /></button>
+                        </div>
+                      ) : (
+                        <button onClick={() => setConfirmDeleteReport(r.id)} className="flex h-6 w-6 items-center justify-center text-neutral-400 transition-colors hover:bg-red-50 hover:text-red-500" title={locale === "en" ? "Delete" : "Supprimer"}>
+                          <Trash2 size={12} />
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
                 {allReports.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center text-[11px] text-neutral-400">
+                    <td colSpan={7} className="px-4 py-8 text-center text-[11px] text-neutral-400">
                       {t("admin.noReports", locale)}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {tab === "sessions" && (
+        <div className="border border-neutral-200 bg-white">
+          <div className="border-b border-neutral-100 px-5 py-3">
+            <h3 className="text-[11px] font-bold tracking-[0.15em] text-black uppercase">
+              Sessions ({allSessions.length})
+            </h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[800px]">
+              <thead>
+                <tr className="border-b border-neutral-100">
+                  {[locale === "en" ? "Title" : "Titre", locale === "en" ? "User" : "Utilisateur", "Client", locale === "en" ? "Status" : "Statut", locale === "en" ? "Duration" : "Durée", locale === "en" ? "Reports" : "Rapports", t("common.date", locale), t("admin.actionsCol", locale)].map((h) => (
+                    <th key={h} className="px-4 py-3 text-left text-[9px] font-bold tracking-[0.15em] text-neutral-400 uppercase">
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-50">
+                {allSessions.map((s: any) => {
+                  const dur = s.audioDuration ? `${Math.floor(s.audioDuration / 60)}:${(s.audioDuration % 60).toString().padStart(2, "0")}` : "—";
+                  const statusStyle: Record<string, string> = {
+                    recording: "bg-red-50 text-red-600",
+                    transcribing: "bg-amber-50 text-amber-600",
+                    summarizing: "bg-blue-50 text-blue-600",
+                    completed: "bg-emerald-50 text-emerald-600",
+                    error: "bg-red-50 text-red-600",
+                  };
+                  return (
+                    <tr key={s.id} className="hover:bg-neutral-50 transition-colors">
+                      <td className="px-4 py-3">
+                        <Link href={`/sessions/${s.id}`} className="text-[12px] font-medium text-black hover:underline">
+                          {s.title}
+                        </Link>
+                      </td>
+                      <td className="px-4 py-3 text-[11px] text-neutral-500">
+                        {s.user?.name || "—"}
+                      </td>
+                      <td className="px-4 py-3 text-[11px] text-neutral-500">
+                        {s.clientName || "—"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`px-2 py-0.5 text-[9px] font-bold uppercase ${statusStyle[s.status] || "bg-neutral-100 text-neutral-500"}`}>
+                          {s.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-[11px] font-mono text-neutral-400">
+                        {dur}
+                      </td>
+                      <td className="px-4 py-3 text-[11px] text-neutral-500 text-center">
+                        {s._count?.reports || 0}
+                      </td>
+                      <td className="px-4 py-3 text-[10px] text-neutral-400">
+                        {new Date(s.createdAt).toLocaleDateString(locale === "en" ? "en-GB" : "fr-FR")}
+                      </td>
+                      <td className="px-4 py-3">
+                        {confirmDeleteSession === s.id ? (
+                          <div className="flex items-center gap-1">
+                            <button onClick={() => handleDeleteSession(s.id)} className="flex h-6 items-center gap-1 bg-red-500 px-2 text-[9px] font-bold text-white uppercase">
+                              {locale === "en" ? "Confirm" : "Confirmer"}
+                            </button>
+                            <button onClick={() => setConfirmDeleteSession(null)} className="flex h-6 w-6 items-center justify-center text-neutral-400"><X size={12} /></button>
+                          </div>
+                        ) : (
+                          <button onClick={() => setConfirmDeleteSession(s.id)} className="flex h-6 w-6 items-center justify-center text-neutral-400 transition-colors hover:bg-red-50 hover:text-red-500" title={locale === "en" ? "Delete" : "Supprimer"}>
+                            <Trash2 size={12} />
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+                {allSessions.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="px-4 py-8 text-center text-[11px] text-neutral-400">
+                      {locale === "en" ? "No sessions." : "Aucune session."}
                     </td>
                   </tr>
                 )}

@@ -11,6 +11,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     const { id } = await params;
+    const userId = (session.user as any).id;
+    const userRole = (session.user as any).role;
+
     const role = await prisma.weeklyRole.findUnique({
       where: { id },
       include: { user: { select: { name: true } } },
@@ -18,6 +21,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     if (!role) {
       return NextResponse.json({ error: "Rôle introuvable" }, { status: 404 });
+    }
+    if (userRole !== "admin" && role.userId !== userId) {
+      return NextResponse.json({ error: "Accès interdit" }, { status: 403 });
     }
 
     return NextResponse.json(role);
@@ -35,6 +41,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     const userId = (session.user as any).id;
+    const userRole = (session.user as any).role;
     const { ipAddress, userAgent } = getClientInfo(req);
     const { id } = await params;
     const body = await req.json();
@@ -42,6 +49,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const existing = await prisma.weeklyRole.findUnique({ where: { id } });
     if (!existing) {
       return NextResponse.json({ error: "Rôle introuvable" }, { status: 404 });
+    }
+    if (userRole !== "admin" && existing.userId !== userId) {
+      return NextResponse.json({ error: "Accès interdit" }, { status: 403 });
     }
 
     const data: any = {};
@@ -76,12 +86,16 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     }
 
     const userId = (session.user as any).id;
+    const userRole = (session.user as any).role;
     const { ipAddress, userAgent } = getClientInfo(req);
     const { id } = await params;
 
     const existing = await prisma.weeklyRole.findUnique({ where: { id } });
     if (!existing) {
       return NextResponse.json({ error: "Rôle introuvable" }, { status: 404 });
+    }
+    if (userRole !== "admin" && existing.userId !== userId) {
+      return NextResponse.json({ error: "Accès interdit" }, { status: 403 });
     }
 
     await prisma.weeklyRole.delete({ where: { id } });

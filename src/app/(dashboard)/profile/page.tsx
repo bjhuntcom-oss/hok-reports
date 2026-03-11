@@ -214,6 +214,17 @@ export default function ProfilePage() {
                 {locale === "en" ? "Min. 8 chars, uppercase, lowercase, digit, special character" : "Min. 8 car., majuscule, minuscule, chiffre, caractère spécial"}
               </p>
             </div>
+            <div>
+              <label className="mb-1.5 block text-[10px] font-semibold tracking-[0.1em] text-neutral-400 uppercase">
+                {t("auth.confirmPassword", locale)}
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-neutral-200 bg-neutral-50 px-4 py-2.5 text-[13px] outline-none transition-colors focus:border-black focus:bg-white"
+              />
+            </div>
           </div>
           <button
             onClick={handleChangePassword}

@@ -18,6 +18,9 @@ export async function POST(req: Request) {
     }
 
     const target = await prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } });
+    if (!target) {
+      return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
+    }
     await prisma.user.update({ where: { id: userId }, data: { blocked } });
 
     await logAudit({ userId: adminId, action: blocked ? "admin_block_user" : "admin_unblock_user", entity: "user", entityId: userId, details: { targetName: target?.name, targetEmail: target?.email }, ipAddress, userAgent });

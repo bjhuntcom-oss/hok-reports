@@ -5,6 +5,7 @@ import { transcribeAudio, extractSessionMetadata, generateReport } from "@/lib/l
 import { readFile } from "fs/promises";
 import path from "path";
 import { logAudit, getClientInfo } from "@/lib/audit";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,6 +15,12 @@ export async function POST(req: NextRequest) {
     }
 
     const userId = (session.user as any).id;
+
+    const { allowed } = rateLimit(`flash:${userId}`, 5, 60000);
+    if (!allowed) {
+      return NextResponse.json({ error: "Trop de requêtes. Réessayez dans une minute." }, { status: 429 });
+    }
+
     const { ipAddress, userAgent } = getClientInfo(req);
     const { sessionId } = await req.json();
 
@@ -36,6 +43,9 @@ export async function POST(req: NextRequest) {
     // Step 1: Transcribe audio if not already done
     let transcriptionText = sessionData.transcription?.content;
     if (!transcriptionText && sessionData.audioUrl) {
+      if (!sessionData.audioUrl.startsWith("/uploads/audio/") || sessionData.audioUrl.includes("..")) {
+        return NextResponse.json({ error: "Chemin audio invalide" }, { status: 400 });
+      }
       const audioPath = path.join(process.cwd(), "public", sessionData.audioUrl);
       const audioBuffer = Buffer.from(await readFile(audioPath));
       const result = await transcribeAudio(audioBuffer, sessionData.language || "fr");
@@ -63,7 +73,11 @@ export async function POST(req: NextRequest) {
     // Step 2: Extract session metadata from transcription
     const metadata = await extractSessionMetadata(transcriptionText);
 
-    // Step 3: Update session with extracted metadata
+    // Step 3: Update session with extracted metadata (preserve audioDuration)
+    const currentSession = await prisma.session.findUnique({
+      where: { id: sessionId },
+      select: { audioDuration: true },
+    });
     await prisma.session.update({
       where: { id: sessionId },
       data: {
@@ -72,6 +86,7 @@ export async function POST(req: NextRequest) {
         caseReference: metadata.caseReference,
         description: metadata.description,
         status: "completed",
+        ...(currentSession?.audioDuration ? { audioDuration: currentSession.audioDuration } : {}),
       },
     });
 
@@ -114,6 +129,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: any) {
     console.error("Flash processing error:", error);
-    return NextResponse.json({ error: error.message || "Erreur de traitement flash" }, { status: 500 });
+    return NextResponse.json({ error: "Erreur de traitement flash" }, { status: 500 });
   }
 }

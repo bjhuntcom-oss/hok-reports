@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { logAudit, getClientInfo } from "@/lib/audit";
+import { rateLimit } from "@/lib/rate-limit";
 
 const ALLOWED_AUDIO_TYPES = ["audio/mpeg", "audio/mp3", "audio/wav", "audio/webm", "audio/ogg", "audio/mp4", "audio/m4a", "audio/x-m4a"];
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
@@ -17,6 +18,12 @@ export async function POST(req: NextRequest) {
 
     const userId = (session.user as any).id;
     const role = (session.user as any).role;
+
+    const { allowed } = rateLimit(`upload:${userId}`, 20, 60000);
+    if (!allowed) {
+      return NextResponse.json({ error: "Trop de requêtes. Réessayez dans une minute." }, { status: 429 });
+    }
+
     const { ipAddress, userAgent } = getClientInfo(req);
     const formData = await req.formData();
     const file = formData.get("audio") as File;
@@ -30,7 +37,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Fichier trop volumineux (max 100 Mo)" }, { status: 400 });
     }
 
-    if (file.type && !ALLOWED_AUDIO_TYPES.includes(file.type)) {
+    if (!file.type || !ALLOWED_AUDIO_TYPES.includes(file.type)) {
       return NextResponse.json({ error: "Format audio non supporté" }, { status: 400 });
     }
 

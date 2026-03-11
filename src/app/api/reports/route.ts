@@ -15,11 +15,11 @@ export async function GET(req: NextRequest) {
     const userId = (session.user as any).id;
     const role = (session.user as any).role;
     const { searchParams } = new URL(req.url);
-    const search = searchParams.get("search") || "";
+    const search = sanitizeString(searchParams.get("search") || "");
     const category = searchParams.get("category") || "";
     const status = searchParams.get("status") || "";
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")));
 
     const where: any = {};
     if (role !== "admin") {
@@ -70,6 +70,7 @@ export async function POST(req: NextRequest) {
     }
 
     const userId = (session.user as any).id;
+    const role = (session.user as any).role;
     const { sessionId, format = "standard", category = "general" } = await req.json();
 
     if (!sessionId) {
@@ -86,6 +87,9 @@ export async function POST(req: NextRequest) {
         { error: "Transcription non trouvée. Veuillez d'abord transcrire l'audio." },
         { status: 400 }
       );
+    }
+    if (role !== "admin" && sessionData.userId !== userId) {
+      return NextResponse.json({ error: "Accès interdit" }, { status: 403 });
     }
 
     await prisma.session.update({

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { sanitizeString } from "@/lib/sanitize";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,7 +12,11 @@ export async function POST(req: NextRequest) {
 
     const userId = (session.user as any).id;
     const role = (session.user as any).role;
-    const { sessionId, content, timestamp, isImportant } = await req.json();
+    const body = await req.json();
+    const sessionId = body.sessionId;
+    const content = sanitizeString(body.content || "").slice(0, 5000);
+    const timestamp = body.timestamp;
+    const isImportant = body.isImportant;
 
     if (!sessionId || !content) {
       return NextResponse.json(

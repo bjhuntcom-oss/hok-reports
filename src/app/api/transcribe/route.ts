@@ -5,6 +5,7 @@ import { transcribeAudio } from "@/lib/llm";
 import { readFile } from "fs/promises";
 import path from "path";
 import { logAudit, getClientInfo } from "@/lib/audit";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,6 +16,12 @@ export async function POST(req: NextRequest) {
 
     const userId = (session.user as any).id;
     const role = (session.user as any).role;
+
+    const { allowed } = rateLimit(`transcribe:${userId}`, 10, 60000);
+    if (!allowed) {
+      return NextResponse.json({ error: "Trop de requêtes. Réessayez dans une minute." }, { status: 429 });
+    }
+
     const { ipAddress, userAgent } = getClientInfo(req);
     const { sessionId } = await req.json();
 
@@ -32,6 +39,9 @@ export async function POST(req: NextRequest) {
 
     await prisma.session.update({ where: { id: sessionId }, data: { status: "transcribing" } });
 
+    if (!sessionData.audioUrl.startsWith("/uploads/audio/") || sessionData.audioUrl.includes("..")) {
+      return NextResponse.json({ error: "Chemin audio invalide" }, { status: 400 });
+    }
     const audioPath = path.join(process.cwd(), "public", sessionData.audioUrl);
     const audioBuffer = await readFile(audioPath);
 

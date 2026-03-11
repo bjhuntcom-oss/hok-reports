@@ -22,6 +22,9 @@ export async function POST(req: Request) {
     }
 
     const target = await prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } });
+    if (!target) {
+      return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
+    }
     await prisma.user.delete({ where: { id: userId } });
 
     await logAudit({ userId: adminId, action: "admin_delete_user", entity: "user", entityId: userId, details: { targetName: target?.name, targetEmail: target?.email }, ipAddress, userAgent });

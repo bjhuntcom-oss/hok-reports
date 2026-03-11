@@ -3,7 +3,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { readFileSync } from "fs";
 import { join } from "path";
 
-const DOCS_PASSWORD = process.env.DOCS_PASSWORD || "HokDocs2026#";
+const DOCS_PASSWORD = process.env.DOCS_PASSWORD || "";
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Mot de passe requis" }, { status: 400 });
     }
 
-    if (password !== DOCS_PASSWORD) {
+    if (!DOCS_PASSWORD || password !== DOCS_PASSWORD) {
       return NextResponse.json(
         { error: "Mot de passe incorrect" },
         {

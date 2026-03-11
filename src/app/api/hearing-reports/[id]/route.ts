@@ -67,7 +67,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (body.nextHearingDate !== undefined) data.nextHearingDate = body.nextHearingDate ? new Date(body.nextHearingDate) : null;
     if (body.tasks !== undefined) data.tasks = JSON.stringify(body.tasks);
     if (body.notes !== undefined) data.notes = sanitizeString(body.notes) || null;
-    if (body.status !== undefined) data.status = body.status;
+    if (body.status !== undefined && ["pending", "completed", "cancelled"].includes(body.status)) data.status = body.status;
 
     const updated = await prisma.hearingReport.update({ where: { id }, data });
 

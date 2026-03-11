@@ -1,14 +1,22 @@
 import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { logAudit, getClientInfo } from "@/lib/audit";
+import { rateLimit } from "@/lib/rate-limit";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user) {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
+    const userId = (session.user as any).id;
+    const { allowed } = rateLimit(`password:${userId}`, 5, 300000);
+    if (!allowed) {
+      return NextResponse.json({ error: "Trop de tentatives. Réessayez dans 5 minutes." }, { status: 429 });
     }
 
     const { currentPassword, newPassword } = await req.json();

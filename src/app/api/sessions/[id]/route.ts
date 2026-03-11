@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { filterSessionFields } from "@/lib/sanitize";
 import { logAudit, getClientInfo } from "@/lib/audit";
+import { unlink } from "fs/promises";
+import path from "path";
 
 export async function GET(
   req: NextRequest,
@@ -95,6 +97,21 @@ export async function DELETE(
     if (!existing) return NextResponse.json({ error: "Session non trouvée" }, { status: 404 });
     if (role !== "admin" && existing.userId !== userId) {
       return NextResponse.json({ error: "Accès interdit" }, { status: 403 });
+    }
+
+    // Delete audio file from disk if exists
+    if (existing.audioUrl) {
+      const filename = existing.audioUrl.split("/").pop();
+      if (filename && !filename.includes("..")) {
+        const candidates = [
+          path.join(process.cwd(), "data", "audio", filename),
+          path.join(process.cwd(), "public", "uploads", "audio", filename),
+          path.join(process.cwd(), "public", "uploads", filename),
+        ];
+        for (const fp of candidates) {
+          try { await unlink(fp); break; } catch { /* file not found, try next */ }
+        }
+      }
     }
 
     await prisma.session.delete({ where: { id } });

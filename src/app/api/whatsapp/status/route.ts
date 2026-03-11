@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       configured,
       webhookUrl,
-      verifyToken: configured ? verifyToken : "",
+      verifyToken: verifyToken ? `${verifyToken.slice(0, 4)}${"*".repeat(Math.max(0, verifyToken.length - 4))}` : "",
       phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID ? "***configuré***" : "",
       accessToken: process.env.WHATSAPP_ACCESS_TOKEN ? "***configuré***" : "",
     });

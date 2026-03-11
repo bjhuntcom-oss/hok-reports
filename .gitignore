@@ -50,5 +50,7 @@ prisma/dev.db-journal
 public/uploads/
 /data/
 
-# doc preview artifacts
+# doc preview/audit artifacts
 docs/_preview/
+docs/_audit/
+docs/_audit_test.pdf
